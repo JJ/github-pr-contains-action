@@ -32,8 +32,12 @@ repository.
 
 ## Contributing to development
 
-Any suggestion, but report, etc, is appreciated.
+Any suggestion, but report, etc, is appreciated. Please use issues.
 
+## History
+
+* `v0`: proof of concept, published to marketplace
+* `v1`: WIP
 
 ## License
 
