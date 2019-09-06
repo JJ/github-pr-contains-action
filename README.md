@@ -21,3 +21,5 @@ jobs:
         bodyContains: 'Test'
         diffContains: 'Test'
 ```
+
+The `bodyContain` variable will include the string that we want the body of the PR to include, such as checked items in a checklist.
