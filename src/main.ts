@@ -1,5 +1,6 @@
 import * as core from '@actions/core';
 const {GitHub, context} = require('@actions/github')
+const parse = require('parse-diff')
 
 async function run() {
   try {
@@ -8,7 +9,8 @@ async function run() {
       const github = new GitHub(token, {} )
       const diff_url = context.payload.pull_request.diff_url
       const result = await github.request( diff_url )
-      console.log( result )
+      const files = parse(result.data)
+      console.log( files )
   } catch (error) {
       core.setFailed(error.message);
   }
