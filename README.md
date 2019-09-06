@@ -34,6 +34,10 @@ repository.
 
 Any suggestion, but report, etc, is appreciated.
 
+## History
+
+* `v0`: proof of concept, published to marketplace
+* `v1`: WIP
 
 ## License
 
