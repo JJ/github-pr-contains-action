@@ -10,7 +10,7 @@ jobs:
       with:
         github-token: ${{github.token}}
         bodyContains: 'Test'
-        diffContains: 'No va'
+        diffContains: 'README'
         
 
 
