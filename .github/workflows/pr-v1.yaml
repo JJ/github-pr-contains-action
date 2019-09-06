@@ -11,6 +11,6 @@ jobs:
         github-token: ${{github.token}}
         bodyContains: '[x]'
         diffContains: ''
-        linesChanged: 1
+        filesChanged: 1
 
 
