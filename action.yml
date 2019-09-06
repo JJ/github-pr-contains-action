@@ -1,6 +1,8 @@
 name: 'Check PR for word'
 description: 'Checks that the body or the added code contains a word'
 author: 'JJ'
+icon: 'git-pull-request'
+color: 'gray-dark'
 inputs:
   github-token:
     description: 'Github token, added magically'
