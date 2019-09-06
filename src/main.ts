@@ -5,10 +5,10 @@ async function run() {
   try {
       const bodyContains = core.getInput('bodyContains')
       const token = core.getInput('github-token', {required: true})
-      const client = new GitHub(token, {} )
-      console.log( context )
-      console.log( context.payload )
-      console.log(`Body needs to contain ${bodyContains}`)
+      const github = new GitHub(token, {} )
+      const diff_url = context.payload.pull_request.diff_url
+      const result = await github.request( diff_url )
+      console.log( result )
   } catch (error) {
       core.setFailed(error.message);
   }
