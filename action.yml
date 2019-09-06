@@ -1,10 +1,14 @@
-name: 'Node 12 Template Action'
-description: 'Get started with Node actions'
-author: 'GitHub'
+name: 'Check PR for word'
+description: 'Checks that the body or the added code contains a word'
+author: 'JJ'
 inputs:
-  myInput:
-    description: 'Input to use'
-    default: 'world'
+  github-token:
+    description: 'Github token, added magically'
+  bodyContains:
+    description: 'Word that must be contained in the PR body'
+  diffContains:
+    description: 'Word that must be contained in the added code'
+    
 runs:
   using: 'node12'
   main: 'lib/main.js'
