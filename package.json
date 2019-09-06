@@ -1,8 +1,8 @@
 {
-  "name": "node12-template-action",
+  "name": "github-pr-contains-action",
   "version": "0.0.0",
   "private": true,
-  "description": "Node 12 template action",
+  "description": "Checking pr for words action",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
