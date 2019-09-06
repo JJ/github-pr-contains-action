@@ -19,11 +19,15 @@ async function run() {
       files.forEach(function(file) {
           file.chunks.forEach( function ( chunk ) {
               chunk.changes.forEach( function (change ) {
-                  console.log( change )
+                  if ( change.add ) {
+                      changes += change.content
+                  }
               })
           })
       })
-
+      if ( changes.indexOf( diffContains ) < 0 ) {
+          core.setFailed( "The added code does not contain " + diffContains);
+      }
   } catch (error) {
       core.setFailed(error.message);
   }
