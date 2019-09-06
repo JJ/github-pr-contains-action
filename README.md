@@ -25,3 +25,5 @@ jobs:
 The `bodyContain` variable will include the string that we want the body of the PR to include, such as checked items in a checklist.
 
 They can be left empty if no check wants to be done.
+
+## Contributing to development
