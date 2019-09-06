@@ -32,7 +32,7 @@ repository.
 
 ## Contributing to development
 
-Any suggestion, but report, etc, is appreciated. Please use issues.
+Any suggestion, but report, etc, is appreciated. Please use [issues](https://github.com/JJ/github-pr-contains-action/issues) for doing that.
 
 ## History
 
