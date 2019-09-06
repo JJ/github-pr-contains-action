@@ -20,3 +20,4 @@ jobs:
         github-token: ${{github.token}}
         bodyContains: 'Test'
         diffContains: 'Test'
+```
