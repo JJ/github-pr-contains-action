@@ -14,7 +14,6 @@ async function run() {
       const diff_url = context.payload.pull_request.diff_url
       const result = await github.request( diff_url )
       const files = parse(result.data)
-      var contains = 0
       var changes = ''
       files.forEach(function(file) {
           file.chunks.forEach( function ( chunk ) {
