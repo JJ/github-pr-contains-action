@@ -27,6 +27,9 @@ async function run() {
       })
       if ( changes.indexOf( diffContains ) < 0 ) {
           core.setFailed( "The added code does not contain " + diffContains);
+      } else {
+          core.exportVariable('diff',changes )
+          core.setOutput('diff',changes )
       }
   } catch (error) {
       core.setFailed(error.message);

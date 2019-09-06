@@ -11,6 +11,9 @@ inputs:
     description: 'Word that must be contained in the PR body'
   diffContains:
     description: 'Word that must be contained in the added code'
+outputs:
+  diff:
+    description: "Lines added to the PR"
     
 runs:
   using: 'node12'
