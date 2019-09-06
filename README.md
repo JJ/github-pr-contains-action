@@ -1,6 +1,6 @@
 # Checking PRs for words, inspired by JavaScript Action Template
 
-This template offers an easy way to get started writing a JavaScript action with TypeScript compile time support, unit testing with Jest and using the GitHub Actions Toolkit.
+Based on the template, we'll try to create a new action.
 
 ## Getting Started
 
