@@ -1,4 +1,4 @@
-name: "Check PR"
+name: "Check PR for word"
 on: [pull_request]
 
 jobs:
@@ -9,7 +9,8 @@ jobs:
       uses: JJ/github-pr-contains-action@releases/v0
       with:
         github-token: ${{github.token}}
-        bodyContains: 'No va'
+        bodyContains: 'Test'
+        diffContains: 'No va'
         
 
 
