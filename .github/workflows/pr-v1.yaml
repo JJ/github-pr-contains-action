@@ -1,0 +1,16 @@
+name: "Check PR for word - v1"
+on: [pull_request]
+
+jobs:
+  check_pr:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check PR
+      uses: JJ/github-pr-contains-action@releases/v1
+      with:
+        github-token: ${{github.token}}
+        bodyContains: '[x]'
+        diffContains: ''
+        
+
+
