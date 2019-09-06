@@ -30,6 +30,12 @@ async function run() {
           core.exportVariable('diff',changes )
           core.setOutput('diff',changes )
       }
+
+      const filesChanged = core.getInput('filesChanged')
+      if ( filesChanged && files.length != filesChanged ) {
+          core.setFailed( "You should change exactly " + filesChanged + " file(s)");
+      }
+          
   } catch (error) {
       core.setFailed(error.message);
   }
