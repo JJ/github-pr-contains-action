@@ -1,0 +1,17 @@
+name: 'Check PR for word'
+description: 'Checks that the body or the added code contains a word'
+author: 'JJ'
+branding:
+  icon: 'git-pull-request'
+  color: 'gray-dark'
+inputs:
+  github-token:
+    description: 'Github token, added magically'
+  bodyContains:
+    description: 'Word that must be contained in the PR body'
+  diffContains:
+    description: 'Word that must be contained in the added code'
+    
+runs:
+  using: 'node12'
+  main: 'lib/main.js'
