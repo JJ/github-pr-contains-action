@@ -1,5 +1,5 @@
 {
-  "name": "github-pr-contains-action",
+  "name": "Check PRs for words, number of files or lines modified",
   "version": "0.0.0",
   "private": true,
   "description": "Checking pr for words action",
@@ -10,12 +10,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/javascript-template.git"
+    "url": "git+https://github.com/actions/github-pr-contains-action.git"
   },
   "keywords": [
-    "actions",
-    "node",
-    "setup"
+      "actions",
+      "node",
+      "diff",
+      "pull request"
   ],
   "author": "GitHub",
   "license": "MIT",
