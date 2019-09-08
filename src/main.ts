@@ -14,8 +14,15 @@ async function run() {
       const diff_url = context.payload.pull_request.diff_url
       const result = await github.request( diff_url )
       const files = parse(result.data)
+      const filesChanged = core.getInput('filesChanged')
+      if ( filesChanged && files.length != filesChanged ) {
+          core.setFailed( "You should change exactly " + filesChanged + " file(s)");
+      }
+
       var changes = ''
+      var additions = 0
       files.forEach(function(file) {
+	  additions += file.additions
           file.chunks.forEach( function ( chunk ) {
               chunk.changes.forEach( function (change ) {
                   if ( change.add ) {
@@ -31,10 +38,7 @@ async function run() {
           core.setOutput('diff',changes )
       }
 
-      const filesChanged = core.getInput('filesChanged')
-      if ( filesChanged && files.length != filesChanged ) {
-          core.setFailed( "You should change exactly " + filesChanged + " file(s)");
-      }
+      const linesChanged = core.getInput('linesChanged')
           
   } catch (error) {
       core.setFailed(error.message);
