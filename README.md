@@ -20,7 +20,8 @@ jobs:
         github-token: ${{github.token}}
         bodyContains: 'Test'
         diffContains: 'Test'
-        filedChanged: 1
+        filesChanged: 1
+        linesChanged: 1
 ```
 
 The `bodyContain` variable will include the string that we want the body of the PR to include, such as checked items in a checklist.
