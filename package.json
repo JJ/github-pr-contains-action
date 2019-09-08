@@ -1,35 +1,36 @@
 {
-  "name": "github-pr-contains-action",
-  "version": "0.0.0",
-  "private": true,
-  "description": "Checking pr for words action",
-  "main": "lib/main.js",
-  "scripts": {
-    "build": "tsc",
-    "test": "jest"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/actions/javascript-template.git"
-  },
-  "keywords": [
-    "actions",
-    "node",
-    "setup"
-  ],
-  "author": "GitHub",
-  "license": "MIT",
-  "dependencies": {
-    "@actions/core": "^1.0.0",
-    "@actions/github": "^1.1.0",
-    "parse-diff": "^0.6.0"
-  },
-  "devDependencies": {
-    "@types/jest": "^24.0.13",
-    "@types/node": "^12.0.4",
-    "jest": "^24.8.0",
-    "jest-circus": "^24.7.1",
-    "ts-jest": "^24.0.2",
-    "typescript": "^3.5.1"
-  }
+   "name": "github-pr-contains-action",
+   "version": "0.0.1",
+   "private": false,
+   "description": "An action that performs checks on PRs",
+   "main": "lib/main.js",
+   "scripts": {
+      "build": "tsc",
+      "test": "jest"
+   },
+   "repository": {
+      "type": "git",
+      "url": "git+https://github.com/actions/github-pr-contains-action.git"
+   },
+   "keywords": [
+      "actions",
+      "node",
+      "diff",
+      "pull request"
+   ],
+   "author": "GitHub",
+   "license": "MIT",
+   "dependencies": {
+      "@actions/core": "^1.0.0",
+      "@actions/github": "^1.1.0",
+      "parse-diff": "^0.6.0"
+   },
+   "devDependencies": {
+      "@types/jest": "^24.0.13",
+      "@types/node": "^12.0.4",
+      "jest": "^24.8.0",
+      "jest-circus": "^24.7.1",
+      "ts-jest": "^24.0.2",
+      "typescript": "^3.5.1"
+   }
 }
