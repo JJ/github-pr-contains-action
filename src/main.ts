@@ -39,7 +39,10 @@ async function run() {
       }
 
       const linesChanged = core.getInput('linesChanged')
-          
+      if ( linesChanged && additions != linesChanged ) {
+          core.setFailed( "You should change exactly " + linesChanged + " lines(s) and you have changed " + additions );
+      }
+
   } catch (error) {
       core.setFailed(error.message);
   }
