@@ -14,3 +14,6 @@ jobs:
         filesChanged: 1
         linesChanged: 1
 
+    - name: Print diff
+      run: echo "$diff"
+        
