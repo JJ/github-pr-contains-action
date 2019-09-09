@@ -39,7 +39,7 @@ Any suggestion, but report, etc, is appreciated. Please use [issues](https://git
 ## History
 
 * `v0`: proof of concept, published to marketplace
-* `v1`: WIP
+* `v1`: Includes checks for lines and files
 
 ## License
 
