@@ -40,6 +40,7 @@ Any suggestion, but report, etc, is appreciated. Please use [issues](https://git
 
 * `v0`: proof of concept, published to marketplace
 * `v1`: Adds several more checks
+* `v2`: Adds check for strings to avoid
 
 ## License
 
