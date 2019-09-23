@@ -7,7 +7,8 @@ async function run() {
         // get information on everything
         const token = core.getInput('github-token', {required: true})
         const github = new GitHub(token, {} )
-        const issue: {owner: string; repo: string; number: number} = github.context.issue
+        console.log( context )
+        const pull: {owner: string; repo: string; number: number} = context.pull
         
         // Check if the body contains required string
         const bodyContains = core.getInput('bodyContains')
@@ -15,9 +16,9 @@ async function run() {
         if ( context.payload.pull_request.body.indexOf( bodyContains) < 0  ) {
             core.setFailed("The body of the PR does not contain " + bodyContains);
             await github.issues.createComment({
-                owner: issue.owner,
-                repo: issue.repo,
-                issue_number: issue.number,
+                owner: pull.owner,
+                repo: pull.repo,
+                issue_number: pull.number,
                 body: "We need to have the word " + bodyContains + " in the body of the pull request"
             });
         }
