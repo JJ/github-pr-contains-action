@@ -13,20 +13,15 @@ async function run() {
         const bodyContains = core.getInput('bodyContains')
 
         if ( context.payload.pull_request.body.indexOf( bodyContains) < 0  ) {
-            core.setFailed("The body of the PR does not contain " + bodyContains);
-            console.log(  context.repo )
-            const result = await github.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: PR_number,
-                body: "We need to have the word " + bodyContains + " in the body of the pull request"
-            });
-            console.log(result)
+            core.setFailed("The body of the PR does not contain " + bodyContains);u
+	    createComment( github, context, PR_number, "We need to have the string " + bodyContains + " in the body of the pull request" )
         }
 
         const bodyDoesNotContain = core.getInput('bodyDoesNotContain')
         if ( bodyDoesNotContain && context.payload.pull_request.body.indexOf( bodyDoesNotContain) >= 0  ) {
             core.setFailed("The body of the PR should not contain " + bodyDoesNotContain);
+	    createComment( github, context, PR_number, "You should have eliminated *" + bodyDoesnotContain + "* from the body of the pull request" )
+
         }
         
       const diffContains = core.getInput('diffContains')
@@ -36,6 +31,7 @@ async function run() {
       const filesChanged = +core.getInput('filesChanged')
       if ( filesChanged && files.length != filesChanged ) {
           core.setFailed( "You should change exactly " + filesChanged + " file(s)");
+	  createComment( github, context, PR_number, "This PR needs to change exactly *" + filesChanged + "* files. Please redo this PR to fix that" )
       }
 
       var changes = ''
@@ -52,14 +48,17 @@ async function run() {
       })
       if ( changes.indexOf( diffContains ) < 0 ) {
           core.setFailed( "The added code does not contain " + diffContains);
+	  createComment( github, context, PR_number, "This repo requires to have *" + diffContains + "* in the changed code. Please redo this PR to fix that" )
       } else {
           core.exportVariable('diff',changes )
           core.setOutput('diff',changes )
       }
 
       const linesChanged = +core.getInput('linesChanged')
-      if ( linesChanged && ( additions != linesChanged ) ) {
-          core.setFailed( "You should change exactly " + linesChanged + " lines(s) and you have changed " + additions );
+	if ( linesChanged && ( additions != linesChanged ) ) {
+	    const this_msg = "You should change exactly " + linesChanged + " lines(s) and you have changed " + additions
+          core.setFailed( this_msg );
+	  createComment( github, context, PR_number, this_msg )
       }
 
   } catch (error) {
@@ -68,3 +67,12 @@ async function run() {
 }
 
 run();
+
+async function createComment( github, context, PR_number, msg: string ) {
+    await github.issues.createComment({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        issue_number: PR_number,
+        body: msg  });
+
+}
