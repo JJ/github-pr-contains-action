@@ -15,14 +15,14 @@ async function run() {
 
         if ( context.payload.pull_request.body.indexOf( bodyContains) < 0  ) {
             core.setFailed("The body of the PR does not contain " + bodyContains);
-            console.log( "Actor " + context.actor + "pr number " PR_number)
-            const result = await github.issues.createComment({
-                owner: context.actor,
-                repo: context.payload.repository.full_name,
-                issue_number: PR_number,
-                body: "We need to have the word " + bodyContains + " in the body of the pull request"
-            });
-            console.log(result)
+            // console.log( "Actor " + context.actor + " pr number " PR_number)
+            // const result = await github.issues.createComment({
+            //     owner: context.actor,
+            //     repo: context.payload.repository.full_name,
+            //     issue_number: PR_number,
+            //     body: "We need to have the word " + bodyContains + " in the body of the pull request"
+            // });
+            // console.log(result)
         }
 
         const bodyDoesNotContain = core.getInput('bodyDoesNotContain')
