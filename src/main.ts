@@ -14,7 +14,7 @@ async function run() {
 
         if ( context.payload.pull_request.body.indexOf( bodyContains) < 0  ) {
             core.setFailed("The body of the PR does not contain " + bodyContains)
-	    createComment( github, context, PR_number, "We need to have the string " + bodyContains + " in the body of the pull request" )
+	    createComment( github, context, PR_number, "We need to have the string *" + bodyContains + "* in the body of the pull request" )
         }
 
         const bodyDoesNotContain = core.getInput('bodyDoesNotContain')
