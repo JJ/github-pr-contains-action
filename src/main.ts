@@ -18,7 +18,7 @@ async function run() {
             console.log( "Actor " + context.actor )
             await github.issues.createComment({
                 owner: context.actor,
-                repo: context.repository.full_name,
+                repo: context.payload.repository.full_name,
                 issue_number: PR_number,
                 body: "We need to have the word " + bodyContains + " in the body of the pull request"
             });
