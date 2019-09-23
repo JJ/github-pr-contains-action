@@ -4,10 +4,22 @@ const parse = require('parse-diff')
 
 async function run() {
     try {
+        // get information on everything
+        const token = core.getInput('github-token', {required: true})
+        const github = new GitHub(token, {} )
+        const issue: {owner: string; repo: string; number: number} = github.context.issue
+        
         // Check if the body contains required string
         const bodyContains = core.getInput('bodyContains')
+
         if ( context.payload.pull_request.body.indexOf( bodyContains) < 0  ) {
             core.setFailed("The body of the PR does not contain " + bodyContains);
+            await github.issues.createComment({
+                owner: issue.owner,
+                repo: issue.repo,
+                issue_number: issue.number,
+                body: "We need to have the word " + bodyContains + " in the body of the pull request"
+            });
         }
 
         const bodyDoesNotContain = core.getInput('bodyDoesNotContain')
@@ -16,8 +28,6 @@ async function run() {
         }
         
       const diffContains = core.getInput('diffContains')
-      const token = core.getInput('github-token', {required: true})
-      const github = new GitHub(token, {} )
       const diff_url = context.payload.pull_request.diff_url
       const result = await github.request( diff_url )
       const files = parse(result.data)
