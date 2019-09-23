@@ -18,6 +18,7 @@ jobs:
       uses: JJ/github-pr-contains-action@releases/v0
       with:
         github-token: ${{github.token}}
+        bodyDoesNotContain: "Delete this"
         bodyContains: 'Test'
         diffContains: 'Test'
         filesChanged: 1
