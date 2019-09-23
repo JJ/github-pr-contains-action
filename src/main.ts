@@ -13,14 +13,14 @@ async function run() {
         const bodyContains = core.getInput('bodyContains')
 
         if ( context.payload.pull_request.body.indexOf( bodyContains) < 0  ) {
-            core.setFailed("The body of the PR does not contain " + bodyContains);u
+            core.setFailed("The body of the PR does not contain " + bodyContains)
 	    createComment( github, context, PR_number, "We need to have the string " + bodyContains + " in the body of the pull request" )
         }
 
         const bodyDoesNotContain = core.getInput('bodyDoesNotContain')
         if ( bodyDoesNotContain && context.payload.pull_request.body.indexOf( bodyDoesNotContain) >= 0  ) {
             core.setFailed("The body of the PR should not contain " + bodyDoesNotContain);
-	    createComment( github, context, PR_number, "You should have eliminated *" + bodyDoesnotContain + "* from the body of the pull request" )
+	    createComment( github, context, PR_number, "You should have eliminated *" + bodyDoesNotContain + "* from the body of the pull request" )
 
         }
         
