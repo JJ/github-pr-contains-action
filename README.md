@@ -29,9 +29,7 @@ The `bodyContain` variable will include the string that we want the body of the 
 
 They can be left empty if no check wants to be done.
 
-An example is used
-as [.github/workflows/pr.yaml](.github/workflows/pr.yaml) in this
-repository.
+An example is used as [.github/workflows/pr.yaml](.github/workflows/pr-v1.yaml) in this repository.
 
 ## Contributing to development
 
