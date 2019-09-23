@@ -15,6 +15,7 @@ async function run() {
 
         if ( context.payload.pull_request.body.indexOf( bodyContains) < 0  ) {
             core.setFailed("The body of the PR does not contain " + bodyContains);
+            console.log( "Actor " + context.actor )
             await github.issues.createComment({
                 owner: context.actor,
                 repo: context.repository.full_name,
