@@ -1,6 +1,6 @@
 {
    "name": "github-pr-contains-action",
-   "version": "0.0.1",
+   "version": "0.0.2",
    "private": false,
    "description": "An action that performs checks on PRs",
    "main": "lib/main.js",
