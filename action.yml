@@ -15,6 +15,8 @@ inputs:
     description: 'Word that must be contained in the added code'
   linesChanged:
     description: 'Max number of lines changed per PR'
+  filesChanged:
+    description: 'Max number of files changed per PR'
 outputs:
   diff:
     description: "Lines added to the PR"
