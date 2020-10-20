@@ -7,8 +7,7 @@ async function run() {
         // get information on everything
         const token = core.getInput('github-token', {required: true})
         const github = new GitHub(token, {} )
-        const PR_number = context.payload.pull_request.number
-        
+
         // Check if the body contains required string
         const bodyContains = core.getInput('bodyContains')
 
@@ -20,7 +19,7 @@ async function run() {
         if ( bodyDoesNotContain && context.payload.pull_request.body.indexOf( bodyDoesNotContain) >= 0  ) {
             core.setFailed("The body of the PR should not contain " + bodyDoesNotContain);
         }
-        
+
 	const diffContains = core.getInput('diffContains')
 	const diff_url = context.payload.pull_request.diff_url
 	const result = await github.request( diff_url )
