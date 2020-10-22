@@ -24,6 +24,8 @@ async function run() {
 	const diff_url = context.payload.pull_request.diff_url
 	const result = await github.request( diff_url )
 	const files = parse(result.data)
+        core.exportVariable('files', files )
+        core.setOutput('files', files )
 	const filesChanged = +core.getInput('filesChanged')
 	if ( filesChanged && files.length != filesChanged ) {
             core.setFailed( "You should change exactly " + filesChanged + " file(s)");
