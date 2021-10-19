@@ -12,7 +12,7 @@ inputs:
   bodyDoesNotContain:
     description: 'String that should not be in the PR body, can be left blank'
   diffContains:
-    description: 'Word that must be contained in the added code'
+    description: 'Word that should not be in the added code'
   linesChanged:
     description: 'Max number of lines changed per PR'
   filesChanged:
