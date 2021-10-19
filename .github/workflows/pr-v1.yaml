@@ -9,9 +9,7 @@ jobs:
       uses: JJ/github-pr-contains-action@releases/v2
       with:
         github-token: ${{github.token}}
-        bodyContains: '[x]'
-        bodyDoesNotContain: 'Delete this'
-        diffContains: ''
+        doesNotContain: 'debugger'
         filesChanged: 1
         linesChanged: 1
 
