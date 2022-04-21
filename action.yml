@@ -1,26 +1,26 @@
-name: 'Check PR for word'
-description: 'Checks that the body or the added code contains a word'
-author: 'JJ'
+name: "Check PR for word"
+description: "Checks that the body or the added code contains a word"
+author: "JJ"
 branding:
-  icon: 'git-pull-request'
-  color: 'gray-dark'
+  icon: "git-pull-request"
+  color: "gray-dark"
 inputs:
   github-token:
-    description: 'Github token, added magically'
+    description: "Github token, added magically"
   bodyContains:
-    description: 'Word that must be contained in the PR body, can be left blank'
+    description: "Word that must be contained in the PR body, can be left blank"
   bodyDoesNotContain:
-    description: 'String that should not be in the PR body, can be left blank'
+    description: "String that should not be in the PR body, can be left blank"
   diffContains:
-    description: 'Word that must be contained in the added code'
+    description: "Word that must be contained in the added code"
   linesChanged:
-    description: 'Max number of lines changed per PR'
+    description: "Max number of lines changed per PR"
   filesChanged:
-    description: 'Max number of files changed per PR'
+    description: "Max number of files changed per PR"
 outputs:
   diff:
     description: "Lines added to the PR"
-    
+
 runs:
-  using: 'node12'
-  main: 'lib/main.js'
+  using: "node16"
+  main: "dist/index.js"
