@@ -1,4 +1,4 @@
-# Checking PRs for words and other things
+# Checking PR bodies and diffs for words, and number of files and lines in files changed.
 
 Based on the [actions TS template](https://github.com/actions/typescript-template), we'll try to create a new action. This new action will check for the presence of a word in the body or diff in a PR. It uses the GitHub API, so you'll need to provide a token. Don't worry, that's built-in.
 
@@ -25,7 +25,7 @@ jobs:
         linesChanged: 1
 ```
 
-The `bodyContains` variable will include the string that we want the body of the PR to include, such as checked items in a checklist.
+The `bodyContains` variable will include the string that we want the body of the PR to include, such as checked items in a checklist; obviously `bodyDoesNotContain` will hold the opposite, what we don't want to see in the PR body.
 
 They can be left empty if no check wants to be done.
 
