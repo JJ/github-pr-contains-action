@@ -34,16 +34,18 @@ function run() {
             const github = new GitHub(token, {});
             // Check if the body contains required string
             const bodyContains = core.getInput("bodyContains");
-            if (!context.payload.pull_request.body) {
-                core.setFailed("The body of the PR is empty");
-            }
-            if (context.payload.pull_request.body.indexOf(bodyContains) < 0) {
-                core.setFailed("The body of the PR does not contain " + bodyContains);
-            }
             const bodyDoesNotContain = core.getInput("bodyDoesNotContain");
-            if (bodyDoesNotContain &&
-                context.payload.pull_request.body.indexOf(bodyDoesNotContain) >= 0) {
-                core.setFailed("The body of the PR should not contain " + bodyDoesNotContain);
+            if (bodyContains || bodyDoesNotContain) {
+                if (!context.payload.pull_request.body) {
+                    core.setFailed("The body of the PR is empty, can't check");
+                }
+                if (context.payload.pull_request.body.indexOf(bodyContains) < 0) {
+                    core.setFailed("The body of the PR does not contain " + bodyContains);
+                }
+                if (bodyDoesNotContain &&
+                    context.payload.pull_request.body.indexOf(bodyDoesNotContain) >= 0) {
+                    core.setFailed("The body of the PR should not contain " + bodyDoesNotContain);
+                }
             }
             const diffContains = core.getInput("diffContains");
             const diff_url = context.payload.pull_request.diff_url;
