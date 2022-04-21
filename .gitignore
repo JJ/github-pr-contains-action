@@ -91,3 +91,6 @@ typings/
 .dynamodb/
 
 *~
+
+# temporary compilation output
+lib/

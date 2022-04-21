@@ -5,9 +5,7 @@
    "description": "An action that performs checks on PRs",
    "main": "lib/main.js",
    "scripts": {
-      "build": "tsc",
-      "test": "jest",
-      "package": "ncc build --source-map --license licenses.txt"
+      "build": "tsc && ncc build --source-map --license licenses.txt"
    },
    "repository": {
       "type": "git",
