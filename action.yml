@@ -1,5 +1,5 @@
-name: "Check PR for word"
-description: "Checks that the body or the added code contains a word"
+name: "Check PR body and files"
+description: "Checks that the body or the added code contains or avoid a word, and check for number of files changed"
 author: "JJ"
 branding:
   icon: "git-pull-request"
