@@ -5,12 +5,10 @@ jobs:
   check_pr:
     runs-on: ubuntu-latest
     steps:
-    - name: Check PR
-      uses: JJ/github-pr-contains-action@releases/v0
-      with:
-        github-token: ${{github.token}}
-        bodyContains: '[x]'
-        diffContains: ''
-        linesChanged: 1
-
-
+      - name: Check PR
+        uses: JJ/github-pr-contains-action
+        with:
+          github-token: ${{github.token}}
+          bodyContains: "[x]"
+          diffContains: ""
+          linesChanged: 1
