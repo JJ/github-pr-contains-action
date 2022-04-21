@@ -1,4 +1,4 @@
-name: "Check PR for word - v2"
+name: "Checks PR body and payload"
 on: [pull_request]
 
 jobs:
@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check PR
-        uses: JJ/github-pr-contains-action@releases/v3
+        uses: JJ/github-pr-contains-action@releases/v4
         with:
           github-token: ${{github.token}}
           bodyContains: "[x]"
