@@ -1,4 +1,4 @@
-name: "Check PR for word"
+name: "Master check PR data"
 on: [pull_request]
 
 jobs:
