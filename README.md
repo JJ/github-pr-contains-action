@@ -1,6 +1,6 @@
 # Checking PRs for words and other things
 
-Based on the [actions template](https://github.com/actions/javascript-template), we'll try to create a new action. This new action will check for the presence of a word in the body or diff in a PR. It uses the GitHub API, so you'll need to provide a token. Don't worry, that's built-in.
+Based on the [actions template](https://github.com/actions/typescript-template), we'll try to create a new action. This new action will check for the presence of a word in the body or diff in a PR. It uses the GitHub API, so you'll need to provide a token. Don't worry, that's built-in.
 
 # Using this action
 
@@ -29,7 +29,7 @@ The `bodyContains` variable will include the string that we want the body of the
 
 They can be left empty if no check wants to be done.
 
-An example is used as [.github/workflows/pr-v1.yaml](.github/workflows/pr-v1.yaml) in this repository.
+An example is used as [.github/workflows/check-PRs-here.yaml](.github/workflows/check-PRs-here.yaml) in this repository.
 
 ## Contributing to development
 
