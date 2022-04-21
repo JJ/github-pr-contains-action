@@ -15,19 +15,22 @@ async function run() {
     if (bodyContains || bodyDoesNotContain) {
       if (!context.payload.pull_request.body) {
         core.setFailed("The body of the PR is empty, can't check");
-      }
+      } else {
+        if (
+          bodyContains &&
+          context.payload.pull_request.body.indexOf(bodyContains) < 0
+        ) {
+          core.setFailed("The body of the PR does not contain " + bodyContains);
+        }
 
-      if (context.payload.pull_request.body.indexOf(bodyContains) < 0) {
-        core.setFailed("The body of the PR does not contain " + bodyContains);
-      }
-
-      if (
-        bodyDoesNotContain &&
-        context.payload.pull_request.body.indexOf(bodyDoesNotContain) >= 0
-      ) {
-        core.setFailed(
-          "The body of the PR should not contain " + bodyDoesNotContain
-        );
+        if (
+          bodyDoesNotContain &&
+          context.payload.pull_request.body.indexOf(bodyDoesNotContain) >= 0
+        ) {
+          core.setFailed(
+            "The body of the PR should not contain " + bodyDoesNotContain
+          );
+        }
       }
     }
 
