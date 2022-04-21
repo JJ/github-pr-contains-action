@@ -1,4 +1,4 @@
-name: "PR Checks"
+name: "Basic installation and build checks"
 on: [pull_request, push]
 
 jobs:
