@@ -1,4 +1,4 @@
-name: "Check PR for word"
+name: "Check PR body and files"
 description: "Checks that the body or the added code contains a word"
 author: "JJ"
 branding:
