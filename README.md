@@ -41,6 +41,7 @@ Any suggestion, bug report, etc, is appreciated. Please use [issues](https://git
 - `v1`: Adds several more checks
 - `v2`: Adds check for strings to avoid and creates issues for errors.
 - `v3`: Changes packaging, upgrades modules, deletes unneeded files.
+- `v4`: Solves a number of issues.
 
 ## License
 
