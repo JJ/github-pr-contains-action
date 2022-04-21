@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check PR
-        uses: JJ/github-pr-contains-action
+        uses: JJ/github-pr-contains-action@master
         with:
           github-token: ${{github.token}}
           bodyContains: "[x]"
