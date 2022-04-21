@@ -4,7 +4,7 @@ Based on the [actions template](https://github.com/actions/javascript-template),
 
 # Using this action
 
-You would need to add this in a file in `.github/workflows`
+You would need to put this in a file in `.github/workflows`
 
 ```
 name: "Check PR for word"
@@ -25,21 +25,21 @@ jobs:
         linesChanged: 1
 ```
 
-The `bodyContain` variable will include the string that we want the body of the PR to include, such as checked items in a checklist.
+The `bodyContains` variable will include the string that we want the body of the PR to include, such as checked items in a checklist.
 
 They can be left empty if no check wants to be done.
 
-An example is used as [.github/workflows/pr.yaml](.github/workflows/pr-v1.yaml) in this repository.
+An example is used as [.github/workflows/pr-v1.yaml](.github/workflows/pr-v1.yaml) in this repository.
 
 ## Contributing to development
 
-Any suggestion, but report, etc, is appreciated. Please use [issues](https://github.com/JJ/github-pr-contains-action/issues) for doing that.
+Any suggestion, bug report, etc, is appreciated. Please use [issues](https://github.com/JJ/github-pr-contains-action/issues) for doing that.
 
 ## History
 
-* `v0`: proof of concept, published to marketplace
-* `v1`: Adds several more checks
-* `v2`: Adds check for strings to avoid and creates issues for errors.
+- `v0`: proof of concept, published to marketplace
+- `v1`: Adds several more checks
+- `v2`: Adds check for strings to avoid and creates issues for errors.
 
 ## License
 
