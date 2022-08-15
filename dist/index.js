@@ -72,7 +72,7 @@ function run() {
                     });
                 });
             });
-            if (changes.indexOf(diffContains) < 0) {
+            if (diffContains && changes.indexOf(diffContains) < 0) {
                 core.setFailed("The added code does not contain " + diffContains);
             }
             else {
