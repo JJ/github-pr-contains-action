@@ -42,6 +42,7 @@ Any suggestion, bug report, etc, is appreciated. Please use [issues](https://git
 - `v2`: Adds check for strings to avoid and creates issues for errors.
 - `v3`: Changes packaging, upgrades modules, deletes unneeded files.
 - `v4`: Solves a number of issues.
+- `v5`: Will not use `diffContains` if it's an empty string
 
 ## License
 
