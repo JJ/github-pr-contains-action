@@ -1,5 +1,5 @@
-const github = require('@actions/github')
-const parse = require('parse-diff')
+import * as github from '@actions/github'
+import parse from 'parse-diff'
 
 import * as core from '@actions/core'
 import {wait} from './wait'
@@ -16,7 +16,7 @@ async function run(): Promise<void> {
     // Check that the pull request description contains the required string
     const bodyContains = core.getInput('bodyContains')
     if (typeof bodyContains !== 'undefined') {
-      if (bodyContains && !context.payload.pull_request.body.includes(bodyContains)) {
+      if (bodyContains && !context.payload.pull_request!.body!.includes(bodyContains)) {
         core.setFailed("The PR description should include " + bodyContains)
       }
     }
@@ -25,7 +25,7 @@ async function run(): Promise<void> {
     // Check that the pull request description does not contain the forbidden string
     const bodyDoesNotContain = core.getInput('bodyDoesNotContain')
     if (typeof bodyDoesNotContain !== 'undefined') {
-      if (bodyDoesNotContain && context.payload.pull_request.body.includes(bodyDoesNotContain)) {
+      if (bodyDoesNotContain && context.payload.pull_request!.body!.includes(bodyDoesNotContain)) {
         core.setFailed("The PR description should not include " + bodyDoesNotContain);
       }
     }
@@ -35,7 +35,7 @@ async function run(): Promise<void> {
     const { data: prDiff } = await octokit.pulls.get({
       owner: context.repo.owner,
       repo: context.repo.repo,
-      pull_number: context.payload.pull_request.number,
+      pull_number: context.payload.pull_request!.number,
       mediaType: {
         format: "diff",
       },
@@ -44,7 +44,7 @@ async function run(): Promise<void> {
 
     core.debug("Check max files changed")
     // Check that no more than the specified number of files were changed
-    const maxFilesChanged = core.getInput('maxFilesChanged')
+    const maxFilesChanged = parseInt(core.getInput('maxFilesChanged'))
     if (typeof maxFilesChanged !== 'undefined') {
       if (maxFilesChanged && files.length > maxFilesChanged) {
         core.setFailed("The PR shouldn not change more than " + maxFilesChanged + " file(s)");
