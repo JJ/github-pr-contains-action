@@ -38,10 +38,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const { GitHub, context } = __nccwpck_require__(5438);
-const parse = __nccwpck_require__(4833);
+const parse_diff_1 = __importDefault(__nccwpck_require__(4833));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -69,7 +72,7 @@ function run() {
             const diffContains = core.getInput("diffContains");
             const diff_url = context.payload.pull_request.diff_url;
             const result = yield github.request(diff_url);
-            const files = parse(result.data);
+            const files = (0, parse_diff_1.default)(result.data);
             core.exportVariable("files", files);
             core.setOutput("files", files);
             const filesChanged = +core.getInput("filesChanged");

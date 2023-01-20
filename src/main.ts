@@ -1,6 +1,6 @@
 import * as core from "@actions/core";
 const { GitHub, context } = require("@actions/github");
-const parse = require("parse-diff");
+import parse from "parse-diff";
 
 async function run() {
   try {
@@ -50,7 +50,7 @@ async function run() {
     files.forEach(function (file) {
       additions += file.additions;
       file.chunks.forEach(function (chunk) {
-        chunk.changes.forEach(function (change) {
+        chunk.changes.forEach(function (change: any) {
           if (change.add) {
             changes += change.content;
           }
