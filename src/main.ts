@@ -19,17 +19,16 @@ async function run() {
       } else {
         if (
           bodyContains &&
-          context.payload.pull_request.body.match(rexify(bodyContains))
+          context.payload.pull_request.body.match(rexify(bodyContains)).length >
+            0
         ) {
-          core.warning(
-            context.payload.pull_request.body.match(rexify(bodyContains))
-          );
           core.setFailed("The body of the PR does not contain " + bodyContains);
         }
 
         if (
           bodyDoesNotContain &&
           context.payload.pull_request.body.match(rexify(bodyDoesNotContain))
+            .length > 0
         ) {
           core.setFailed(
             "The body of the PR should not contain " + bodyDoesNotContain
