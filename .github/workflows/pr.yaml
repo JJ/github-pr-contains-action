@@ -10,5 +10,6 @@ jobs:
         with:
           github-token: ${{github.token}}
           bodyContains: "[x]"
+          bodyDoesNotContain: ["your", "own"]
           diffContains: ""
           linesChanged: 1
