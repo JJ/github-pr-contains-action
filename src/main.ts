@@ -28,6 +28,7 @@ async function run() {
           bodyDoesNotContain &&
           typeof PRBody.match(rexify(bodyDoesNotContain)) !== "undefined"
         ) {
+          core.warning(PRBody.match(rexify(bodyDoesNotContain)));
           core.setFailed(
             "The body of the PR should not contain " + bodyDoesNotContain
           );

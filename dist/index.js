@@ -67,6 +67,7 @@ function run() {
                     }
                     if (bodyDoesNotContain &&
                         typeof PRBody.match((0, utils_1.rexify)(bodyDoesNotContain)) !== "undefined") {
+                        core.warning(PRBody.match((0, utils_1.rexify)(bodyDoesNotContain)));
                         core.setFailed("The body of the PR should not contain " + bodyDoesNotContain);
                     }
                 }
