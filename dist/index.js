@@ -62,6 +62,7 @@ function run() {
                 else {
                     if (bodyContains &&
                         context.payload.pull_request.body.match((0, utils_1.rexify)(bodyContains))) {
+                        core.warning(context.payload.pull_request.body.match((0, utils_1.rexify)(bodyContains)));
                         core.setFailed("The body of the PR does not contain " + bodyContains);
                     }
                     if (bodyDoesNotContain &&
