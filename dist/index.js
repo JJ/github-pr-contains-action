@@ -45,6 +45,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const { GitHub, context } = __nccwpck_require__(5438);
 const parse_diff_1 = __importDefault(__nccwpck_require__(4833));
+const utils_1 = __nccwpck_require__(918);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -60,11 +61,11 @@ function run() {
                 }
                 else {
                     if (bodyContains &&
-                        context.payload.pull_request.body.indexOf(bodyContains) < 0) {
+                        context.payload.pull_request.body.match((0, utils_1.rexify)(bodyContains))) {
                         core.setFailed("The body of the PR does not contain " + bodyContains);
                     }
                     if (bodyDoesNotContain &&
-                        context.payload.pull_request.body.indexOf(bodyDoesNotContain) >= 0) {
+                        context.payload.pull_request.body.match((0, utils_1.rexify)(bodyDoesNotContain))) {
                         core.setFailed("The body of the PR should not contain " + bodyDoesNotContain);
                     }
                 }
@@ -113,6 +114,26 @@ function run() {
     });
 }
 run();
+
+
+/***/ }),
+
+/***/ 918:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.rexify = void 0;
+function rexify(stringOrArray) {
+    if (typeof stringOrArray === "string") {
+        return new RegExp(stringOrArray);
+    }
+    else {
+        return new RegExp(stringOrArray.join("|"));
+    }
+}
+exports.rexify = rexify;
 
 
 /***/ }),

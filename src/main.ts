@@ -1,6 +1,7 @@
 import * as core from "@actions/core";
 const { GitHub, context } = require("@actions/github");
 import parse from "parse-diff";
+import { rexify } from "./utils";
 
 async function run() {
   try {
@@ -18,14 +19,14 @@ async function run() {
       } else {
         if (
           bodyContains &&
-          context.payload.pull_request.body.indexOf(bodyContains) < 0
+          context.payload.pull_request.body.match(rexify(bodyContains))
         ) {
           core.setFailed("The body of the PR does not contain " + bodyContains);
         }
 
         if (
           bodyDoesNotContain &&
-          context.payload.pull_request.body.indexOf(bodyDoesNotContain) >= 0
+          context.payload.pull_request.body.match(rexify(bodyDoesNotContain))
         ) {
           core.setFailed(
             "The body of the PR should not contain " + bodyDoesNotContain
