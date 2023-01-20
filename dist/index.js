@@ -61,11 +61,12 @@ function run() {
                 }
                 else {
                     const PRBody = context.payload.pull_request.body;
-                    if (bodyContains && PRBody.match((0, utils_1.rexify)(bodyContains)).length == 0) {
+                    if (bodyContains &&
+                        typeof PRBody.match((0, utils_1.rexify)(bodyContains)) === "undefined") {
                         core.setFailed("The body of the PR does not contain " + bodyContains);
                     }
                     if (bodyDoesNotContain &&
-                        typeof PRBody.match((0, utils_1.rexify)(bodyDoesNotContain)) === "undefined") {
+                        typeof PRBody.match((0, utils_1.rexify)(bodyDoesNotContain)) !== "undefined") {
                         core.setFailed("The body of the PR should not contain " + bodyDoesNotContain);
                     }
                 }
