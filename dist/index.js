@@ -126,12 +126,7 @@ run();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rexify = void 0;
 function rexify(stringOrArray) {
-    if (typeof stringOrArray === "string") {
-        return new RegExp(stringOrArray);
-    }
-    else {
-        return new RegExp(stringOrArray.join("|"));
-    }
+    return new RegExp(stringOrArray);
 }
 exports.rexify = rexify;
 
