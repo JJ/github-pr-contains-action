@@ -65,7 +65,7 @@ function run() {
                         core.setFailed("The body of the PR does not contain " + bodyContains);
                     }
                     if (bodyDoesNotContain &&
-                        PRBody.match((0, utils_1.rexify)(bodyDoesNotContain)).length == 0) {
+                        PRBody.match((0, utils_1.rexify)(bodyDoesNotContain)).length > 0) {
                         core.setFailed("The body of the PR should not contain " + bodyDoesNotContain);
                     }
                 }
@@ -125,8 +125,8 @@ run();
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rexify = void 0;
-function rexify(stringOrArray) {
-    return new RegExp(stringOrArray);
+function rexify(expression) {
+    return new RegExp(expression);
 }
 exports.rexify = rexify;
 

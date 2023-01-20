@@ -1,3 +1,3 @@
-export function rexify(stringOrArray: string): RegExp {
-  return new RegExp(stringOrArray);
+export function rexify(expression: string): RegExp {
+  return new RegExp(expression);
 }
