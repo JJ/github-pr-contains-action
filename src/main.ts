@@ -21,6 +21,9 @@ async function run() {
           bodyContains &&
           context.payload.pull_request.body.match(rexify(bodyContains))
         ) {
+          core.warning(
+            context.payload.pull_request.body.match(rexify(bodyContains))
+          );
           core.setFailed("The body of the PR does not contain " + bodyContains);
         }
 
