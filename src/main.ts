@@ -73,7 +73,7 @@ async function run() {
         additions;
       core.setFailed(this_msg);
     }
-  } catch (error) {
+  } catch (error: any) {
     core.setFailed(error.message);
   }
 }
