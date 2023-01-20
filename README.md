@@ -35,6 +35,12 @@ An example is used as [.github/workflows/check-PRs-here.yaml](.github/workflows/
 
 Any suggestion, bug report, etc, is appreciated. Please use [issues](https://github.com/JJ/github-pr-contains-action/issues) for doing that.
 
+## See also
+
+There are several forks of this action, with additional features:
+
+* [Francisco Giordano's `pr-content-checker`](https://github.com/francesco-giordano/gh-pr-content-checker)
+
 ## History
 
 - `v0`: proof of concept, published to marketplace
