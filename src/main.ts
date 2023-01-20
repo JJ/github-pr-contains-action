@@ -49,7 +49,7 @@ async function run() {
     var additions: number = 0;
     files.forEach(function (file) {
       additions += file.additions;
-      file.chunks.forEach(function (chunk) {
+      file.chunks.forEach(function (chunk: parse.Chunk) {
         chunk.changes.forEach(function (change: any) {
           if (change.add) {
             changes += change.content;
