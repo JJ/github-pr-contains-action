@@ -17,19 +17,14 @@ async function run() {
       if (!context.payload.pull_request.body) {
         core.setFailed("The body of the PR is empty, can't check");
       } else {
-        if (
-          bodyContains &&
-          context.payload.pull_request.body.match(rexify(bodyContains))
-        ) {
-          core.warning(
-            context.payload.pull_request.body.match(rexify(bodyContains))
-          );
+        const PRBody = context.payload.pull_request.body;
+        if (bodyContains && PRBody.match(rexify(bodyContains)).length > 0) {
           core.setFailed("The body of the PR does not contain " + bodyContains);
         }
 
         if (
           bodyDoesNotContain &&
-          context.payload.pull_request.body.match(rexify(bodyDoesNotContain))
+          PRBody.match(rexify(bodyDoesNotContain)).length > 0
         ) {
           core.setFailed(
             "The body of the PR should not contain " + bodyDoesNotContain
