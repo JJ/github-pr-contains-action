@@ -21,10 +21,10 @@ async function run() {
         if (bodyContains && PRBody.match(rexify(bodyContains)).length == 0) {
           core.setFailed("The body of the PR does not contain " + bodyContains);
         }
-
+        core.warning(PRBody.match(rexify(bodyDoesNotContain)));
         if (
           bodyDoesNotContain &&
-          PRBody.match(rexify(bodyDoesNotContain)).length == 0
+          PRBody.match(rexify(bodyDoesNotContain)).length > 0
         ) {
           core.setFailed(
             "The body of the PR should not contain " + bodyDoesNotContain

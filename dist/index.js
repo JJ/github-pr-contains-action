@@ -64,8 +64,9 @@ function run() {
                     if (bodyContains && PRBody.match((0, utils_1.rexify)(bodyContains)).length == 0) {
                         core.setFailed("The body of the PR does not contain " + bodyContains);
                     }
+                    core.warning(PRBody.match((0, utils_1.rexify)(bodyDoesNotContain)));
                     if (bodyDoesNotContain &&
-                        PRBody.match((0, utils_1.rexify)(bodyDoesNotContain)).length == 0) {
+                        PRBody.match((0, utils_1.rexify)(bodyDoesNotContain)).length > 0) {
                         core.setFailed("The body of the PR should not contain " + bodyDoesNotContain);
                     }
                 }
@@ -125,13 +126,8 @@ run();
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rexify = void 0;
-function rexify(stringOrArray) {
-    if (typeof stringOrArray === "string") {
-        return new RegExp(stringOrArray);
-    }
-    else {
-        return new RegExp(stringOrArray.join("|"));
-    }
+function rexify(expression) {
+    return new RegExp(expression);
 }
 exports.rexify = rexify;
 
