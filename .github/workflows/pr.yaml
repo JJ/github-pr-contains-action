@@ -13,5 +13,5 @@ jobs:
           github-token: ${{github.token}}
           bodyContains: "[x]"
           bodyDoesNotContain: "your|own"
-          diffContains: "TODO"
+          diffContains: "TODO|to do"
           linesChanged: 1
