@@ -13,6 +13,8 @@ inputs:
     description: "String or |-separated array of strings, none of which should be in the PR body, can be left blank"
   diffContains:
     description: "Word that must be contained in the added code"
+  diffDoesNotContain:
+    description: "Word that should not be contained in the added code"
   linesChanged:
     description: "Max number of lines changed per PR"
   filesChanged:

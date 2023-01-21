@@ -70,6 +70,7 @@ function run() {
                 }
             }
             const diffContains = core.getInput("diffContains");
+            const diffDoesNotContain = core.getInput("diffDoesNotContaini");
             const diff_url = context.payload.pull_request.diff_url;
             const result = yield github.request(diff_url);
             const files = (0, parse_diff_1.default)(result.data);
@@ -91,14 +92,15 @@ function run() {
                     });
                 });
             });
-            core.warning(changes);
-            console.warn((0, utils_1.rexify)(diffContains));
             if (diffContains && !(0, utils_1.rexify)(diffContains).test(changes)) {
                 core.setFailed("The added code does not contain " + diffContains);
             }
             else {
                 core.exportVariable("diff", changes);
                 core.setOutput("diff", changes);
+            }
+            if (diffDoesNotContain && (0, utils_1.rexify)(diffDoesNotContain).test(changes)) {
+                core.setFailed("The added code should not contain " + diffDoesNotContain);
             }
             const linesChanged = +core.getInput("linesChanged");
             if (linesChanged && additions != linesChanged) {

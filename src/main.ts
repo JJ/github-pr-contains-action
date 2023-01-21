@@ -30,6 +30,7 @@ async function run() {
     }
 
     const diffContains = core.getInput("diffContains");
+    const diffDoesNotContain = core.getInput("diffDoesNotContaini");
     const diff_url = context.payload.pull_request.diff_url;
     const result = await github.request(diff_url);
     const files = parse(result.data);
@@ -52,13 +53,14 @@ async function run() {
         });
       });
     });
-    core.warning(changes);
-    console.warn(rexify(diffContains));
     if (diffContains && !rexify(diffContains).test(changes)) {
       core.setFailed("The added code does not contain " + diffContains);
     } else {
       core.exportVariable("diff", changes);
       core.setOutput("diff", changes);
+    }
+    if (diffDoesNotContain && rexify(diffDoesNotContain).test(changes)) {
+      core.setFailed("The added code should not contain " + diffDoesNotContain);
     }
 
     const linesChanged = +core.getInput("linesChanged");
