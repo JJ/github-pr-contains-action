@@ -12,7 +12,7 @@ jobs:
         with:
           github-token: ${{github.token}}
           bodyContains: "[x]"
-          bodyDoesNotContain: ["Delete this", "your own"]
+          bodyDoesNotContain: "Delete this|your own"
           diffContains: ""
           filesChanged: 1
           linesChanged: 1
