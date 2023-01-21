@@ -22,18 +22,21 @@ jobs:
         github-token: ${{github.token}}
         bodyDoesNotContain: "Delete|this"
         bodyContains: 'Test'
-        diffContains: 'Test'
+        diffContains: ';'
+        diffDoesNotContain: "TODO|to do"
         filesChanged: 1
         linesChanged: 1
 ```
 
 The `bodyContains` variable will include the string that we want the body of the PR to include, such as checked items in a checklist; obviously `bodyDoesNotContain` will hold the opposite, what we don't want to see in the PR body. Any of them can have a `|` separated list of words or expressions. The PR will check it contains _any_ of the words in `bodyContains` and _none_ of the words in `bodyDoesnotContain`.
 
+Same patterm for `diff(Contains|DoesNotContain)`. Can be a word or list of words you want in the diff (for instance, you want it to _always_ change code so it contains a statement terminator) or don't want in the diff (for instance, you don't want it to include TODOs because people never ever _do_ them).
+
 > These strings are unwittingly converted into regular expressions, so any regular expression will also work; `[]()+?*` are escaped so that things such as `[.]` work with the literal meaning.
 
 They can be left empty if no check wants to be done.
 
-An example is used as [.github/workflows/check-PRs-here.yaml](.github/workflows/check-PRs-here.yaml) in this repository.
+An example is used as [.github/workflows/check-PRs-here.yaml](.github/workflows/check-PRs-here.yaml) in this repository as well as [this one, which is the one I use for testing](.github/workflows/pr.yaml).
 
 ## Contributing to development
 
@@ -56,6 +59,7 @@ There are several forks of this action, with additional features:
 - `v5`: Will not use `diffContains` if it's an empty string
 - `v6`: can use words or regular expressions in `bodyContains`/ `bodyDoesNotContain`
 - `v7`: includes more "rexified" characters: `*,?,+`
+- `v8`: adds `diffDoesNotContain` and extends regex testing to diff tests.
 
 ## License
 
