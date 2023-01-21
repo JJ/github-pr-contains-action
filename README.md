@@ -18,14 +18,16 @@ jobs:
       uses: JJ/github-pr-contains-action@releases/v0
       with:
         github-token: ${{github.token}}
-        bodyDoesNotContain: "Delete this"
+        bodyDoesNotContain: "Delete|this"
         bodyContains: 'Test'
         diffContains: 'Test'
         filesChanged: 1
         linesChanged: 1
 ```
 
-The `bodyContains` variable will include the string that we want the body of the PR to include, such as checked items in a checklist; obviously `bodyDoesNotContain` will hold the opposite, what we don't want to see in the PR body.
+The `bodyContains` variable will include the string that we want the body of the PR to include, such as checked items in a checklist; obviously `bodyDoesNotContain` will hold the opposite, what we don't want to see in the PR body. Any of them can have a `|` separated list of words or expressions. The PR will check it contains _any_ of the words in `bodyContains` and _none_ of the words in `bodyDoesnotContain`.
+
+> These strings are unwittingly converted into regular expressions, so any regular expression will also work; `[]()` are escaped so that things such as `[.]` work with the literal meaning.
 
 They can be left empty if no check wants to be done.
 
@@ -38,8 +40,9 @@ Any suggestion, bug report, etc, is appreciated. Please use [issues](https://git
 ## See also
 
 There are several forks of this action, with additional features:
-* [PR content checker by @jsoares](https://github.com/jsoares/gh-pr-content-checker/) includes `diffDoesNotContain`
-* [Francisco Giordano's `pr-content-checker`](https://github.com/francesco-giordano/gh-pr-content-checker)
+
+- [PR content checker by @jsoares](https://github.com/jsoares/gh-pr-content-checker/) includes `diffDoesNotContain`
+- [Francisco Giordano's `pr-content-checker`](https://github.com/francesco-giordano/gh-pr-content-checker)
 
 ## History
 
