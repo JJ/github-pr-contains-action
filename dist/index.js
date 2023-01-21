@@ -91,6 +91,8 @@ function run() {
                     });
                 });
             });
+            core.warning(changes);
+            console.warn((0, utils_1.rexify)(diffContains));
             if (diffContains && !(0, utils_1.rexify)(diffContains).test(changes)) {
                 core.setFailed("The added code does not contain " + diffContains);
             }

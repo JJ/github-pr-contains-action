@@ -52,6 +52,8 @@ async function run() {
         });
       });
     });
+    core.warning(changes);
+    console.warn(rexify(diffContains));
     if (diffContains && !rexify(diffContains).test(changes)) {
       core.setFailed("The added code does not contain " + diffContains);
     } else {
