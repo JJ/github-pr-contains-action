@@ -18,11 +18,10 @@ async function run() {
         core.setFailed("The body of the PR is empty, can't check");
       } else {
         const PRBody = context.payload.pull_request.body;
-        if (bodyContains && !PRBody.test(rexify(bodyContains))) {
+        if (bodyContains && !rexify(bodyContains).test(PRBody)) {
           core.setFailed("The body of the PR does not contain " + bodyContains);
         }
-        if (bodyDoesNotContain && PRBody.test(rexify(bodyDoesNotContain))) {
-          core.warning(PRBody.test(rexify(bodyDoesNotContain)));
+        if (bodyDoesNotContain && rexify(bodyDoesNotContain).test(PRBody)) {
           core.setFailed(
             "The body of the PR should not contain " + bodyDoesNotContain
           );

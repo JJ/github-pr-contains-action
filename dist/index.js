@@ -61,11 +61,10 @@ function run() {
                 }
                 else {
                     const PRBody = context.payload.pull_request.body;
-                    if (bodyContains && !PRBody.test((0, utils_1.rexify)(bodyContains))) {
+                    if (bodyContains && !(0, utils_1.rexify)(bodyContains).test(PRBody)) {
                         core.setFailed("The body of the PR does not contain " + bodyContains);
                     }
-                    if (bodyDoesNotContain && PRBody.test((0, utils_1.rexify)(bodyDoesNotContain))) {
-                        core.warning(PRBody.test((0, utils_1.rexify)(bodyDoesNotContain)));
+                    if (bodyDoesNotContain && (0, utils_1.rexify)(bodyDoesNotContain).test(PRBody)) {
                         core.setFailed("The body of the PR should not contain " + bodyDoesNotContain);
                     }
                 }
