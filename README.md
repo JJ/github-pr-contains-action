@@ -27,7 +27,7 @@ jobs:
 
 The `bodyContains` variable will include the string that we want the body of the PR to include, such as checked items in a checklist; obviously `bodyDoesNotContain` will hold the opposite, what we don't want to see in the PR body. Any of them can have a `|` separated list of words or expressions. The PR will check it contains _any_ of the words in `bodyContains` and _none_ of the words in `bodyDoesnotContain`.
 
-> These strings are unwittingly converted into regular expressions, so any regular expression will also work; `[]()` are escaped so that things such as `[.]` work with the literal meaning.
+> These strings are unwittingly converted into regular expressions, so any regular expression will also work; `[]()+?*` are escaped so that things such as `[.]` work with the literal meaning.
 
 They can be left empty if no check wants to be done.
 
@@ -52,6 +52,7 @@ There are several forks of this action, with additional features:
 - `v3`: Changes packaging, upgrades modules, deletes unneeded files.
 - `v4`: Solves a number of issues.
 - `v5`: Will not use `diffContains` if it's an empty string
+- 'v6`: can use words or regular expressions in `bodyContains`/ `bodyDoesNotContain`
 
 ## License
 
