@@ -11,4 +11,10 @@ describe("Regex creator", () => {
     expect("foobar").toMatch(re1);
     expect("1234").not.toMatch(re1);
   });
+
+  it("Should prep for regex with square brackets", () => {
+    const re1: RegExp = rexify("[x]");
+    expect(" [x] ").toMatch(re1);
+    expect("x").not.toMatch(re1);
+  });
 });

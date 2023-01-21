@@ -125,6 +125,9 @@ run();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rexify = void 0;
 function rexify(expression) {
+    ["(", ")", "[", "]"].forEach((s) => {
+        expression = expression.replace(s, `\\${s}`);
+    });
     return new RegExp(expression);
 }
 exports.rexify = rexify;

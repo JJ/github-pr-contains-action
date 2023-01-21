@@ -11,7 +11,7 @@ jobs:
         uses: JJ/github-pr-contains-action@master
         with:
           github-token: ${{github.token}}
-          bodyContains: "\\[x\\]"
+          bodyContains: "[x]"
           bodyDoesNotContain: "your|own"
           diffContains: ""
           linesChanged: 1
