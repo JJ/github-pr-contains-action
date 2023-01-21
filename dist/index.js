@@ -70,7 +70,7 @@ function run() {
                 }
             }
             const diffContains = core.getInput("diffContains");
-            const diffDoesNotContain = core.getInput("diffDoesNotContaini");
+            const diffDoesNotContain = core.getInput("diffDoesNotContain");
             const diff_url = context.payload.pull_request.diff_url;
             const result = yield github.request(diff_url);
             const files = (0, parse_diff_1.default)(result.data);
