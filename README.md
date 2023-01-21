@@ -4,7 +4,7 @@ Based on the [actions TS template](https://github.com/actions/typescript-templat
 
 # Using this action
 
-You would need to put this in a file in `.github/workflows`
+You would need to put this in a file in the `.github/workflows` directory
 
 ```
 name: "Check PR for word"
