@@ -1,6 +1,8 @@
 # Checking PR bodies and diffs for words, and number of files and lines in files changed.
 
-Based on the [actions TS template](https://github.com/actions/typescript-template), we'll try to create a new action. This new action will check for the presence of a word in the body or diff in a PR. It uses the GitHub API, so you'll need to provide a token. Don't worry, that's built-in.
+Originally based on the [actions TS template](https://github.com/actions/typescript-template), it checks for the presence of a word in the body or diff in a PR, as well as certain conditions on the PR: number of files changed, and number of lines changed.
+
+It uses the GitHub API, so you'll need to provide a token. Don't worry, that's built-in.
 
 # Using this action
 
@@ -35,7 +37,7 @@ An example is used as [.github/workflows/check-PRs-here.yaml](.github/workflows/
 
 ## Contributing to development
 
-Any suggestion, bug report, etc, is appreciated. Please use [issues](https://github.com/JJ/github-pr-contains-action/issues) for doing that.
+Any suggestion, bug report, etc, is appreciated. Please use [issues](https://github.com/JJ/github-pr-contains-action/issues).
 
 ## See also
 
