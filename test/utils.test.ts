@@ -17,6 +17,7 @@ describe("Regex creator", () => {
     expect(" [x] ").toMatch(re1);
     expect("x").not.toMatch(re1);
   });
+  
   it("Should prep for regex with quantifiers", () => {
     const re1: RegExp = rexify("question?");
     expect("Is this a question?").toMatch(re1);
