@@ -40,8 +40,8 @@ async function run() {
       core.setFailed("You should change exactly " + filesChanged + " file(s)");
     }
 
-    var changes = "";
-    var additions: number = 0;
+    let changes = "";
+    let additions: number = 0;
     files.forEach(function (file) {
       additions += file.additions;
       file.chunks.forEach(function (chunk: parse.Chunk) {
@@ -52,7 +52,7 @@ async function run() {
         });
       });
     });
-    if (diffContains && changes.indexOf(diffContains) < 0) {
+    if (diffContains && !rexify(diffContains).test(changes)) {
       core.setFailed("The added code does not contain " + diffContains);
     } else {
       core.exportVariable("diff", changes);

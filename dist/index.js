@@ -79,8 +79,8 @@ function run() {
             if (filesChanged && files.length != filesChanged) {
                 core.setFailed("You should change exactly " + filesChanged + " file(s)");
             }
-            var changes = "";
-            var additions = 0;
+            let changes = "";
+            let additions = 0;
             files.forEach(function (file) {
                 additions += file.additions;
                 file.chunks.forEach(function (chunk) {
@@ -91,7 +91,7 @@ function run() {
                     });
                 });
             });
-            if (diffContains && changes.indexOf(diffContains) < 0) {
+            if (diffContains && !(0, utils_1.rexify)(diffContains).test(changes)) {
                 core.setFailed("The added code does not contain " + diffContains);
             }
             else {
@@ -125,7 +125,7 @@ run();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.rexify = void 0;
 function rexify(expression) {
-    ["(", ")", "[", "]"].forEach((s) => {
+    ["(", ")", "[", "]", "?", "+", "*"].forEach((s) => {
         expression = expression.replace(s, `\\${s}`);
     });
     return new RegExp(expression);
