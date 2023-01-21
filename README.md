@@ -52,7 +52,7 @@ There are several forks of this action, with additional features:
 - `v3`: Changes packaging, upgrades modules, deletes unneeded files.
 - `v4`: Solves a number of issues.
 - `v5`: Will not use `diffContains` if it's an empty string
-- 'v6`: can use words or regular expressions in `bodyContains`/ `bodyDoesNotContain`
+- `v6`: can use words or regular expressions in `bodyContains`/ `bodyDoesNotContain`
 
 ## License
 
