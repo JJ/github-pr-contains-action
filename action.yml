@@ -8,7 +8,7 @@ inputs:
   github-token:
     description: "Github token, added magically"
   bodyContains:
-    description: "String or |-separated array of strings, one of which must be contained in the PR body, can be left blank"
+    description: "String or |-separated array of strings, one of which must be contained in the PR body, can be left blank or omitted"
   bodyDoesNotContain:
     description: "String or |-separated array of strings, none of which should be in the PR body, can be left blank"
   diffContains:
