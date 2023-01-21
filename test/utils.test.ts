@@ -1,5 +1,6 @@
 import { rexify } from "../src/utils";
 
+//TODO: stuff
 describe("Regex creator", () => {
   it("Should create single-string regexes", () => {
     const re1: RegExp = rexify("foo");
