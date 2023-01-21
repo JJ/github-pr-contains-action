@@ -61,13 +61,11 @@ function run() {
                 }
                 else {
                     const PRBody = context.payload.pull_request.body;
-                    if (bodyContains &&
-                        typeof PRBody.match((0, utils_1.rexify)(bodyContains)) === "undefined") {
+                    if (bodyContains && !PRBody.test((0, utils_1.rexify)(bodyContains))) {
                         core.setFailed("The body of the PR does not contain " + bodyContains);
                     }
-                    if (bodyDoesNotContain &&
-                        typeof PRBody.match((0, utils_1.rexify)(bodyDoesNotContain)) !== "undefined") {
-                        core.warning(PRBody.match((0, utils_1.rexify)(bodyDoesNotContain)));
+                    if (bodyDoesNotContain && PRBody.test((0, utils_1.rexify)(bodyDoesNotContain))) {
+                        core.warning(PRBody.test((0, utils_1.rexify)(bodyDoesNotContain)));
                         core.setFailed("The body of the PR should not contain " + bodyDoesNotContain);
                     }
                 }
