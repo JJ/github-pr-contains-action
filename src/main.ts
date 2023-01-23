@@ -14,6 +14,7 @@ async function run() {
     const bodyDoesNotContain = core.getInput("bodyDoesNotContain");
 
     if (bodyContains || bodyDoesNotContain) {
+      core.info("Checking body contents");
       if (!context.payload.pull_request.body) {
         core.setFailed("The body of the PR is empty, can't check");
       } else {
@@ -29,6 +30,7 @@ async function run() {
       }
     }
 
+    core.info("Checking diff contents");
     const diffContains = core.getInput("diffContains");
     const diffDoesNotContain = core.getInput("diffDoesNotContain");
     const diff_url = context.payload.pull_request.diff_url;
@@ -63,6 +65,7 @@ async function run() {
       core.setFailed("The added code should not contain " + diffDoesNotContain);
     }
 
+    core.info("Checking lines/files changed");
     const linesChanged = +core.getInput("linesChanged");
     if (linesChanged && additions != linesChanged) {
       const this_msg =
