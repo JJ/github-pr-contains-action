@@ -34,7 +34,9 @@ async function run() {
     const diffContains = core.getInput("diffContains");
     const diffDoesNotContain = core.getInput("diffDoesNotContain");
     const diff_url = context.payload.pull_request.diff_url;
+    core.info("Requesting " + diff_url);
     const result = await github.request(diff_url);
+    core.info(result);
     const files = parse(result.data);
     core.exportVariable("files", files);
     core.setOutput("files", files);
