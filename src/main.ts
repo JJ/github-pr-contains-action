@@ -78,7 +78,6 @@ async function run() {
       core.setFailed(this_msg);
     }
   } catch (error: any) {
-    console.log(error);
     if (error.name === "HttpError") {
       core.setFailed(
         "❌ There seems to be an error in an API request" +

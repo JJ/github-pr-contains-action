@@ -117,7 +117,6 @@ function run() {
             }
         }
         catch (error) {
-            console.log(error);
             if (error.name === "HttpError") {
                 core.setFailed("❌ There seems to be an error in an API request" +
                     "\nThis is usually due to either being in a private repository" +
