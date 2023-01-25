@@ -52,6 +52,7 @@ function run() {
             // get information on everything
             const token = core.getInput("github-token", { required: true });
             const github = new GitHub(token, {});
+            console.log(context);
             // Check if the body contains required string
             const bodyContains = core.getInput("bodyContains");
             const bodyDoesNotContain = core.getInput("bodyDoesNotContain");
