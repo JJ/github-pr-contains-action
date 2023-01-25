@@ -38,6 +38,10 @@ They can be left empty if no check wants to be done.
 
 An example is used as [.github/workflows/check-PRs-here.yaml](.github/workflows/check-PRs-here.yaml) in this repository as well as [this one, which is the one I use for testing](.github/workflows/pr.yaml).
 
+## Caveats
+
+This GitHub action works as is in public repositories. For private repositories, a GitHub token with the appropriate scope must be created and configured. When trying to use it in private repositories, it will fail and produce an error message related to this.
+
 ## Contributing to development
 
 Any suggestion, bug report, etc, is appreciated. Please use [issues](https://github.com/JJ/github-pr-contains-action/issues).
