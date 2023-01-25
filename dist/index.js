@@ -117,7 +117,15 @@ function run() {
             }
         }
         catch (error) {
-            core.setFailed("❌ " + error.stack);
+            console.log(error);
+            if (error.name === "HttpError") {
+                core.setFailed("❌ There seems to be an error in an API request" +
+                    "\nThis is usually due to either being in a private repository" +
+                    "\nor at any rate using a GitHub token without the adequate scope");
+            }
+            else {
+                core.setFailed("❌ " + error.stack);
+            }
         }
     });
 }
