@@ -78,7 +78,7 @@ async function run() {
       core.setFailed(this_msg);
     }
   } catch (error: any) {
-    core.setFailed(error.message + "❌" + error.stack);
+    core.setFailed("❌ " + error.stack);
   }
 }
 
