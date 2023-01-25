@@ -40,7 +40,7 @@ An example is used as [.github/workflows/check-PRs-here.yaml](.github/workflows/
 
 ## Caveats
 
-This GitHub action works as is in public repositories. For private repositories, a GitHub token with the appropriate scope must be created and configured. When trying to use it in private repositories, it will fail and produce an error message related to this.
+This GitHub action works as is in public repositories. Diff checking will simply be disabled if it detects it is being run in a private repository.
 
 ## Contributing to development
 
@@ -64,6 +64,7 @@ There are several forks of this action, with additional features:
 - `v6`: can use words or regular expressions in `bodyContains`/ `bodyDoesNotContain`
 - `v7`: includes more "rexified" characters: `*,?,+`
 - `v8`: adds `diffDoesNotContain` and extends regex testing to diff tests.
+- `v9`: adds some informative messages, disables API calls for private repositories
 
 ## License
 
