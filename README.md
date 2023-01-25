@@ -34,7 +34,7 @@ Same patterm for `diff(Contains|DoesNotContain)`. Can be a word or list of words
 
 > These strings are unwittingly converted into regular expressions, so any regular expression will also work; `[]()+?*` are escaped so that things such as `[.]` work with the literal meaning.
 
-They can be left empty if no check wants to be done.
+They can be left empty if you want no check done.
 
 An example is used as [.github/workflows/check-PRs-here.yaml](.github/workflows/check-PRs-here.yaml) in this repository as well as [this one, which is the one I use for testing](.github/workflows/pr.yaml).
 
