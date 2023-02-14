@@ -57,8 +57,11 @@ function run() {
             const bodyDoesNotContain = core.getInput("bodyDoesNotContain");
             if (bodyContains || bodyDoesNotContain) {
                 core.info("Checking body contents");
-                if (!context.payload.pull_request.body) {
-                    core.setFailed("The body of the PR is empty, can't check");
+                if (!context.payload.pull_request.hasOwnProperty("body")) {
+                    core.setFailed("There's no body in the PR, can't check");
+                }
+                else if (context.payload.pull_request.body === "") {
+                    core.setFailed("The body is empty, can't check");
                 }
                 else {
                     const PRBody = context.payload.pull_request.body;
