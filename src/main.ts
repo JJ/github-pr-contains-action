@@ -40,7 +40,7 @@ async function run() {
       }
     }
 
-    console.log(context.commits);
+    console.log(context.payload.commits);
     if (context.payload.repository.private !== true) {
       core.info("Checking diff contents");
       const diffContains = core.getInput("diffContains");
