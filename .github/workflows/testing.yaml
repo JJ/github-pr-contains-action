@@ -3,7 +3,6 @@ on:
   pull_request:
   branches:
     - JJ-patch-*
-  types: [opened, edited, assigned, closed, review_requested, ready_for_review]
 
 jobs:
   check_pr:
