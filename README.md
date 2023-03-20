@@ -1,4 +1,4 @@
-# Checking PR bodies and diffs for words, and number of files and lines in files changed.
+# Checking PR bodies and diffs for words, and number of files and lines in files changed [![Basic installation and build checks](https://github.com/JJ/github-pr-contains-action/actions/workflows/checkin.yml/badge.svg)](https://github.com/JJ/github-pr-contains-action/actions/workflows/checkin.yml)
 
 Originally based on the [actions TS template](https://github.com/actions/typescript-template), it checks for the presence of a word in the body or diff in a PR, as well as certain conditions on the PR: number of files changed, and number of lines changed.
 
@@ -62,6 +62,7 @@ There are several forks of this action, with additional features:
 
 - [PR content checker by @jsoares](https://github.com/jsoares/gh-pr-content-checker/) includes `diffDoesNotContain`
 - [Francisco Giordano's `pr-content-checker`](https://github.com/francesco-giordano/gh-pr-content-checker)
+- [Pablo Statsig's `pr-content-checker`])(https://github.com/pablo-statsig/gh-pr-content-checker/)
 
 ## History
 
