@@ -13,5 +13,3 @@ jobs:
           bodyContains: "[x]"
           bodyDoesNotContain: "Delete this|your own"
           diffContains: ""
-          filesChanged: 1
-          linesChanged: 1
