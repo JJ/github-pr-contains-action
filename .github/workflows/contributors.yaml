@@ -1,4 +1,4 @@
-name: "Master check PR data"
+name: "Check contributors file additions"
 on:
   pull_request:
     types: [opened, edited]
@@ -14,5 +14,5 @@ jobs:
         uses: JJ/github-pr-contains-action@releases/v10
         with:
           github-token: ${{github.token}}
-          linesChanged: 2
+          linesChanged: 1
           filesChanged: 1
