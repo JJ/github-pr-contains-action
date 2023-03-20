@@ -48,6 +48,32 @@ You might want to qualify possible events that trigger this action, for intance,
 
 This will skip diff checks every single push, for instance. Please remember that _this action will only work in pull requests_, since it checks the pull request object payload. It will simply skip any check (with a warning) if it is not triggered by a `pull_request` or `pull_request_target` event.
 
+For instance, you might want to use a GitHub action such as [this one](.github/workflows/contributors.yaml) for the `CONTRIBUTORS.md` file:
+
+``` yaml
+name: "Check contributors file additions"
+on:
+  pull_request:
+    types: [opened, edited]
+    paths:
+      - CONTRIBUTORS.md
+
+jobs:
+  check_pr:
+    name: "Checks contributors"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR
+        uses: JJ/github-pr-contains-action@releases/v10
+        with:
+          github-token: ${{github.token}}
+          linesChanged: 1
+          filesChanged: 1
+          diffContains: github.com/
+```
+
+It would check that there's only a single file modified (because why would you need to change another, if all you want is to add your name to the contributors' file), a single line is changed (because you're only one, right?) and that it includes a link to your GitHub profile by forcing the diff to contain that string.
+
 ## Caveats
 
 This GitHub action works as is in public repositories. Diff checking will simply be disabled if it detects it is being run in a private repository.
