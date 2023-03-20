@@ -14,5 +14,5 @@ jobs:
         uses: JJ/github-pr-contains-action@releases/v10
         with:
           github-token: ${{github.token}}
-          linesChanged: 1
+          linesChanged: 2
           filesChanged: 1
