@@ -7,7 +7,7 @@ on:
 
 jobs:
   check_pr:
-    name: "Checks of dev version"
+    name: "Checks contributors"
     runs-on: ubuntu-latest
     steps:
       - name: Check PR

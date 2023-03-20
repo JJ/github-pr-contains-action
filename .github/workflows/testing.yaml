@@ -1,12 +1,14 @@
-name: "Master check PR data"
+name: "Workflow for testing"
 on:
   pull_request:
     types:
       [opened, edited, assigned, closed, review_requested, ready_for_review]
+    branches:
+      - JJ-patch-*
 
 jobs:
   check_pr:
-    name: "Checks of dev version"
+    name: "Checks dev version"
     runs-on: ubuntu-latest
     steps:
       - name: Check PR

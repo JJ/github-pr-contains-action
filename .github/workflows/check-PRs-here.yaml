@@ -2,8 +2,6 @@ name: "Checks PR body and payload"
 on:
   pull_request:
     types: [opened, edited, ready_for_review]
-    branches:
-      - JJ-patch-*
 
 jobs:
   check_pr:
