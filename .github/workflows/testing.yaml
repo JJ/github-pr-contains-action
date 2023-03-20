@@ -2,7 +2,7 @@ name: "Workflow for testing"
 on:
   pull_request:
     branches:
-      - "**/JJ-patch-*"
+      - dev
 
 jobs:
   check_pr:
