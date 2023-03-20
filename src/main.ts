@@ -11,6 +11,7 @@ async function run() {
     // Check if the body contains required string
     const bodyContains = core.getInput("bodyContains");
     const bodyDoesNotContain = core.getInput("bodyDoesNotContain");
+    console.log(context);
 
     if (
       context.eventName !== "pull_request" &&

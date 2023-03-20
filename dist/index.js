@@ -55,6 +55,7 @@ function run() {
             // Check if the body contains required string
             const bodyContains = core.getInput("bodyContains");
             const bodyDoesNotContain = core.getInput("bodyDoesNotContain");
+            console.log(context);
             if (context.eventName !== "pull_request" &&
                 context.eventName !== "pull_request_target") {
                 core.setFailed("⚠️ I am sorry, this workflow only works in pull requests");
