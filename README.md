@@ -8,7 +8,7 @@ It uses the GitHub API, so you'll need to provide a token. Don't worry, that's b
 
 You would need to put this in a file in the `.github/workflows` directory
 
-```
+```yaml
 name: "Check PR for word"
 on: [pull_request]
 
@@ -37,6 +37,16 @@ Same patterm for `diff(Contains|DoesNotContain)`. Can be a word or list of words
 They can be left empty if you want no check done.
 
 An example is used as [.github/workflows/check-PRs-here.yaml](.github/workflows/check-PRs-here.yaml) in this repository as well as [this one, which is the one I use for testing](.github/workflows/pr.yaml).
+
+You might want to qualify possible events that trigger this action, for intance, this way:
+
+```yaml
+  pull_request:
+    types:
+      [opened, edited, assigned, closed, review_requested, ready_for_review]
+```
+
+This will skip diff checks every single push, for instance. Please remember that *this action will only work in pull requests*, since it checks the pull request object payload. It will simply skip any check (with a warning) if it is not triggered by a `pull_request` or `pull_request_target` event.
 
 ## Caveats
 
