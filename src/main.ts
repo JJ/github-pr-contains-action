@@ -12,6 +12,14 @@ async function run() {
     const bodyContains = core.getInput("bodyContains");
     const bodyDoesNotContain = core.getInput("bodyDoesNotContain");
 
+    if (
+      context.eventName !== "pull_request" &&
+      context.eventName !== "pull_request_target"
+    ) {
+      core.setFailed(
+        "⚠️ I am sorry, this workflow only works in pull requests"
+      );
+    }
     if (bodyContains || bodyDoesNotContain) {
       core.info("Checking body contents");
       if (!context.payload.pull_request.hasOwnProperty("body")) {
