@@ -55,10 +55,9 @@ function run() {
             // Check if the body contains required string
             const bodyContains = core.getInput("bodyContains");
             const bodyDoesNotContain = core.getInput("bodyDoesNotContain");
-            console.log(context);
             if (context.eventName !== "pull_request" &&
                 context.eventName !== "pull_request_target") {
-                core.setFailed("⚠️ I am sorry, this workflow only works in pull requests");
+                core.warning("⚠️ Not a pull request, skipping PR body checks");
             }
             else {
                 if (bodyContains || bodyDoesNotContain) {
@@ -79,56 +78,57 @@ function run() {
                         }
                     }
                 }
-                if (context.payload.repository.private !== true) {
-                    core.info("Checking diff contents");
-                    const diffContains = core.getInput("diffContains");
-                    const diffDoesNotContain = core.getInput("diffDoesNotContain");
-                    const diff_url = context.payload.pull_request.diff_url;
-                    core.info("Requesting " + diff_url);
-                    const result = yield github.request(diff_url);
-                    core.info(result);
-                    const files = (0, parse_diff_1.default)(result.data);
-                    core.exportVariable("files", files);
-                    core.setOutput("files", files);
-                    const filesChanged = +core.getInput("filesChanged");
-                    if (filesChanged && files.length != filesChanged) {
-                        core.setFailed("You should change exactly " + filesChanged + " file(s)");
-                    }
-                    let changes = "";
-                    let additions = 0;
-                    files.forEach(function (file) {
-                        additions += file.additions;
-                        file.chunks.forEach(function (chunk) {
-                            chunk.changes.forEach(function (change) {
-                                if (change.add) {
-                                    changes += change.content;
-                                }
-                            });
+            }
+            console.log(context.commits);
+            if (context.payload.repository.private !== true) {
+                core.info("Checking diff contents");
+                const diffContains = core.getInput("diffContains");
+                const diffDoesNotContain = core.getInput("diffDoesNotContain");
+                const diff_url = context.payload.pull_request.diff_url;
+                core.info("Requesting " + diff_url);
+                const result = yield github.request(diff_url);
+                core.info(result);
+                const files = (0, parse_diff_1.default)(result.data);
+                core.exportVariable("files", files);
+                core.setOutput("files", files);
+                const filesChanged = +core.getInput("filesChanged");
+                if (filesChanged && files.length != filesChanged) {
+                    core.setFailed("You should change exactly " + filesChanged + " file(s)");
+                }
+                let changes = "";
+                let additions = 0;
+                files.forEach(function (file) {
+                    additions += file.additions;
+                    file.chunks.forEach(function (chunk) {
+                        chunk.changes.forEach(function (change) {
+                            if (change.add) {
+                                changes += change.content;
+                            }
                         });
                     });
-                    if (diffContains && !(0, utils_1.rexify)(diffContains).test(changes)) {
-                        core.setFailed("The added code does not contain " + diffContains);
-                    }
-                    else {
-                        core.exportVariable("diff", changes);
-                        core.setOutput("diff", changes);
-                    }
-                    if (diffDoesNotContain && (0, utils_1.rexify)(diffDoesNotContain).test(changes)) {
-                        core.setFailed("The added code should not contain " + diffDoesNotContain);
-                    }
-                    core.info("Checking lines/files changed");
-                    const linesChanged = +core.getInput("linesChanged");
-                    if (linesChanged && additions != linesChanged) {
-                        const this_msg = "You should change exactly " +
-                            linesChanged +
-                            " lines(s) and you have changed " +
-                            additions;
-                        core.setFailed(this_msg);
-                    }
+                });
+                if (diffContains && !(0, utils_1.rexify)(diffContains).test(changes)) {
+                    core.setFailed("The added code does not contain " + diffContains);
                 }
                 else {
-                    core.warning("⚠️ I'm sorry, can't check diff in private repositories with the default token");
+                    core.exportVariable("diff", changes);
+                    core.setOutput("diff", changes);
                 }
+                if (diffDoesNotContain && (0, utils_1.rexify)(diffDoesNotContain).test(changes)) {
+                    core.setFailed("The added code should not contain " + diffDoesNotContain);
+                }
+                core.info("Checking lines/files changed");
+                const linesChanged = +core.getInput("linesChanged");
+                if (linesChanged && additions != linesChanged) {
+                    const this_msg = "You should change exactly " +
+                        linesChanged +
+                        " lines(s) and you have changed " +
+                        additions;
+                    core.setFailed(this_msg);
+                }
+            }
+            else {
+                core.warning("⚠️ I'm sorry, can't check diff in private repositories with the default token");
             }
         }
         catch (error) {
