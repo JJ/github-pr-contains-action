@@ -60,73 +60,75 @@ function run() {
                 context.eventName !== "pull_request_target") {
                 core.setFailed("⚠️ I am sorry, this workflow only works in pull requests");
             }
-            if (bodyContains || bodyDoesNotContain) {
-                core.info("Checking body contents");
-                if (!context.payload.pull_request.hasOwnProperty("body")) {
-                    core.setFailed("There's no body in the PR, can't check");
-                }
-                else if (context.payload.pull_request.body === "") {
-                    core.setFailed("The body is empty, can't check");
-                }
-                else {
-                    const PRBody = context.payload.pull_request.body;
-                    if (bodyContains && !(0, utils_1.rexify)(bodyContains).test(PRBody)) {
-                        core.setFailed("The body of the PR does not contain " + bodyContains);
+            else {
+                if (bodyContains || bodyDoesNotContain) {
+                    core.info("Checking body contents");
+                    if (!context.payload.pull_request.hasOwnProperty("body")) {
+                        core.setFailed("There's no body in the PR, can't check");
                     }
-                    if (bodyDoesNotContain && (0, utils_1.rexify)(bodyDoesNotContain).test(PRBody)) {
-                        core.setFailed("The body of the PR should not contain " + bodyDoesNotContain);
+                    else if (context.payload.pull_request.body === "") {
+                        core.setFailed("The body is empty, can't check");
+                    }
+                    else {
+                        const PRBody = context.payload.pull_request.body;
+                        if (bodyContains && !(0, utils_1.rexify)(bodyContains).test(PRBody)) {
+                            core.setFailed("The body of the PR does not contain " + bodyContains);
+                        }
+                        if (bodyDoesNotContain && (0, utils_1.rexify)(bodyDoesNotContain).test(PRBody)) {
+                            core.setFailed("The body of the PR should not contain " + bodyDoesNotContain);
+                        }
                     }
                 }
-            }
-            if (context.payload.repository.private !== true) {
-                core.info("Checking diff contents");
-                const diffContains = core.getInput("diffContains");
-                const diffDoesNotContain = core.getInput("diffDoesNotContain");
-                const diff_url = context.payload.pull_request.diff_url;
-                core.info("Requesting " + diff_url);
-                const result = yield github.request(diff_url);
-                core.info(result);
-                const files = (0, parse_diff_1.default)(result.data);
-                core.exportVariable("files", files);
-                core.setOutput("files", files);
-                const filesChanged = +core.getInput("filesChanged");
-                if (filesChanged && files.length != filesChanged) {
-                    core.setFailed("You should change exactly " + filesChanged + " file(s)");
-                }
-                let changes = "";
-                let additions = 0;
-                files.forEach(function (file) {
-                    additions += file.additions;
-                    file.chunks.forEach(function (chunk) {
-                        chunk.changes.forEach(function (change) {
-                            if (change.add) {
-                                changes += change.content;
-                            }
+                if (context.payload.repository.private !== true) {
+                    core.info("Checking diff contents");
+                    const diffContains = core.getInput("diffContains");
+                    const diffDoesNotContain = core.getInput("diffDoesNotContain");
+                    const diff_url = context.payload.pull_request.diff_url;
+                    core.info("Requesting " + diff_url);
+                    const result = yield github.request(diff_url);
+                    core.info(result);
+                    const files = (0, parse_diff_1.default)(result.data);
+                    core.exportVariable("files", files);
+                    core.setOutput("files", files);
+                    const filesChanged = +core.getInput("filesChanged");
+                    if (filesChanged && files.length != filesChanged) {
+                        core.setFailed("You should change exactly " + filesChanged + " file(s)");
+                    }
+                    let changes = "";
+                    let additions = 0;
+                    files.forEach(function (file) {
+                        additions += file.additions;
+                        file.chunks.forEach(function (chunk) {
+                            chunk.changes.forEach(function (change) {
+                                if (change.add) {
+                                    changes += change.content;
+                                }
+                            });
                         });
                     });
-                });
-                if (diffContains && !(0, utils_1.rexify)(diffContains).test(changes)) {
-                    core.setFailed("The added code does not contain " + diffContains);
+                    if (diffContains && !(0, utils_1.rexify)(diffContains).test(changes)) {
+                        core.setFailed("The added code does not contain " + diffContains);
+                    }
+                    else {
+                        core.exportVariable("diff", changes);
+                        core.setOutput("diff", changes);
+                    }
+                    if (diffDoesNotContain && (0, utils_1.rexify)(diffDoesNotContain).test(changes)) {
+                        core.setFailed("The added code should not contain " + diffDoesNotContain);
+                    }
+                    core.info("Checking lines/files changed");
+                    const linesChanged = +core.getInput("linesChanged");
+                    if (linesChanged && additions != linesChanged) {
+                        const this_msg = "You should change exactly " +
+                            linesChanged +
+                            " lines(s) and you have changed " +
+                            additions;
+                        core.setFailed(this_msg);
+                    }
                 }
                 else {
-                    core.exportVariable("diff", changes);
-                    core.setOutput("diff", changes);
+                    core.warning("⚠️ I'm sorry, can't check diff in private repositories with the default token");
                 }
-                if (diffDoesNotContain && (0, utils_1.rexify)(diffDoesNotContain).test(changes)) {
-                    core.setFailed("The added code should not contain " + diffDoesNotContain);
-                }
-                core.info("Checking lines/files changed");
-                const linesChanged = +core.getInput("linesChanged");
-                if (linesChanged && additions != linesChanged) {
-                    const this_msg = "You should change exactly " +
-                        linesChanged +
-                        " lines(s) and you have changed " +
-                        additions;
-                    core.setFailed(this_msg);
-                }
-            }
-            else {
-                core.warning("⚠️ I'm sorry, can't check diff in private repositories with the default token");
             }
         }
         catch (error) {
