@@ -46,7 +46,7 @@ You might want to qualify possible events that trigger this action, for intance,
       [opened, edited, assigned, closed, review_requested, ready_for_review]
 ```
 
-This will skip diff checks every single push, for instance. Please remember that *this action will only work in pull requests*, since it checks the pull request object payload. It will simply skip any check (with a warning) if it is not triggered by a `pull_request` or `pull_request_target` event.
+This will skip diff checks every single push, for instance. Please remember that _this action will only work in pull requests_, since it checks the pull request object payload. It will simply skip any check (with a warning) if it is not triggered by a `pull_request` or `pull_request_target` event.
 
 ## Caveats
 
