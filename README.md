@@ -4,9 +4,9 @@ Originally based on the [actions TS template](https://github.com/actions/typescr
 
 It uses the GitHub API, so you'll need to provide a token. Don't worry, that's built-in.
 
-# Using this action
+## Using this action
 
-You would need to put this in a file in the `.github/workflows` directory
+You would need to put this in a YAML file in the `.github/workflows` directory
 
 ```yaml
 name: "Check PR for word"
