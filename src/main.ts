@@ -31,7 +31,7 @@ async function run() {
       }
     }
 
-    if (!context.payload.repository.private === true) {
+    if (context.payload.repository.private !== true) {
       core.info("Checking diff contents");
       const diffContains = core.getInput("diffContains");
       const diffDoesNotContain = core.getInput("diffDoesNotContain");
