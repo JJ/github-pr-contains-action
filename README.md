@@ -1,6 +1,6 @@
 # Checking PR bodies and diffs for words, and number of files and lines in files changed [![Basic installation and build checks](https://github.com/JJ/github-pr-contains-action/actions/workflows/checkin.yml/badge.svg)](https://github.com/JJ/github-pr-contains-action/actions/workflows/checkin.yml)
 
-Originally based on the [actions TS template](https://github.com/actions/typescript-template), it checks for the presence of a word in the body or diff in a PR, as well as certain conditions on the PR: number of files changed, and number of lines changed.
+Originally based on the [actions TS template](https://github.com/actions/typescript-template), it checks for the presence/absence of a regular expression in the body or diff in a PR, as well as certain conditions on the PR: number of files changed, and number of lines changed.
 
 It uses the GitHub API, so you'll need to provide a token. Don't worry, that's built-in.
 
@@ -28,7 +28,7 @@ jobs:
         linesChanged: 1
 ```
 
-The `bodyContains` variable will include the string that we want the body of the PR to include, such as checked items in a checklist; obviously `bodyDoesNotContain` will hold the opposite, what we don't want to see in the PR body. Any of them can have a `|` separated list of words or expressions. The PR will check it contains _any_ of the words in `bodyContains` and _none_ of the words in `bodyDoesnotContain`.
+The `bodyContains` variable will include the string or regex that we want the body of the PR to include, such as checked items in a checklist; obviously `bodyDoesNotContain` will hold the opposite, what we don't want to see in the PR body. Any of them can have a `|` separated list of words or expressions. The PR will check it contains _any_ of the words in `bodyContains` and _none_ of the words in `bodyDoesnotContain`.
 
 Same patterm for `diff(Contains|DoesNotContain)`. Can be a word or list of words you want in the diff (for instance, you want it to _always_ change code so it contains a statement terminator) or don't want in the diff (for instance, you don't want it to include TODOs because people never ever _do_ them).
 
