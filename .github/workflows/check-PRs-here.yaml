@@ -2,7 +2,7 @@ name: "Checks PR body and payload"
 on:
   pull_request:
     types: [opened, edited, ready_for_review]
-
+  push:
 jobs:
   check_pr:
     runs-on: ubuntu-latest
