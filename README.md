@@ -9,7 +9,7 @@ It uses the GitHub API, so you'll need to provide a token. Don't worry, that's b
 You would need to put this in a YAML file in the `.github/workflows` directory
 
 ```yaml
-name: "Check PR for word"
+name: "Check PR content"
 on: [pull_request]
 
 jobs:
@@ -34,7 +34,7 @@ Same patterm for `diff(Contains|DoesNotContain)`. Can be a word or list of words
 
 > These strings are unwittingly converted into regular expressions, so any regular expression will also work; `[]()+?*` are escaped so that things such as `[.]` work with the literal meaning.
 
-They can be left empty if you want no check done.
+They can be left empty if you don't need that specific check.
 
 An example is used as [.github/workflows/check-PRs-here.yaml](.github/workflows/check-PRs-here.yaml) in this repository as well as [this one, which is the one I use for testing](.github/workflows/pr.yaml).
 
