@@ -1,7 +1,8 @@
 name: "Master check PR data"
 on:
   pull_request:
-    types: [opened, edited, ready_for_review]
+    types:
+      [opened, edited, assigned, closed, review_requested, ready_for_review]
 
 jobs:
   check_pr:
