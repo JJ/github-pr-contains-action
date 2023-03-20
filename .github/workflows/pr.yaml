@@ -2,10 +2,10 @@ name: "Master check PR data"
 on:
   pull_request:
     types: [opened, edited, ready_for_review]
-  push:
 
 jobs:
   check_pr:
+    name: "Checks of dev version"
     runs-on: ubuntu-latest
     steps:
       - name: Check PR
