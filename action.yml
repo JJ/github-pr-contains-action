@@ -18,7 +18,7 @@ inputs:
   linesChanged:
     description: "Max number of lines changed per PR"
   filesChanged:
-    description: "Max number of files changed per PR"
+    description: "Max number of files changed in the PR"
 outputs:
   diff:
     description: "Lines added to the PR"
