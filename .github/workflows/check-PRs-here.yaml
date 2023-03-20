@@ -2,13 +2,12 @@ name: "Checks PR body and payload"
 on:
   pull_request:
     types: [opened, edited, ready_for_review]
-  push:
 jobs:
   check_pr:
     runs-on: ubuntu-latest
     steps:
       - name: Check PR
-        uses: JJ/github-pr-contains-action@releases/v4
+        uses: JJ/github-pr-contains-action@releases/v9
         with:
           github-token: ${{github.token}}
           bodyContains: "[x]"
