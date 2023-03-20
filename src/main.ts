@@ -69,7 +69,9 @@ async function run() {
           });
         });
         if (diffContains && !rexify(diffContains).test(changes)) {
-          core.setFailed("The added code does not contain " + diffContains);
+          core.setFailed(
+            "The added code does not contain «" + diffContains + "»"
+          );
         } else {
           core.exportVariable("diff", changes);
           core.setOutput("diff", changes);
