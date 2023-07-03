@@ -80,7 +80,9 @@ This GitHub action works as is in public repositories. Diff checking will simply
 
 ## Contributing to development
 
-Any suggestion, bug report, etc, is appreciated. Please use [issues](https://github.com/JJ/github-pr-contains-action/issues).
+Any suggestion, bug report, etc, is appreciated. Please check out or create an
+[issue](https://github.com/JJ/github-pr-contains-action/issues) before
+contributing a PR, if possible.
 
 ## See also
 
