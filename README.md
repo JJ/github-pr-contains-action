@@ -88,7 +88,7 @@ There are several forks of this action, with additional features:
 
 - [PR content checker by @jsoares](https://github.com/jsoares/gh-pr-content-checker/) includes `diffDoesNotContain`
 - [Francisco Giordano's `pr-content-checker`](https://github.com/francesco-giordano/gh-pr-content-checker)
-- [Pablo Statsig's `pr-content-checker`])(https://github.com/pablo-statsig/gh-pr-content-checker/)
+- [Pablo Statsig's `pr-content-checker`](https://github.com/pablo-statsig/gh-pr-content-checker/)
 
 ## History
 
