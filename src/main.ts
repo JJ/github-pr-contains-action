@@ -26,6 +26,7 @@ async function run() {
           core.setFailed("The body is empty, can't check");
         } else {
           const PRBody = context.payload.pull_request.body;
+          core.info("Looking in body:" + PRBody);
           if (bodyContains && !rexify(bodyContains).test(PRBody)) {
             core.setFailed(
               "The body of the PR does not contain " + bodyContains
