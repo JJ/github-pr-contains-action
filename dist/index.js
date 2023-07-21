@@ -52,16 +52,17 @@ function run() {
             // get information on everything
             const token = core.getInput("github-token", { required: true });
             const github = new GitHub(token, {});
-            // Check if the body contains required string
-            const bodyContains = core.getInput("bodyContains");
-            const bodyDoesNotContain = core.getInput("bodyDoesNotContain");
+            // First check for waived users
             const waivedUsers = core.getInput("waivedUsers") || ["dependabot"];
             core.info(context.payload.pull_request.user);
             core.info(github.actor);
             if (waivedUsers.includes(github.actor)) {
-                core.warning(`Not running this workflow for waived user ${github.actor}`);
+                core.warning(`⚠️ Not running this workflow for waived user ${github.actor}`);
                 return;
             }
+            // Check if the body contains required string
+            const bodyContains = core.getInput("bodyContains");
+            const bodyDoesNotContain = core.getInput("bodyDoesNotContain");
             if (context.eventName !== "pull_request" &&
                 context.eventName !== "pull_request_target") {
                 core.warning("⚠️ Not a pull request, skipping PR body checks");
