@@ -12,8 +12,8 @@ async function run() {
     const bodyContains = core.getInput("bodyContains");
     const bodyDoesNotContain = core.getInput("bodyDoesNotContain");
     const waivedUsers = core.getInput("waivedUsers") || ["dependabot"];
-    console.log(context.payload.pull_request.user);
-    console.log(github.actor);
+    core.info(context.payload.pull_request.user);
+    core.info(github.actor);
     if (
       context.eventName !== "pull_request" &&
       context.eventName !== "pull_request_target"
