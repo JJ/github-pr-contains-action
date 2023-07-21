@@ -26,15 +26,16 @@ jobs:
         diffDoesNotContain: "TODO|to do"
         filesChanged: 1
         linesChanged: 1
+        waivedUsers: ["dependabot[bot]"]
 ```
 
 The `bodyContains` variable will include the string that we want the body of the PR to include, such as checked items in a checklist; obviously `bodyDoesNotContain` will hold the opposite, what we don't want to see in the PR body. Any of them can have a `|` separated list of words or expressions. The PR will check it contains _any_ of the words in `bodyContains` and _none_ of the words in `bodyDoesnotContain`.
 
 Same patterm for `diff(Contains|DoesNotContain)`. Can be a word or list of words you want in the diff (for instance, you want it to _always_ change code so it contains a statement terminator) or don't want in the diff (for instance, you don't want it to include TODOs because people never ever _do_ them).
 
-> These strings are unwittingly converted into regular expressions, so any regular expression will also work; `[]()+?*` are escaped so that things such as `[.]` work with the literal meaning.
+> These strings are unwittingly converted into regular expressions, so any regular expression will also work; `[]()+?*` are escaped so that things such as `[.]` work with the literal meaning. They can be left empty if you don't need that specific check.
 
-They can be left empty if you don't need that specific check.
+Finally, `waivedUsers` is a YAML array that contains the users that will be spared from running these checks; if the PR is triggered by one of those users, it will exit with a warning and with a green status. By default, it has the value `["dependabot[bot]"]`. If you want to edit more and want to keep dependabot PRs from failing, add it to your list.
 
 An example is used as [.github/workflows/check-PRs-here.yaml](.github/workflows/check-PRs-here.yaml) in this repository as well as [this one, which is the one I use for testing](.github/workflows/pr.yaml).
 
@@ -43,7 +44,7 @@ You might want to qualify possible events that trigger this action, for intance,
 ```yaml
   pull_request:
     types:
-      [opened, edited, assigned, closed, review_requested, ready_for_review]
+      [opened, edited, assigned, closed, , synchronize, review_requested, ready_for_review]
 ```
 
 This will skip diff checks every single push, for instance. Please remember that _this action will only work in pull requests_, since it checks the pull request object payload. It will simply skip any check (with a warning) if it is not triggered by a `pull_request` or `pull_request_target` event.
@@ -70,6 +71,7 @@ jobs:
           linesChanged: 1
           filesChanged: 1
           diffContains: github.com/
+          waivedUsers: ["dependabot[bot]","CompanyBigWig"]
 ```
 
 It would check that there's only a single file modified (because why would you need to change another, if all you want is to add your name to the contributors' file), a single line is changed (because you're only one, right?) and that it includes a link to your GitHub profile by forcing the diff to contain that string.
