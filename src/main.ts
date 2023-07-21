@@ -11,8 +11,8 @@ async function run() {
 
     // First check for waived users
     const waivedUsers = core.getInput("waivedUsers") || ["dependabot"];
-    core.info(context.payload.pull_request.user);
-    core.info(github.actor);
+    core.info("User from payload" + context.payload.pull_request.user);
+    core.info("User from github" + github.actor);
 
     if (waivedUsers.includes(github.actor)) {
       core.warning(
