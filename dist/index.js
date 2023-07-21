@@ -57,6 +57,7 @@ function run() {
             const bodyDoesNotContain = core.getInput("bodyDoesNotContain");
             const waivedUsers = core.getInput("waivedUsers") || ["dependabot"];
             console.log(context.payload.pull_request.user);
+            console.log(github.actor);
             if (context.eventName !== "pull_request" &&
                 context.eventName !== "pull_request_target") {
                 core.warning("⚠️ Not a pull request, skipping PR body checks");
