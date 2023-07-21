@@ -107,6 +107,7 @@ There are several forks of this action, with additional features:
 - `v8`: adds `diffDoesNotContain` and extends regex testing to diff tests.
 - `v9`: adds some informative messages, disables API calls for private repositories.
 - `v10`: Skips checks if not in a pull request; adds information to prevent this use too.
+- `v11`: Adds a configuration variable that skips users, with dependabot skipped by default (or passed through).
 
 ## License
 
