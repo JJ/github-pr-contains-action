@@ -55,6 +55,8 @@ function run() {
             // Check if the body contains required string
             const bodyContains = core.getInput("bodyContains");
             const bodyDoesNotContain = core.getInput("bodyDoesNotContain");
+            const waivedUsers = core.getInput("waivedUsers") || ["dependabot"];
+            console.log(context.payload.pull_request.user);
             if (context.eventName !== "pull_request" &&
                 context.eventName !== "pull_request_target") {
                 core.warning("⚠️ Not a pull request, skipping PR body checks");
