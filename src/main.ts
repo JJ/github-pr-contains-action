@@ -11,10 +11,9 @@ async function run() {
     const user = context.payload.pull_request.user.login;
     // First check for waived users
     const waivedUsers = core.getInput("waivedUsers") || ["dependabot[bot]"];
-    core.info("User " + user);
 
     if (waivedUsers.includes(user)) {
-      core.warning(`⚠️ Not running this workflow for waived user ${user}`);
+      core.warning(`⚠️ Not running this workflow for waived user «${user}»`);
       return;
     }
 
