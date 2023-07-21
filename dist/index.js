@@ -58,6 +58,10 @@ function run() {
             const waivedUsers = core.getInput("waivedUsers") || ["dependabot"];
             core.info(context.payload.pull_request.user);
             core.info(github.actor);
+            if (waivedUsers.includes(github.actor)) {
+                core.warning(`Not running this workflow for waived user ${github.actor}`);
+                return;
+            }
             if (context.eventName !== "pull_request" &&
                 context.eventName !== "pull_request_target") {
                 core.warning("⚠️ Not a pull request, skipping PR body checks");
