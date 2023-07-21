@@ -8,15 +8,13 @@ async function run() {
     // get information on everything
     const token = core.getInput("github-token", { required: true });
     const github = new GitHub(token, {});
-
+    const user = context.payload.pull_request.user.login;
     // First check for waived users
-    const waivedUsers = core.getInput("waivedUsers") || ["dependabot"];
-    core.info(context.payload.pull_request.user.login);
+    const waivedUsers = core.getInput("waivedUsers") || ["dependabot[bot]"];
+    core.info("User " + user);
 
-    if (waivedUsers.includes(context.payload.pull_request.user.login)) {
-      core.warning(
-        `⚠️ Not running this workflow for waived user ${github.actor}`
-      );
+    if (waivedUsers.includes(user)) {
+      core.warning(`⚠️ Not running this workflow for waived user ${user}`);
       return;
     }
 
