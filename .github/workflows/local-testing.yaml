@@ -1,8 +1,9 @@
-name: "Workflow for testing"
+name: "Workflow for local testing"
 on:
   pull_request:
     branches:
       - dev
+    types: [opened, edited, ready_for_review, synchronize]
 
 jobs:
   check_pr:
