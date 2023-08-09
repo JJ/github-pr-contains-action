@@ -18,3 +18,4 @@ jobs:
           bodyDoesNotContain: "your|own"
           diffDoesNotContain: "TODO"
           linesChanged: 1
+          waivedUsers: ["oneUser"]
