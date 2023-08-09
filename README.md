@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check PR
-      uses: JJ/github-pr-contains-action@releases/v10
+      uses: JJ/github-pr-contains-action@releases/v11
       with:
         github-token: ${{github.token}}
         bodyDoesNotContain: "Delete|this"
