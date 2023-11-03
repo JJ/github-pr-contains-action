@@ -105,7 +105,7 @@ async function run() {
         }
       } else {
         core.warning(
-          "⚠️ I'm sorry, can't check diff in private repositories with the default token. " +
+          "⚠️ Apoorv: I'm sorry, can't check diff in private repositories with the default token. " +
           "If you are using a valid token, please set bypassPrivateRepoCheck: true to disable the check."
         );
       }
