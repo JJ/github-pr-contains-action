@@ -78,7 +78,7 @@ It would check that there's only a single file modified (because why would you n
 
 ## Caveats
 
-This GitHub action works as is in public repositories. Diff checking will simply be disabled if it detects it is being run in a private repository.
+This GitHub action works as is in public repositories. By default, diff checking will simply be disabled if it detects it is being run in a private repository.
 
 ## Contributing to development
 
