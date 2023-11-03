@@ -48,7 +48,9 @@ async function run() {
         }
       }
 
-      if (context.payload.repository.private !== true) {
+      const isNotPrivate = context.payload.repository.private !== true;
+      const bypassPrivateRepoCheck = core.getInput("bypassPrivateRepoCheck");
+      if (isNotPrivate || bypassPrivateRepoCheck) {
         core.info("Checking diff contents");
         const diffContains = core.getInput("diffContains");
         const diffDoesNotContain = core.getInput("diffDoesNotContain");
@@ -103,7 +105,8 @@ async function run() {
         }
       } else {
         core.warning(
-          "⚠️ I'm sorry, can't check diff in private repositories with the default token"
+          "⚠️ I'm sorry, can't check diff in private repositories with the default token. " +
+          "If you are using a valid token, please set bypassPrivateRepoCheck: true to disable the check."
         );
       }
     }
