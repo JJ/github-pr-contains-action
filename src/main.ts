@@ -8,7 +8,7 @@ async function getDiff(octokit, context) {
   const repo = context?.payload?.repository?.name;
   const pull_number = context?.payload?.pull_request?.number;
   core.info(`${owner}, ${repo}, ${pull_number}`);
-  const response = await octokit.pulls.get({
+  const response = await octokit.rest.pulls.get({
     owner,
     repo,
     pull_number,
