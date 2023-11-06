@@ -69,7 +69,7 @@ async function run() {
         }
       }
 
-      core.info("Checking diff contents : 7");
+      core.info("Checking diff contents");
       const diffContains = core.getInput("diffContains");
       const diffDoesNotContain = core.getInput("diffDoesNotContain");
 
