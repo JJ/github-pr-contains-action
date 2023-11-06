@@ -53,7 +53,7 @@ function getDiff(octokit, context) {
         const repo = (_e = (_d = context === null || context === void 0 ? void 0 : context.payload) === null || _d === void 0 ? void 0 : _d.repository) === null || _e === void 0 ? void 0 : _e.name;
         const pull_number = (_g = (_f = context === null || context === void 0 ? void 0 : context.payload) === null || _f === void 0 ? void 0 : _f.pull_request) === null || _g === void 0 ? void 0 : _g.number;
         core.info(`${owner}, ${repo}, ${pull_number}`);
-        const response = yield octokit.pulls.get({
+        const response = yield octokit.rest.pulls.get({
             owner,
             repo,
             pull_number,
