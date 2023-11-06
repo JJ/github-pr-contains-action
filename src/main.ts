@@ -63,7 +63,7 @@ async function run() {
         }
       }
 
-      core.info(`${context.payload.pull_request.number}`);
+      core.info(`PR #: ${context.payload.pull_request.number}`);
       core.info(`${context.payload.repository}`);
       core.info(`${context.payload}`);
 
