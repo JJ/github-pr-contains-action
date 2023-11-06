@@ -23,14 +23,14 @@ async function run() {
     // get information on everything
     const token = core.getInput("github-token", { required: true });
     // const github = new GitHub(token, {});
-    const user = context.payload.pull_request.user.login;
-    // First check for waived users
-    const waivedUsers = core.getInput("waivedUsers") || ["dependabot[bot]"];
+    // const user = context.payload.pull_request.user.login;
+    // // First check for waived users
+    // const waivedUsers = core.getInput("waivedUsers") || ["dependabot[bot]"];
 
-    if (waivedUsers.includes(user)) {
-      core.warning(`⚠️ Not running this workflow for waived user «${user}»`);
-      return;
-    }
+    // if (waivedUsers.includes(user)) {
+    //   core.warning(`⚠️ Not running this workflow for waived user «${user}»`);
+    //   return;
+    // }
 
     // Check if the body contains required string
     const bodyContains = core.getInput("bodyContains");
@@ -43,13 +43,11 @@ async function run() {
       core.warning("⚠️ Not a pull request, skipping PR body checks");
     } else {
       if (bodyContains || bodyDoesNotContain) {
+        const PRBody = context?.payload?.pull_request?.body;
         core.info("Checking body contents");
-        if (!context.payload.pull_request.hasOwnProperty("body")) {
-          core.setFailed("There's no body in the PR, can't check");
-        } else if (context.payload.pull_request.body === "") {
+        if (!PRBody) {
           core.setFailed("The body is empty, can't check");
         } else {
-          const PRBody = context.payload.pull_request.body;
           if (bodyContains && !rexify(bodyContains).test(PRBody)) {
             core.setFailed(
               "The body of the PR does not contain " + bodyContains
@@ -63,11 +61,7 @@ async function run() {
         }
       }
 
-      core.info(`PR #: ${context.payload.pull_request.number}`);
-      core.info(`${context.payload.repository}`);
-      core.info(`${context.payload}`);
-
-      const isNotPrivate = context.payload.repository.private !== true;
+      const isNotPrivate = false;
       const bypassPrivateRepoCheck = core.getInput("bypassPrivateRepoCheck");
       if (isNotPrivate || bypassPrivateRepoCheck) {
         core.info("Checking diff contents : 7");
