@@ -1,5 +1,5 @@
 import * as core from "@actions/core";
-const { getOctokit, GitHub, context } = require("@actions/github");
+import { getOctokit, context } from "@actions/github";
 import parse from "parse-diff";
 import { rexify } from "./utils";
 
