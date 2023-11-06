@@ -3,7 +3,7 @@ const { GitHub, context } = require("@actions/github");
 import parse from "parse-diff";
 import { rexify } from "./utils";
 
-async function getDiff(octokit, pull_request_context) : Promise<File[]> {
+async function getDiff(octokit, pull_request_context) {
   const response = await octokit.pulls.get({
     owner: pull_request_context.owner,
     repo: pull_request_context.repo,
@@ -70,10 +70,10 @@ async function run() {
         core.info("Checking diff contents");
         const diffContains = core.getInput("diffContains");
         const diffDoesNotContain = core.getInput("diffDoesNotContain");
-        core.info("Requesting " + diff_url);
+        // core.info("Requesting " + diff_url);
         // const result = await github.request(diff_url);
         // const files = parse(result.data);
-        const files = await getDiff(github.getOctokit(token))
+        const files = await getDiff(github.getOctokit(token), context.payload)
         core.exportVariable("files", files);
         core.setOutput("files", files);
         const filesChanged = +core.getInput("filesChanged");
