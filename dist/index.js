@@ -47,9 +47,11 @@ const github_1 = __nccwpck_require__(5438);
 const parse_diff_1 = __importDefault(__nccwpck_require__(4833));
 const utils_1 = __nccwpck_require__(918);
 function getDiff(octokit, context) {
+    var _a, _b, _c, _d, _e, _f, _g;
     return __awaiter(this, void 0, void 0, function* () {
-        const { owner, repo } = context.repo();
-        const pull_number = context.payload.pull_request.number;
+        const owner = (_c = (_b = (_a = context === null || context === void 0 ? void 0 : context.payload) === null || _a === void 0 ? void 0 : _a.repository) === null || _b === void 0 ? void 0 : _b.owner) === null || _c === void 0 ? void 0 : _c.login;
+        const repo = (_e = (_d = context === null || context === void 0 ? void 0 : context.payload) === null || _d === void 0 ? void 0 : _d.repository) === null || _e === void 0 ? void 0 : _e.name;
+        const pull_number = (_g = (_f = context === null || context === void 0 ? void 0 : context.payload) === null || _f === void 0 ? void 0 : _f.pull_request) === null || _g === void 0 ? void 0 : _g.number;
         core.info(`${owner}, ${repo}, ${pull_number}`);
         const response = yield octokit.pulls.get({
             owner,

@@ -4,8 +4,9 @@ import parse from "parse-diff";
 import { rexify } from "./utils";
 
 async function getDiff(octokit, context) {
-  const {owner, repo} = context.repo();
-  const pull_number = context.payload.pull_request.number;
+  const owner = context?.payload?.repository?.owner?.login;
+  const repo = context?.payload?.repository?.name;
+  const pull_number = context?.payload?.pull_request?.number;
   core.info(`${owner}, ${repo}, ${pull_number}`);
   const response = await octokit.pulls.get({
     owner,
