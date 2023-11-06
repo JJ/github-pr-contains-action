@@ -46,6 +46,18 @@ const core = __importStar(__nccwpck_require__(2186));
 const { GitHub, context } = __nccwpck_require__(5438);
 const parse_diff_1 = __importDefault(__nccwpck_require__(4833));
 const utils_1 = __nccwpck_require__(918);
+function getDiff(octokit, pull_request_context) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield octokit.pulls.get({
+            owner: pull_request_context.owner,
+            repo: pull_request_context.repo,
+            pull_number: pull_request_context.pullNumber,
+            headers: { accept: "application/vnd.github.v3.diff" },
+        });
+        const diff = response.data;
+        return (0, parse_diff_1.default)(diff);
+    });
+}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -85,16 +97,19 @@ function run() {
                         }
                     }
                 }
+                core.info(context.payload.pull_request);
+                core.info(context.payload.repository);
+                core.info(context.payload);
                 const isNotPrivate = context.payload.repository.private !== true;
                 const bypassPrivateRepoCheck = core.getInput("bypassPrivateRepoCheck");
                 if (isNotPrivate || bypassPrivateRepoCheck) {
                     core.info("Checking diff contents");
                     const diffContains = core.getInput("diffContains");
                     const diffDoesNotContain = core.getInput("diffDoesNotContain");
-                    const diff_url = context.payload.pull_request.diff_url;
-                    core.info("Requesting " + diff_url);
-                    const result = yield github.request(diff_url);
-                    const files = (0, parse_diff_1.default)(result.data);
+                    // core.info("Requesting " + diff_url);
+                    // const result = await github.request(diff_url);
+                    // const files = parse(result.data);
+                    const files = yield getDiff(github.getOctokit(token), context.payload);
                     core.exportVariable("files", files);
                     core.setOutput("files", files);
                     const filesChanged = +core.getInput("filesChanged");
