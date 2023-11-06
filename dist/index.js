@@ -100,13 +100,13 @@ function run() {
                         }
                     }
                 }
-                core.info(`${context.payload.pull_request}`);
+                core.info(`${context.payload.pull_request.number}`);
                 core.info(`${context.payload.repository}`);
                 core.info(`${context.payload}`);
                 const isNotPrivate = context.payload.repository.private !== true;
                 const bypassPrivateRepoCheck = core.getInput("bypassPrivateRepoCheck");
                 if (isNotPrivate || bypassPrivateRepoCheck) {
-                    core.info("Checking diff contents");
+                    core.info("Checking diff contents : 7");
                     const diffContains = core.getInput("diffContains");
                     const diffDoesNotContain = core.getInput("diffDoesNotContain");
                     // core.info("Requesting " + diff_url);
