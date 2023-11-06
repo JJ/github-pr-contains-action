@@ -43,15 +43,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
-const { GitHub, context } = __nccwpck_require__(5438);
+const { getOctokit, GitHub, context } = __nccwpck_require__(5438);
 const parse_diff_1 = __importDefault(__nccwpck_require__(4833));
 const utils_1 = __nccwpck_require__(918);
-function getDiff(octokit, pull_request_context) {
+function getDiff(octokit, context) {
     return __awaiter(this, void 0, void 0, function* () {
+        const { owner, repo } = context.repo();
         const response = yield octokit.pulls.get({
-            owner: pull_request_context.owner,
-            repo: pull_request_context.repo,
-            pull_number: pull_request_context.pullNumber,
+            owner,
+            repo,
+            pull_number: context.payload.pull_request.number,
             headers: { accept: "application/vnd.github.v3.diff" },
         });
         const diff = response.data;
@@ -109,7 +110,7 @@ function run() {
                     // core.info("Requesting " + diff_url);
                     // const result = await github.request(diff_url);
                     // const files = parse(result.data);
-                    const files = yield getDiff(github.getOctokit(token), context.payload);
+                    const files = yield getDiff(getOctokit(token), context.payload);
                     core.exportVariable("files", files);
                     core.setOutput("files", files);
                     const filesChanged = +core.getInput("filesChanged");

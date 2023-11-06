@@ -1,13 +1,14 @@
 import * as core from "@actions/core";
-const { GitHub, context } = require("@actions/github");
+const { getOctokit, GitHub, context } = require("@actions/github");
 import parse from "parse-diff";
 import { rexify } from "./utils";
 
-async function getDiff(octokit, pull_request_context) {
+async function getDiff(octokit, context) {
+  const {owner, repo} = context.repo();
   const response = await octokit.pulls.get({
-    owner: pull_request_context.owner,
-    repo: pull_request_context.repo,
-    pull_number: pull_request_context.pullNumber,
+    owner,
+    repo,
+    pull_number: context.payload.pull_request.number,
     headers: { accept: "application/vnd.github.v3.diff" },
   });
 
@@ -73,7 +74,7 @@ async function run() {
         // core.info("Requesting " + diff_url);
         // const result = await github.request(diff_url);
         // const files = parse(result.data);
-        const files = await getDiff(github.getOctokit(token), context.payload)
+        const files = await getDiff(getOctokit(token), context.payload)
         core.exportVariable("files", files);
         core.setOutput("files", files);
         const filesChanged = +core.getInput("filesChanged");
