@@ -52,7 +52,7 @@ function getDiff(octokit, context) {
         const owner = (_c = (_b = (_a = context === null || context === void 0 ? void 0 : context.payload) === null || _a === void 0 ? void 0 : _a.repository) === null || _b === void 0 ? void 0 : _b.owner) === null || _c === void 0 ? void 0 : _c.login;
         const repo = (_e = (_d = context === null || context === void 0 ? void 0 : context.payload) === null || _d === void 0 ? void 0 : _d.repository) === null || _e === void 0 ? void 0 : _e.name;
         const pull_number = (_g = (_f = context === null || context === void 0 ? void 0 : context.payload) === null || _f === void 0 ? void 0 : _f.pull_request) === null || _g === void 0 ? void 0 : _g.number;
-        core.info(`${owner}, ${repo}, ${pull_number}`);
+        core.info(`Getting diff for: ${owner}, ${repo}, ${pull_number}`);
         const response = yield octokit.rest.pulls.get({
             owner,
             repo,
@@ -73,13 +73,15 @@ function run() {
             const senderInfo = (_a = github_1.context === null || github_1.context === void 0 ? void 0 : github_1.context.payload) === null || _a === void 0 ? void 0 : _a.sender;
             core.info(`Sender: ${senderInfo === null || senderInfo === void 0 ? void 0 : senderInfo.type}, ${JSON.stringify(senderInfo)}`);
             if ((senderInfo === null || senderInfo === void 0 ? void 0 : senderInfo.type) === 'User') {
+                const senderName = senderInfo.login;
+                core.info(`PR created by ${senderName}`);
+                // First check for waived users
+                const waivedUsers = core.getInput("waivedUsers") || ["dependabot[bot]"];
+                if (waivedUsers.includes(senderName)) {
+                    core.warning(`⚠️ Not running this workflow for waived user «${senderName}»`);
+                    return;
+                }
             }
-            // // First check for waived users
-            // const waivedUsers = core.getInput("waivedUsers") || ["dependabot[bot]"];
-            // if (waivedUsers.includes(user)) {
-            //   core.warning(`⚠️ Not running this workflow for waived user «${user}»`);
-            //   return;
-            // }
             // Check if the body contains required string
             const bodyContains = core.getInput("bodyContains");
             const bodyDoesNotContain = core.getInput("bodyDoesNotContain");
@@ -103,51 +105,46 @@ function run() {
                         }
                     }
                 }
-                if (true) {
-                    core.info("Checking diff contents : 7");
-                    const diffContains = core.getInput("diffContains");
-                    const diffDoesNotContain = core.getInput("diffDoesNotContain");
-                    // core.info("Requesting " + diff_url);
-                    // const result = await github.request(diff_url);
-                    // const files = parse(result.data);
-                    const files = yield getDiff(octokit, github_1.context);
-                    core.exportVariable("files", files);
-                    core.setOutput("files", files);
-                    const filesChanged = +core.getInput("filesChanged");
-                    if (filesChanged && files.length != filesChanged) {
-                        core.setFailed("You should change exactly " + filesChanged + " file(s)");
-                    }
-                    let changes = "";
-                    let additions = 0;
-                    files.forEach(function (file) {
-                        additions += file.additions;
-                        file.chunks.forEach(function (chunk) {
-                            chunk.changes.forEach(function (change) {
-                                if (change.add) {
-                                    changes += change.content;
-                                }
-                            });
+                core.info("Checking diff contents : 7");
+                const diffContains = core.getInput("diffContains");
+                const diffDoesNotContain = core.getInput("diffDoesNotContain");
+                const files = yield getDiff(octokit, github_1.context);
+                core.exportVariable("files", files);
+                core.setOutput("files", files);
+                const filesChanged = +core.getInput("filesChanged");
+                if (filesChanged && files.length != filesChanged) {
+                    core.setFailed("You should change exactly " + filesChanged + " file(s)");
+                }
+                let changes = "";
+                let additions = 0;
+                files.forEach(function (file) {
+                    additions += file.additions;
+                    file.chunks.forEach(function (chunk) {
+                        chunk.changes.forEach(function (change) {
+                            if (change.add) {
+                                changes += change.content;
+                            }
                         });
                     });
-                    if (diffContains && !(0, utils_1.rexify)(diffContains).test(changes)) {
-                        core.setFailed("The added code does not contain «" + diffContains + "»");
-                    }
-                    else {
-                        core.exportVariable("diff", changes);
-                        core.setOutput("diff", changes);
-                    }
-                    if (diffDoesNotContain && (0, utils_1.rexify)(diffDoesNotContain).test(changes)) {
-                        core.setFailed("The added code should not contain " + diffDoesNotContain);
-                    }
-                    core.info("Checking lines/files changed");
-                    const linesChanged = +core.getInput("linesChanged");
-                    if (linesChanged && additions != linesChanged) {
-                        const this_msg = "You should change exactly " +
-                            linesChanged +
-                            " lines(s) and you have changed " +
-                            additions;
-                        core.setFailed(this_msg);
-                    }
+                });
+                if (diffContains && !(0, utils_1.rexify)(diffContains).test(changes)) {
+                    core.setFailed("The added code does not contain «" + diffContains + "»");
+                }
+                else {
+                    core.exportVariable("diff", changes);
+                    core.setOutput("diff", changes);
+                }
+                if (diffDoesNotContain && (0, utils_1.rexify)(diffDoesNotContain).test(changes)) {
+                    core.setFailed("The added code should not contain " + diffDoesNotContain);
+                }
+                core.info("Checking lines/files changed");
+                const linesChanged = +core.getInput("linesChanged");
+                if (linesChanged && additions != linesChanged) {
+                    const this_msg = "You should change exactly " +
+                        linesChanged +
+                        " lines(s) and you have changed " +
+                        additions;
+                    core.setFailed(this_msg);
                 }
             }
         }
