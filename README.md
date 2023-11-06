@@ -104,6 +104,7 @@ There are several forks of this action, with additional features:
 - `v9`: adds some informative messages, disables API calls for private repositories.
 - `v10`: Skips checks if not in a pull request; adds information to prevent this use too.
 - `v11`: Adds a configuration variable that skips users, with dependabot skipped by default (or passed through).
+- `v12`: Make compatible with private repos. Upgrade to latest github API.
 
 ## License
 
