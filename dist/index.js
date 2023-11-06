@@ -66,7 +66,7 @@ function run() {
         try {
             // get information on everything
             const token = core.getInput("github-token", { required: true });
-            const github = new GitHub(token, {});
+            // const github = new GitHub(token, {});
             const user = context.payload.pull_request.user.login;
             // First check for waived users
             const waivedUsers = core.getInput("waivedUsers") || ["dependabot[bot]"];
@@ -109,10 +109,11 @@ function run() {
                     core.info("Checking diff contents : 7");
                     const diffContains = core.getInput("diffContains");
                     const diffDoesNotContain = core.getInput("diffDoesNotContain");
+                    const octokit = getOctokit(token);
                     // core.info("Requesting " + diff_url);
                     // const result = await github.request(diff_url);
                     // const files = parse(result.data);
-                    const files = yield getDiff(getOctokit(token), context.payload);
+                    const files = yield getDiff(octokit, context);
                     core.exportVariable("files", files);
                     core.setOutput("files", files);
                     const filesChanged = +core.getInput("filesChanged");
