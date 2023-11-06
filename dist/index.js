@@ -71,7 +71,9 @@ function run() {
             const token = core.getInput("github-token", { required: true });
             const octokit = (0, github_1.getOctokit)(token);
             const senderInfo = (_a = github_1.context === null || github_1.context === void 0 ? void 0 : github_1.context.payload) === null || _a === void 0 ? void 0 : _a.sender;
-            core.info(`Sender: ${senderInfo === null || senderInfo === void 0 ? void 0 : senderInfo.type}, ${senderInfo}`);
+            core.info(`Sender: ${senderInfo === null || senderInfo === void 0 ? void 0 : senderInfo.type}, ${JSON.stringify(senderInfo)}`);
+            if ((senderInfo === null || senderInfo === void 0 ? void 0 : senderInfo.type) === 'User') {
+            }
             // // First check for waived users
             // const waivedUsers = core.getInput("waivedUsers") || ["dependabot[bot]"];
             // if (waivedUsers.includes(user)) {

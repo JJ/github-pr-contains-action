@@ -26,7 +26,10 @@ async function run() {
     const octokit = getOctokit(token);
 
     const senderInfo = context?.payload?.sender;
-    core.info(`Sender: ${senderInfo?.type}, ${senderInfo}`);
+    core.info(`Sender: ${senderInfo?.type}, ${JSON.stringify(senderInfo)}`);
+    if (senderInfo?.type === 'User') {
+      
+    }
     // // First check for waived users
     // const waivedUsers = core.getInput("waivedUsers") || ["dependabot[bot]"];
 
