@@ -26,10 +26,11 @@ async function run() {
     const octokit = getOctokit(token);
 
     const senderInfo = context?.payload?.sender;
-    core.info(`Sender: ${senderInfo?.type}, ${JSON.stringify(senderInfo)}`);
-    if (senderInfo?.type === 'User') {
-      const senderName = senderInfo.login;
-      core.info(`PR created by ${senderName}`)
+    const senderName = senderInfo?.login;
+    const senderType = senderInfo?.type
+    core.info(`PR created by ${senderName} (${senderType})`)
+    // NOTE(ApoorvGuptaAI): Maybe we should not check senderType before doing the waive check.
+    if (senderType === 'User') {
       // First check for waived users
       const waivedUsers = core.getInput("waivedUsers") || ["dependabot[bot]"];
 
