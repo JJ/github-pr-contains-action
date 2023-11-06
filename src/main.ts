@@ -3,11 +3,11 @@ const { GitHub, context } = require("@actions/github");
 import parse from "parse-diff";
 import { rexify } from "./utils";
 
-async function getDiff(octokit) : Promise<File[]> {
+async function getDiff(octokit, pull_request_context) : Promise<File[]> {
   const response = await octokit.pulls.get({
-    owner: this.owner,
-    repo: this.repo,
-    pull_number: this.pullNumber,
+    owner: pull_request_context.owner,
+    repo: pull_request_context.repo,
+    pull_number: pull_request_context.pullNumber,
     headers: { accept: "application/vnd.github.v3.diff" },
   });
 
@@ -59,6 +59,10 @@ async function run() {
           }
         }
       }
+
+      core.info(context.payload.pull_request);
+      core.info(context.payload.repository);
+      core.info(context.payload);
 
       const isNotPrivate = context.payload.repository.private !== true;
       const bypassPrivateRepoCheck = core.getInput("bypassPrivateRepoCheck");
