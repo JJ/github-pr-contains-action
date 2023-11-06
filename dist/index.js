@@ -71,10 +71,11 @@ function run() {
             const token = core.getInput("github-token", { required: true });
             const octokit = (0, github_1.getOctokit)(token);
             const senderInfo = (_a = github_1.context === null || github_1.context === void 0 ? void 0 : github_1.context.payload) === null || _a === void 0 ? void 0 : _a.sender;
-            core.info(`Sender: ${senderInfo === null || senderInfo === void 0 ? void 0 : senderInfo.type}, ${JSON.stringify(senderInfo)}`);
-            if ((senderInfo === null || senderInfo === void 0 ? void 0 : senderInfo.type) === 'User') {
-                const senderName = senderInfo.login;
-                core.info(`PR created by ${senderName}`);
+            const senderName = senderInfo === null || senderInfo === void 0 ? void 0 : senderInfo.login;
+            const senderType = senderInfo === null || senderInfo === void 0 ? void 0 : senderInfo.type;
+            core.info(`PR created by ${senderName} (${senderType})`);
+            // NOTE(ApoorvGuptaAI): Maybe we should not check senderType before doing the waive check.
+            if (senderType === 'User') {
                 // First check for waived users
                 const waivedUsers = core.getInput("waivedUsers") || ["dependabot[bot]"];
                 if (waivedUsers.includes(senderName)) {
