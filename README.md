@@ -76,10 +76,6 @@ jobs:
 
 It would check that there's only a single file modified (because why would you need to change another, if all you want is to add your name to the contributors' file), a single line is changed (because you're only one, right?) and that it includes a link to your GitHub profile by forcing the diff to contain that string.
 
-## Caveats
-
-This GitHub action works as is in public repositories. By default, diff checking will simply be disabled if it detects it is being run in a private repository.
-
 ## Contributing to development
 
 Any suggestion, bug report, etc, is appreciated. Please check out or create an
