@@ -64,13 +64,14 @@ function getDiff(octokit, context) {
     });
 }
 function run() {
-    var _a, _b;
+    var _a, _b, _c;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             // get information on everything
             const token = core.getInput("github-token", { required: true });
-            // const github = new GitHub(token, {});
-            // const user = context.payload.pull_request.user.login;
+            const octokit = (0, github_1.getOctokit)(token);
+            const senderInfo = (_a = github_1.context === null || github_1.context === void 0 ? void 0 : github_1.context.payload) === null || _a === void 0 ? void 0 : _a.sender;
+            core.info(`Sender: ${senderInfo === null || senderInfo === void 0 ? void 0 : senderInfo.type}, ${senderInfo}`);
             // // First check for waived users
             // const waivedUsers = core.getInput("waivedUsers") || ["dependabot[bot]"];
             // if (waivedUsers.includes(user)) {
@@ -86,7 +87,7 @@ function run() {
             }
             else {
                 if (bodyContains || bodyDoesNotContain) {
-                    const PRBody = (_b = (_a = github_1.context === null || github_1.context === void 0 ? void 0 : github_1.context.payload) === null || _a === void 0 ? void 0 : _a.pull_request) === null || _b === void 0 ? void 0 : _b.body;
+                    const PRBody = (_c = (_b = github_1.context === null || github_1.context === void 0 ? void 0 : github_1.context.payload) === null || _b === void 0 ? void 0 : _b.pull_request) === null || _c === void 0 ? void 0 : _c.body;
                     core.info("Checking body contents");
                     if (!PRBody) {
                         core.setFailed("The body is empty, can't check");
@@ -100,13 +101,10 @@ function run() {
                         }
                     }
                 }
-                const isNotPrivate = false;
-                const bypassPrivateRepoCheck = core.getInput("bypassPrivateRepoCheck");
-                if (isNotPrivate || bypassPrivateRepoCheck) {
+                if (true) {
                     core.info("Checking diff contents : 7");
                     const diffContains = core.getInput("diffContains");
                     const diffDoesNotContain = core.getInput("diffDoesNotContain");
-                    const octokit = (0, github_1.getOctokit)(token);
                     // core.info("Requesting " + diff_url);
                     // const result = await github.request(diff_url);
                     // const files = parse(result.data);
@@ -148,10 +146,6 @@ function run() {
                             additions;
                         core.setFailed(this_msg);
                     }
-                }
-                else {
-                    core.warning("⚠️ Apoorv: I'm sorry, can't check diff in private repositories with the default token. " +
-                        "If you are using a valid token, please set bypassPrivateRepoCheck: true to disable the check.");
                 }
             }
         }

@@ -23,8 +23,10 @@ async function run() {
   try {
     // get information on everything
     const token = core.getInput("github-token", { required: true });
-    // const github = new GitHub(token, {});
-    // const user = context.payload.pull_request.user.login;
+    const octokit = getOctokit(token);
+
+    const senderInfo = context?.payload?.sender;
+    core.info(`Sender: ${senderInfo?.type}, ${senderInfo}`);
     // // First check for waived users
     // const waivedUsers = core.getInput("waivedUsers") || ["dependabot[bot]"];
 
@@ -62,13 +64,10 @@ async function run() {
         }
       }
 
-      const isNotPrivate = false;
-      const bypassPrivateRepoCheck = core.getInput("bypassPrivateRepoCheck");
-      if (isNotPrivate || bypassPrivateRepoCheck) {
+      if (true) {
         core.info("Checking diff contents : 7");
         const diffContains = core.getInput("diffContains");
         const diffDoesNotContain = core.getInput("diffDoesNotContain");
-        const octokit = getOctokit(token);
 
         // core.info("Requesting " + diff_url);
         // const result = await github.request(diff_url);
@@ -119,11 +118,6 @@ async function run() {
             additions;
           core.setFailed(this_msg);
         }
-      } else {
-        core.warning(
-          "⚠️ Apoorv: I'm sorry, can't check diff in private repositories with the default token. " +
-          "If you are using a valid token, please set bypassPrivateRepoCheck: true to disable the check."
-        );
       }
     }
   } catch (error: any) {
