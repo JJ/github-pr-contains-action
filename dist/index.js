@@ -49,10 +49,12 @@ const utils_1 = __nccwpck_require__(918);
 function getDiff(octokit, context) {
     return __awaiter(this, void 0, void 0, function* () {
         const { owner, repo } = context.repo();
+        const pull_number = context.payload.pull_request.number;
+        core.info(`${owner}, ${repo}, ${pull_number}`);
         const response = yield octokit.pulls.get({
             owner,
             repo,
-            pull_number: context.payload.pull_request.number,
+            pull_number,
             headers: { accept: "application/vnd.github.v3.diff" },
         });
         const diff = response.data;
@@ -98,9 +100,9 @@ function run() {
                         }
                     }
                 }
-                core.info(context.payload.pull_request);
-                core.info(context.payload.repository);
-                core.info(context.payload);
+                core.info(`${context.payload.pull_request}`);
+                core.info(`${context.payload.repository}`);
+                core.info(`${context.payload}`);
                 const isNotPrivate = context.payload.repository.private !== true;
                 const bypassPrivateRepoCheck = core.getInput("bypassPrivateRepoCheck");
                 if (isNotPrivate || bypassPrivateRepoCheck) {
