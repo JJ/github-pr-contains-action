@@ -46,13 +46,16 @@ const core = __importStar(__nccwpck_require__(2186));
 const github_1 = __nccwpck_require__(5438);
 const parse_diff_1 = __importDefault(__nccwpck_require__(4833));
 const utils_1 = __nccwpck_require__(918);
-function getDiff(octokit, context) {
-    var _a, _b, _c, _d, _e, _f, _g;
+function getDiff(octokit, repository, pull_request) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
-        const owner = (_c = (_b = (_a = context === null || context === void 0 ? void 0 : context.payload) === null || _a === void 0 ? void 0 : _a.repository) === null || _b === void 0 ? void 0 : _b.owner) === null || _c === void 0 ? void 0 : _c.login;
-        const repo = (_e = (_d = context === null || context === void 0 ? void 0 : context.payload) === null || _d === void 0 ? void 0 : _d.repository) === null || _e === void 0 ? void 0 : _e.name;
-        const pull_number = (_g = (_f = context === null || context === void 0 ? void 0 : context.payload) === null || _f === void 0 ? void 0 : _f.pull_request) === null || _g === void 0 ? void 0 : _g.number;
+        const owner = (_a = repository === null || repository === void 0 ? void 0 : repository.owner) === null || _a === void 0 ? void 0 : _a.login;
+        const repo = repository === null || repository === void 0 ? void 0 : repository.name;
+        const pull_number = pull_request === null || pull_request === void 0 ? void 0 : pull_request.number;
         core.info(`Getting diff for: ${owner}, ${repo}, ${pull_number}`);
+        if (!owner || !repo || typeof (pull_number) !== 'number') {
+            throw Error('Missing metadata required for fetching diff.');
+        }
         const response = yield octokit.rest.pulls.get({
             owner,
             repo,
@@ -64,36 +67,50 @@ function getDiff(octokit, context) {
     });
 }
 function run() {
-    var _a, _b, _c;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             // get information on everything
             const token = core.getInput("github-token", { required: true });
             const octokit = (0, github_1.getOctokit)(token);
-            const senderInfo = (_a = github_1.context === null || github_1.context === void 0 ? void 0 : github_1.context.payload) === null || _a === void 0 ? void 0 : _a.sender;
+            const payload = github_1.context.payload;
+            const senderInfo = payload === null || payload === void 0 ? void 0 : payload.sender;
             const senderName = senderInfo === null || senderInfo === void 0 ? void 0 : senderInfo.login;
             const senderType = senderInfo === null || senderInfo === void 0 ? void 0 : senderInfo.type;
             core.info(`PR created by ${senderName} (${senderType})`);
-            // NOTE(ApoorvGuptaAI): Maybe we should not check senderType before doing the waive check.
-            if (senderType === 'User') {
-                // First check for waived users
+            // First check for waived users
+            if (senderName) {
                 const waivedUsers = core.getInput("waivedUsers") || ["dependabot[bot]"];
                 if (waivedUsers.includes(senderName)) {
                     core.warning(`⚠️ Not running this workflow for waived user «${senderName}»`);
                     return;
                 }
             }
+            else {
+                core.warning('⚠️ Sender info missing. Passing waived user check.');
+            }
             // Check if the body contains required string
             const bodyContains = core.getInput("bodyContains");
             const bodyDoesNotContain = core.getInput("bodyDoesNotContain");
             if (github_1.context.eventName !== "pull_request" &&
                 github_1.context.eventName !== "pull_request_target") {
+                // TODO(ApoorvGuptaAi) Should just return here and skip the rest of the check.
                 core.warning("⚠️ Not a pull request, skipping PR body checks");
             }
             else {
+                const pull_request = payload.pull_request;
+                const repository = payload.repository;
+                if (!pull_request) {
+                    core.setFailed("Expecting pull_request metadata.");
+                    return;
+                }
+                if (!repository) {
+                    core.setFailed("Expecting repository metadata.");
+                    return;
+                }
                 if (bodyContains || bodyDoesNotContain) {
-                    const PRBody = (_c = (_b = github_1.context === null || github_1.context === void 0 ? void 0 : github_1.context.payload) === null || _b === void 0 ? void 0 : _b.pull_request) === null || _c === void 0 ? void 0 : _c.body;
+                    const PRBody = pull_request === null || pull_request === void 0 ? void 0 : pull_request.body;
                     core.info("Checking body contents");
+                    // NOTE(apoorv) Its valid to have PRs with no body, so maybe that should not fail validation?
                     if (!PRBody) {
                         core.setFailed("The body is empty, can't check");
                     }
@@ -109,7 +126,7 @@ function run() {
                 core.info("Checking diff contents");
                 const diffContains = core.getInput("diffContains");
                 const diffDoesNotContain = core.getInput("diffDoesNotContain");
-                const files = yield getDiff(octokit, github_1.context);
+                const files = yield getDiff(octokit, repository, pull_request);
                 core.exportVariable("files", files);
                 core.setOutput("files", files);
                 const filesChanged = +core.getInput("filesChanged");
@@ -152,8 +169,7 @@ function run() {
         catch (error) {
             if (error.name === "HttpError") {
                 core.setFailed("❌ There seems to be an error in an API request" +
-                    "\nThis is usually due to either being in a private repository" +
-                    "\nor at any rate using a GitHub token without the adequate scope");
+                    "\nThis is usually due to using a GitHub token without the adequate scope");
             }
             else {
                 core.setFailed("❌ " + error.stack);
