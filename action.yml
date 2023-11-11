@@ -1,4 +1,4 @@
-name: "Check pull request body, diff and files"
+name: "Check pull request body, diff and files - Apoorv's Test copy"
 description: "Checks that the body or the added code contains or avoid a word, number of files or lines changed"
 author: "JJ"
 branding:
