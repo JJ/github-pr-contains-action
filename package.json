@@ -21,7 +21,7 @@
    "author": "JJ Merelo",
    "license": "MIT",
    "dependencies": {
-      "@actions/github": "^1.1.0",
+      "@actions/github": "^6.0.0",
       "parse-diff": "^0.6.0"
    },
    "devDependencies": {

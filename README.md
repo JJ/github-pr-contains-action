@@ -76,10 +76,6 @@ jobs:
 
 It would check that there's only a single file modified (because why would you need to change another, if all you want is to add your name to the contributors' file), a single line is changed (because you're only one, right?) and that it includes a link to your GitHub profile by forcing the diff to contain that string.
 
-## Caveats
-
-This GitHub action works as is in public repositories. Diff checking will simply be disabled if it detects it is being run in a private repository.
-
 ## Contributing to development
 
 Any suggestion, bug report, etc, is appreciated. Please check out or create an
@@ -108,6 +104,7 @@ There are several forks of this action, with additional features:
 - `v9`: adds some informative messages, disables API calls for private repositories.
 - `v10`: Skips checks if not in a pull request; adds information to prevent this use too.
 - `v11`: Adds a configuration variable that skips users, with dependabot skipped by default (or passed through).
+- `v12`: Make compatible with private repos. Upgrade to latest github API.
 
 ## License
 
