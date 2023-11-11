@@ -60,11 +60,11 @@ async function run() {
       const pull_request = payload.pull_request;
       const repository = payload.repository;
       if (!pull_request) {
-        core.setFailed("Expecting pull_request metadata.")
+        core.setFailed("❌ Expecting pull_request metadata.")
         return;
       }
       if (!repository) {
-        core.setFailed("Expecting repository metadata.")
+        core.setFailed("❌ Expecting repository metadata.")
         return;
       }
       if (bodyContains || bodyDoesNotContain) {
@@ -72,7 +72,7 @@ async function run() {
         core.info("Checking body contents");
         // NOTE(apoorv) Its valid to have PRs with no body, so maybe that should not fail validation?
         if (!PRBody) {
-          core.setFailed("The body is empty, can't check");
+          core.setFailed("❌ The body is empty, can't check");
         } else {
           if (bodyContains && !rexify(bodyContains).test(PRBody)) {
             core.setFailed(
