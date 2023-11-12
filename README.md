@@ -29,9 +29,9 @@ jobs:
         waivedUsers: ["dependabot[bot]"]
 ```
 
-The `bodyContains` variable will include the string that we want the body of the PR to include, such as checked items in a checklist; obviously `bodyDoesNotContain` will hold the opposite, what we don't want to see in the PR body. Any of them can have a `|` separated list of words or expressions. The PR will check it contains _any_ of the words in `bodyContains` and _none_ of the words in `bodyDoesnotContain`.
+The `bodyContains` variable will include the string that we want the body of the PR to include, such as checked items in a checklist; obviously `bodyDoesNotContain` will hold the opposite, what we don't want to see in the PR body. Any of them can have a `|` separated list of words or expressions. The PR will check it contains _any_ of the words in `bodyContains` and _none_ of the words in `bodyDoesNotContain`.
 
-Same patterm for `diff(Contains|DoesNotContain)`. Can be a word or list of words you want in the diff (for instance, you want it to _always_ change code so it contains a statement terminator) or don't want in the diff (for instance, you don't want it to include TODOs because people never ever _do_ them).
+Same pattern for `diff(Contains|DoesNotContain)`. Can be a word or list of words you want in the diff (for instance, you want it to _always_ change code so it contains a statement terminator) or don't want in the diff (for instance, you don't want it to include TODOs because people never ever _do_ them).
 
 > These strings are unwittingly converted into regular expressions, so any regular expression will also work; `[]()+?*` are escaped so that things such as `[.]` work with the literal meaning. They can be left empty if you don't need that specific check.
 
@@ -44,7 +44,7 @@ You might want to qualify possible events that trigger this action, for intance,
 ```yaml
   pull_request:
     types:
-      [opened, edited, assigned, closed, , synchronize, review_requested, ready_for_review]
+      [opened, edited, assigned, closed, synchronize, review_requested, ready_for_review]
 ```
 
 This will skip diff checks every single push, for instance. Please remember that _this action will only work in pull requests_, since it checks the pull request object payload. It will simply skip any check (with a warning) if it is not triggered by a `pull_request` or `pull_request_target` event.
@@ -64,8 +64,8 @@ jobs:
     name: "Checks contributors"
     runs-on: ubuntu-latest
     steps:
-      - name: Check PR
-        uses: JJ/github-pr-contains-action@releases/v10
+      - name: Check that any new contributor links to their github page
+        uses: JJ/github-pr-contains-action@releases/v12
         with:
           github-token: ${{github.token}}
           linesChanged: 1
@@ -74,7 +74,7 @@ jobs:
           waivedUsers: ["dependabot[bot]","CompanyBigWig"]
 ```
 
-It would check that there's only a single file modified (because why would you need to change another, if all you want is to add your name to the contributors' file), a single line is changed (because you're only one, right?) and that it includes a link to your GitHub profile by forcing the diff to contain that string.
+It would check that there's only a single file modified (because why would you need to change another, if all you want is to add your name to the contributors' file), a single line is changed (because you're only one, right?) and that it includes a link to your GitHub profile by forcing the diff to contain that string. It would also allow the company's big wig to add however many they want, with or without links to their profiles.
 
 ## Contributing to development
 
@@ -86,7 +86,7 @@ contributing a PR, if possible.
 
 There are several forks of this action, with additional features:
 
-- [PR content checker by @jsoares](https://github.com/jsoares/gh-pr-content-checker/) includes `diffDoesNotContain`
+- [PR content checker by @jsoares](https://github.com/jsoares/gh-pr-content-checker/)
 - [Francisco Giordano's `pr-content-checker`](https://github.com/francesco-giordano/gh-pr-content-checker)
 - [Pablo Statsig's `pr-content-checker`](https://github.com/pablo-statsig/gh-pr-content-checker/)
 
