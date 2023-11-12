@@ -26,5 +26,5 @@ outputs:
     description: "Lines added to the PR"
 
 runs:
-  using: "node16"
+  using: "node20"
   main: "dist/index.js"
