@@ -10,8 +10,8 @@ jobs:
     name: "Checks contributors"
     runs-on: ubuntu-latest
     steps:
-      - name: Check PR
-        uses: JJ/github-pr-contains-action@releases/v10
+      - name: Check PR for single contributots with link
+        uses: JJ/github-pr-contains-action@releases/v12
         with:
           github-token: ${{github.token}}
           linesChanged: 1
