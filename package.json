@@ -3,7 +3,7 @@
    "version": "12",
    "private": false,
    "description": "An action that performs checks on PRs",
-   "main": "dist/main.js",
+   "main": "lib/main.js",
    "scripts": {
       "build": "tsc && ncc build --source-map --license licenses.txt",
       "test": "jest"
