@@ -1,5 +1,5 @@
 name: "Check pull request body, diff and files"
-description: "Checks that the body or the added code contains or avoid a word, number of files or lines changed"
+description: "Checks that the body or the added code contains or avoids a word, number of files or lines changed"
 author: "JJ"
 branding:
   icon: "git-pull-request"
