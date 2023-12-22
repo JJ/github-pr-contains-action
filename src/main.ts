@@ -1,9 +1,18 @@
 import * as core from "@actions/core";
-import { getOctokit, context } from "@actions/github";
+import { getOctokit, context, } from "@actions/github";
 import parse from "parse-diff";
 import { rexify } from "./utils";
+import { Context } from "@actions/github/lib/context";
+import { Octokit } from "@octokit/core";
+import { PaginateInterface } from "@octokit/plugin-paginate-rest";
+import { Api } from "@octokit/plugin-rest-endpoint-methods/dist-types/types";
+import { PayloadRepository } from "@actions/github/lib/interfaces";
 
-async function getDiff(octokit, repository, pull_request) {
+async function getDiff(
+  octokit: Octokit & Api & { paginate: PaginateInterface; },
+  repository: PayloadRepository,
+  pull_request
+) {
   const owner = repository?.owner?.login;
   const repo = repository?.name;
   const pull_number = pull_request?.number;
@@ -20,6 +29,25 @@ async function getDiff(octokit, repository, pull_request) {
 
   const diff = response.data as unknown as string;
   return parse(diff);
+}
+
+async function comment(
+  message: string,
+  octokit: Octokit & Api & { paginate: PaginateInterface; },
+  context: Context) {
+  const owner = context.payload.repository?.owner?.login;
+
+  if (!owner) {
+    core.setFailed("❌ Expecting repository metadata.");
+    return;
+  }
+
+  octokit.rest.issues.createComment({
+    owner: owner,
+    repo: context.issue.repo,
+    issue_number: context.issue.number,
+    body: message
+  });
 }
 
 async function run() {
@@ -60,11 +88,11 @@ async function run() {
       const pull_request = payload.pull_request;
       const repository = payload.repository;
       if (!pull_request) {
-        core.setFailed("❌ Expecting pull_request metadata.")
+        comment("❌ Expecting pull_request metadata.", octokit, context)
         return;
       }
       if (!repository) {
-        core.setFailed("❌ Expecting repository metadata.")
+        comment("❌ Expecting repository metadata.", octokit, context)
         return;
       }
       if (bodyContains || bodyDoesNotContain) {
@@ -72,13 +100,17 @@ async function run() {
         core.info("Checking body contents");
         if (PRBody) {
           if (bodyContains && !rexify(bodyContains).test(PRBody)) {
-            core.setFailed(
-              "The body of the PR does not contain " + bodyContains
+            comment(
+              "The body of the PR does not contain " + bodyContains,
+              octokit,
+              context
             );
           }
           if (bodyDoesNotContain && rexify(bodyDoesNotContain).test(PRBody)) {
-            core.setFailed(
-              "The body of the PR should not contain " + bodyDoesNotContain
+            comment(
+              "The body of the PR should not contain " + bodyDoesNotContain,
+              octokit,
+              context
             );
           }
         }
@@ -93,8 +125,10 @@ async function run() {
       core.setOutput("files", files);
       const filesChanged = +core.getInput("filesChanged");
       if (filesChanged && files.length != filesChanged) {
-        core.setFailed(
-          "You should change exactly " + filesChanged + " file(s)"
+        comment(
+          "You should change exactly " + filesChanged + " file(s)",
+          octokit,
+          context
         );
       }
 
@@ -111,16 +145,20 @@ async function run() {
         });
       });
       if (diffContains && !rexify(diffContains).test(changes)) {
-        core.setFailed(
-          "The added code does not contain «" + diffContains + "»"
+        comment(
+          "The added code does not contain '" + diffContains + "'",
+          octokit,
+          context
         );
       } else {
         core.exportVariable("diff", changes);
         core.setOutput("diff", changes);
       }
       if (diffDoesNotContain && rexify(diffDoesNotContain).test(changes)) {
-        core.setFailed(
-          "The added code should not contain " + diffDoesNotContain
+        comment(
+          "The added code should not contain " + diffDoesNotContain,
+          octokit,
+          context
         );
       }
 
@@ -132,14 +170,14 @@ async function run() {
           linesChanged +
           " lines(s) and you have changed " +
           additions;
-        core.setFailed(this_msg);
+        comment(this_msg, octokit, context);
       }
     }
   } catch (error: any) {
     if (error.name === "HttpError") {
       core.setFailed(
         "❌ There seems to be an error in an API request" +
-          "\nThis is usually due to using a GitHub token without the adequate scope"
+          "\nThis is usually due to using a GitHub token without the adequate scope",
       );
     } else {
       core.setFailed("❌ " + error.stack);
