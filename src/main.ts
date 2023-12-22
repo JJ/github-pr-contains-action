@@ -70,10 +70,7 @@ async function run() {
       if (bodyContains || bodyDoesNotContain) {
         const PRBody = pull_request?.body;
         core.info("Checking body contents");
-        // NOTE(apoorv) Its valid to have PRs with no body, so maybe that should not fail validation?
-        if (!PRBody) {
-          core.setFailed("❌ The body is empty, can't check");
-        } else {
+        if (PRBody) {
           if (bodyContains && !rexify(bodyContains).test(PRBody)) {
             core.setFailed(
               "The body of the PR does not contain " + bodyContains
