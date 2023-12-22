@@ -1,6 +1,6 @@
 # Checking PR bodies and diffs for words, and number of files and lines in files changed [![Basic installation and build checks](https://github.com/JJ/github-pr-contains-action/actions/workflows/checkin.yml/badge.svg)](https://github.com/JJ/github-pr-contains-action/actions/workflows/checkin.yml)
 
-Originally based on the [actions TS template](https://github.com/actions/typescript-template), it checks for the presence/absence of a string or group of strings in the body or diff in a PR, as well as certain conditions on the PR: number of files changed, and number of lines changed.
+Originally based on the [actions TS template](https://github.com/actions/typescript-action), it checks for the presence/absence of a string or group of strings in the body or diff in a PR, as well as certain conditions on the PR: number of files changed, and number of lines changed.
 
 It uses the GitHub API, so you'll need to provide a token. Don't worry, that's built-in.
 
