@@ -100,7 +100,7 @@ string.
 
 ## History
 
-- `v1`: Initial fork with full regexp support and project alignment
+- `v1`: Initial fork with full regular expression support and project alignment
 
 ## Initial Setup
 
@@ -154,7 +154,7 @@ There are several forks of this action, with additional features:
 
 ## Credits
 
-This repo has been based on the work of
+This repository has been based on the work of
 [ApoorvGuptaAi/github-pr-contains-action](https://github.com/ApoorvGuptaAi/github-pr-contains-action).
 
 ## License
