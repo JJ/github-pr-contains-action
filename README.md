@@ -98,21 +98,6 @@ file), a single line is changed (because you're only one, right?) and that it
 includes a link to your GitHub profile by forcing the diff to contain that
 string.
 
-## Contributing to development
-
-Any suggestion, bug report, etc, is appreciated. Please check out or create an
-[issue](https://github.com/JJ/github-pr-contains-action/issues) before
-contributing a PR, if possible.
-
-## See also
-
-There are several forks of this action, with additional features:
-
-- [PR content checker by @jsoares](https://github.com/jsoares/gh-pr-content-checker/)
-  includes `diffDoesNotContain`
-- [Francisco Giordano's `pr-content-checker`](https://github.com/francesco-giordano/gh-pr-content-checker)
-- [Pablo Statsig's `pr-content-checker`](https://github.com/pablo-statsig/gh-pr-content-checker/)
-
 ## History
 
 - `v1`: Initial fork with full regexp support and project alignment
@@ -157,6 +142,20 @@ need to perform some initial setup steps before you can develop your action.
 
    ...
    ```
+
+## See also
+
+There are several forks of this action, with additional features:
+
+- [PR content checker by @jsoares](https://github.com/jsoares/gh-pr-content-checker/)
+  includes `diffDoesNotContain`
+- [Francisco Giordano's `pr-content-checker`](https://github.com/francesco-giordano/gh-pr-content-checker)
+- [Pablo Statsig's `pr-content-checker`](https://github.com/pablo-statsig/gh-pr-content-checker/)
+
+## Credits
+
+This repo has been based on the work of
+[ApoorvGuptaAi/github-pr-contains-action](https://github.com/ApoorvGuptaAi/github-pr-contains-action).
 
 ## License
 
