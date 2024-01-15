@@ -55,7 +55,7 @@ jobs:
         id: test-action
         uses: ./
         with:
-          milliseconds: 2000
+          bodyDoesNotContain: 'TODO'
 
       - name: Print Output
         id: output

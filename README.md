@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check PR
-        uses: JJ/github-pr-contains-action@releases/v11
+        uses: EugenMayer/github-pr-contains-action@releases/v1
         with:
           github-token: ${{github.token}}
           bodyDoesNotContain: 'Delete|this'
@@ -41,26 +41,16 @@ body. Any of them can have a `|` separated list of words or expressions. The PR
 will check it contains _any_ of the words in `bodyContains` and _none_ of the
 words in `bodyDoesnotContain`.
 
-Same patterm for `diff(Contains|DoesNotContain)`. Can be a word or list of words
+Same pattern for `diff(Contains|DoesNotContain)`. Can be a word or list of words
 you want in the diff (for instance, you want it to _always_ change code so it
 contains a statement terminator) or don't want in the diff (for instance, you
 don't want it to include TODOs because people never ever _do_ them).
-
-> These strings are unwittingly converted into regular expressions, so any
-> regular expression will also work; `[]()+?*` are escaped so that things such
-> as `[.]` work with the literal meaning. They can be left empty if you don't
-> need that specific check.
 
 Finally, `waivedUsers` is a YAML array that contains the users that will be
 spared from running these checks; if the PR is triggered by one of those users,
 it will exit with a warning and with a green status. By default, it has the
 value `["dependabot[bot]"]`. If you want to edit more and want to keep
 dependabot PRs from failing, add it to your list.
-
-An example is used as
-[.github/workflows/check-PRs-here.yaml](.github/workflows/check-PRs-here.yaml)
-in this repository as well as
-[this one, which is the one I use for testing](.github/workflows/pr.yaml).
 
 You might want to qualify possible events that trigger this action, for intance,
 this way:
@@ -93,7 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check PR
-        uses: JJ/github-pr-contains-action@releases/v10
+        uses: EugenMayer/github-pr-contains-action@releases/v1
         with:
           github-token: ${{github.token}}
           linesChanged: 1
@@ -125,25 +115,7 @@ There are several forks of this action, with additional features:
 
 ## History
 
-- `v0`: proof of concept, published to marketplace
-- `v1`: Adds several more checks
-- `v2`: Adds check for strings to avoid and creates issues for errors.
-- `v3`: Changes packaging, upgrades modules, deletes unneeded files.
-- `v4`: Solves a number of issues.
-- `v5`: Will not use `diffContains` if it's an empty string
-- `v6`: can use words or regular expressions in `bodyContains`/
-  `bodyDoesNotContain`
-- `v7`: includes more "rexified" characters: `*,?,+`
-- `v8`: adds `diffDoesNotContain` and extends regex testing to diff tests.
-- `v9`: adds some informative messages, disables API calls for private
-  repositories.
-- `v10`: Skips checks if not in a pull request; adds information to prevent this
-  use too.
-- `v11`: Adds a configuration variable that skips users, with dependabot skipped
-  by default (or passed through).
-- `v12`: Make compatible with private repos. Upgrade to latest github API.
-- `v13`: Do not automagically escape regular expressions but let the user do
-  this.
+- `v1`: Initial fork with full regexp support and project alignment
 
 ## Initial Setup
 
