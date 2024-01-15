@@ -1,204 +1,5 @@
-require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
+/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
-
-/***/ 3109:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __importStar(__nccwpck_require__(2186));
-const github_1 = __nccwpck_require__(5438);
-const parse_diff_1 = __importDefault(__nccwpck_require__(4833));
-const utils_1 = __nccwpck_require__(918);
-function getDiff(octokit, repository, pull_request) {
-    var _a;
-    return __awaiter(this, void 0, void 0, function* () {
-        const owner = (_a = repository === null || repository === void 0 ? void 0 : repository.owner) === null || _a === void 0 ? void 0 : _a.login;
-        const repo = repository === null || repository === void 0 ? void 0 : repository.name;
-        const pull_number = pull_request === null || pull_request === void 0 ? void 0 : pull_request.number;
-        core.info(`Getting diff for: ${owner}, ${repo}, ${pull_number}`);
-        if (!owner || !repo || typeof (pull_number) !== 'number') {
-            throw Error('Missing metadata required for fetching diff.');
-        }
-        const response = yield octokit.rest.pulls.get({
-            owner,
-            repo,
-            pull_number,
-            headers: { accept: "application/vnd.github.v3.diff" },
-        });
-        const diff = response.data;
-        return (0, parse_diff_1.default)(diff);
-    });
-}
-function run() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            // get information on everything
-            const token = core.getInput("github-token", { required: true });
-            const octokit = (0, github_1.getOctokit)(token);
-            const payload = github_1.context.payload;
-            const senderInfo = payload === null || payload === void 0 ? void 0 : payload.sender;
-            const senderName = senderInfo === null || senderInfo === void 0 ? void 0 : senderInfo.login;
-            const senderType = senderInfo === null || senderInfo === void 0 ? void 0 : senderInfo.type;
-            core.info(`PR created by ${senderName} (${senderType})`);
-            // First check for waived users
-            if (senderName) {
-                const waivedUsers = core.getInput("waivedUsers") || ["dependabot[bot]"];
-                if (waivedUsers.includes(senderName)) {
-                    core.warning(`⚠️ Not running this workflow for waived user «${senderName}»`);
-                    return;
-                }
-            }
-            else {
-                core.warning('⚠️ Sender info missing. Passing waived user check.');
-            }
-            // Check if the body contains required string
-            const bodyContains = core.getInput("bodyContains");
-            const bodyDoesNotContain = core.getInput("bodyDoesNotContain");
-            if (github_1.context.eventName !== "pull_request" &&
-                github_1.context.eventName !== "pull_request_target") {
-                // TODO(ApoorvGuptaAi) Should just return here and skip the rest of the check.
-                core.warning("⚠️ Not a pull request, skipping PR body checks");
-            }
-            else {
-                const pull_request = payload.pull_request;
-                const repository = payload.repository;
-                if (!pull_request) {
-                    core.setFailed("Expecting pull_request metadata.");
-                    return;
-                }
-                if (!repository) {
-                    core.setFailed("Expecting repository metadata.");
-                    return;
-                }
-                if (bodyContains || bodyDoesNotContain) {
-                    const PRBody = pull_request === null || pull_request === void 0 ? void 0 : pull_request.body;
-                    core.info("Checking body contents");
-                    // NOTE(apoorv) Its valid to have PRs with no body, so maybe that should not fail validation?
-                    if (!PRBody) {
-                        core.setFailed("The body is empty, can't check");
-                    }
-                    else {
-                        if (bodyContains && !(0, utils_1.rexify)(bodyContains).test(PRBody)) {
-                            core.setFailed("The body of the PR does not contain " + bodyContains);
-                        }
-                        if (bodyDoesNotContain && (0, utils_1.rexify)(bodyDoesNotContain).test(PRBody)) {
-                            core.setFailed("The body of the PR should not contain " + bodyDoesNotContain);
-                        }
-                    }
-                }
-                core.info("Checking diff contents");
-                const diffContains = core.getInput("diffContains");
-                const diffDoesNotContain = core.getInput("diffDoesNotContain");
-                const files = yield getDiff(octokit, repository, pull_request);
-                core.exportVariable("files", files);
-                core.setOutput("files", files);
-                const filesChanged = +core.getInput("filesChanged");
-                if (filesChanged && files.length != filesChanged) {
-                    core.setFailed("You should change exactly " + filesChanged + " file(s)");
-                }
-                let changes = "";
-                let additions = 0;
-                files.forEach(function (file) {
-                    additions += file.additions;
-                    file.chunks.forEach(function (chunk) {
-                        chunk.changes.forEach(function (change) {
-                            if (change.add) {
-                                changes += change.content;
-                            }
-                        });
-                    });
-                });
-                if (diffContains && !(0, utils_1.rexify)(diffContains).test(changes)) {
-                    core.setFailed("The added code does not contain «" + diffContains + "»");
-                }
-                else {
-                    core.exportVariable("diff", changes);
-                    core.setOutput("diff", changes);
-                }
-                if (diffDoesNotContain && (0, utils_1.rexify)(diffDoesNotContain).test(changes)) {
-                    core.setFailed("The added code should not contain " + diffDoesNotContain);
-                }
-                core.info("Checking lines/files changed");
-                const linesChanged = +core.getInput("linesChanged");
-                if (linesChanged && additions != linesChanged) {
-                    const this_msg = "You should change exactly " +
-                        linesChanged +
-                        " lines(s) and you have changed " +
-                        additions;
-                    core.setFailed(this_msg);
-                }
-            }
-        }
-        catch (error) {
-            if (error.name === "HttpError") {
-                core.setFailed("❌ There seems to be an error in an API request" +
-                    "\nThis is usually due to using a GitHub token without the adequate scope");
-            }
-            else {
-                core.setFailed("❌ " + error.stack);
-            }
-        }
-    });
-}
-run();
-
-
-/***/ }),
-
-/***/ 918:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.rexify = void 0;
-function rexify(expression) {
-    ["(", ")", "[", "]", "?", "+", "*"].forEach((s) => {
-        expression = expression.replace(s, `\\${s}`);
-    });
-    return new RegExp(expression);
-}
-exports.rexify = rexify;
-
-
-/***/ }),
 
 /***/ 7351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
@@ -757,7 +558,7 @@ class OidcClient {
                 .catch(error => {
                 throw new Error(`Failed to get ID Token. \n 
         Error Code : ${error.statusCode}\n 
-        Error Message: ${error.result.message}`);
+        Error Message: ${error.message}`);
             });
             const id_token = (_a = res.result) === null || _a === void 0 ? void 0 : _a.value;
             if (!id_token) {
@@ -30313,6 +30114,176 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 399:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.run = void 0;
+const core = __importStar(__nccwpck_require__(2186));
+const github_1 = __nccwpck_require__(5438);
+const parse_diff_1 = __importDefault(__nccwpck_require__(4833));
+/**
+ * The main function for the action.
+ * @returns {Promise<void>} Resolves when the action is complete.
+ */
+async function run() {
+    try {
+        // get information on everything
+        const token = core.getInput('github-token', { required: true });
+        const octokit = (0, github_1.getOctokit)(token);
+        const payload = github_1.context.payload;
+        const senderInfo = payload?.sender;
+        const senderName = senderInfo?.login;
+        const senderType = senderInfo?.type;
+        core.info(`PR created by ${senderName} (${senderType})`);
+        // First check for waived users
+        if (senderName) {
+            const waivedUsers = core.getInput('waivedUsers') || ['dependabot[bot]'];
+            if (waivedUsers.includes(senderName)) {
+                core.warning(`⚠️ Not running this workflow for waived user «${senderName}»`);
+                return;
+            }
+        }
+        else {
+            core.warning('⚠️ Sender info missing. Passing waived user check.');
+        }
+        // Check if the body contains required string
+        const bodyContains = core.getInput('bodyContains');
+        const bodyDoesNotContain = core.getInput('bodyDoesNotContain');
+        if (github_1.context.eventName !== 'pull_request' &&
+            github_1.context.eventName !== 'pull_request_target') {
+            // TODO(ApoorvGuptaAi) Should just return here and skip the rest of the check.
+            core.warning('⚠️ Not a pull request, skipping PR body checks');
+        }
+        else {
+            const pull_request = payload.pull_request;
+            const repository = payload.repository;
+            if (!pull_request) {
+                core.setFailed('Expecting pull_request metadata.');
+                return;
+            }
+            if (!repository) {
+                core.setFailed('Expecting repository metadata.');
+                return;
+            }
+            if (bodyContains || bodyDoesNotContain) {
+                const PRBody = pull_request?.body;
+                core.info('Checking body contents');
+                // NOTE(apoorv) Its valid to have PRs with no body, so maybe that should not fail validation?
+                if (!PRBody) {
+                    core.setFailed("The body is empty, can't check");
+                }
+                else {
+                    if (bodyContains && !new RegExp(bodyContains).test(PRBody)) {
+                        core.setFailed(`The body of the PR does not contain ${bodyContains}`);
+                    }
+                    if (bodyDoesNotContain && new RegExp(bodyContains).test(PRBody)) {
+                        core.setFailed(`The body of the PR should not contain ${bodyDoesNotContain}`);
+                    }
+                }
+            }
+            core.info('Checking diff contents');
+            const diffContains = core.getInput('diffContains');
+            const diffDoesNotContain = core.getInput('diffDoesNotContain');
+            const files = await getDiff(octokit, repository, pull_request);
+            core.exportVariable('files', files);
+            core.setOutput('files', files);
+            const filesChanged = +core.getInput('filesChanged');
+            if (filesChanged && files.length !== filesChanged) {
+                core.setFailed(`You should change exactly ${filesChanged} file(s)`);
+            }
+            let changes = '';
+            let additions = 0;
+            for (const file of files) {
+                additions += file.additions;
+                for (const chunk of file.chunks) {
+                    for (const change of chunk.changes) {
+                        if ('add' in change) {
+                            changes += change.content;
+                        }
+                    }
+                }
+            }
+            if (diffContains && !new RegExp(diffContains).test(changes)) {
+                core.setFailed(`The added code does not contain «${diffContains}»`);
+            }
+            else {
+                core.exportVariable('diff', changes);
+                core.setOutput('diff', changes);
+            }
+            if (diffDoesNotContain && new RegExp(diffDoesNotContain).test(changes)) {
+                core.setFailed(`The added code should not contain ${diffDoesNotContain}`);
+            }
+            core.info('Checking lines/files changed');
+            const linesChanged = +core.getInput('linesChanged');
+            if (linesChanged && additions !== linesChanged) {
+                const this_msg = `You should change exactly ${linesChanged} lines(s) and you have changed ${additions}`;
+                core.setFailed(this_msg);
+            }
+        }
+    }
+    catch (error) {
+        if (error instanceof Error)
+            if (error.name === 'HttpError') {
+                core.setFailed(`❌ There seems to be an error in an API request\nThis is usually due to using a GitHub token without the adequate scope`);
+            }
+            else {
+                core.setFailed(`❌ ${error.stack}`);
+            }
+    }
+}
+exports.run = run;
+async function getDiff(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+octokit, repository, pull_request) {
+    const owner = repository?.owner?.login;
+    const repo = repository?.name;
+    const pull_number = pull_request?.number;
+    core.info(`Getting diff for: ${owner}, ${repo}, ${pull_number}`);
+    if (!owner || !repo || typeof pull_number !== 'number') {
+        throw Error('Missing metadata required for fetching diff.');
+    }
+    const response = await octokit.rest.pulls.get({
+        owner,
+        repo,
+        pull_number,
+        headers: { accept: 'application/vnd.github.v3.diff' }
+    });
+    const diff = response.data;
+    return (0, parse_diff_1.default)(diff);
+}
+
+
+/***/ }),
+
 /***/ 9491:
 /***/ ((module) => {
 
@@ -30575,13 +30546,22 @@ module.exports = require("zlib");
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(3109);
-/******/ 	module.exports = __webpack_exports__;
-/******/ 	
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+(() => {
+"use strict";
+var exports = __webpack_exports__;
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/**
+ * The entrypoint for the action.
+ */
+const main_1 = __nccwpck_require__(399);
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
+(0, main_1.run)();
+
+})();
+
+module.exports = __webpack_exports__;
 /******/ })()
 ;
-//# sourceMappingURL=index.js.map
