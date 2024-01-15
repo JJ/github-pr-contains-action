@@ -56,7 +56,7 @@ jobs:
         uses: ./
         with:
           bodyDoesNotContain: 'TODO'
-
+          github-token: '123'
       - name: Print Output
         id: output
-        run: echo "${{ steps.test-action.outputs.time }}"
+        run: echo "${{ steps.test-action.outputs.diff }}"
