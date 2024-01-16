@@ -29267,8 +29267,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.checkPrBody = void 0;
 const core = __importStar(__nccwpck_require__(2186));
-function checkPrBody(pullRequestBody, bodyContains, bodyDoesNotContain) {
-    if (!(bodyContains && bodyDoesNotContain)) {
+function checkPrBody(pullRequestBody, bodyMustContain, bodyShallNotContain) {
+    if (!(bodyMustContain && bodyShallNotContain)) {
         // We have not been asked for body checks
         return;
     }
@@ -29276,12 +29276,17 @@ function checkPrBody(pullRequestBody, bodyContains, bodyDoesNotContain) {
         core.info('PR body is empty - skipping body check');
         return;
     }
-    core.info('Checking body contents');
-    if (bodyContains && !new RegExp(bodyContains).test(pullRequestBody)) {
-        core.setFailed(`The body of the PR does not contain ${bodyContains}`);
+    if (bodyMustContain) {
+        core.info(`Checking pr body to contain «${bodyMustContain}»`);
     }
-    if (bodyDoesNotContain && new RegExp(bodyContains).test(pullRequestBody)) {
-        core.setFailed(`The body of the PR should not contain ${bodyDoesNotContain}`);
+    if (bodyShallNotContain) {
+        core.info(`Checking pr body to NOT contain «${bodyShallNotContain}»`);
+    }
+    if (bodyMustContain && !new RegExp(bodyMustContain).test(pullRequestBody)) {
+        core.setFailed(`The body of the PR does not contain ${bodyMustContain}`);
+    }
+    if (bodyShallNotContain && new RegExp(bodyMustContain).test(pullRequestBody)) {
+        core.setFailed(`The body of the PR should not contain ${bodyShallNotContain}`);
     }
 }
 exports.checkPrBody = checkPrBody;
@@ -29321,12 +29326,16 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.checkPrDiff = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const regexp_1 = __nccwpck_require__(8700);
-function checkPrDiff(filesChanged, diffContainsRule, diffDoesNotContainRule) {
-    if (!(diffContainsRule || diffDoesNotContainRule)) {
+function checkPrDiff(filesChanged, diffMustContainRule, diffShallNotContainRule) {
+    if (!(diffMustContainRule || diffShallNotContainRule)) {
         return;
     }
-    core.info('Checking diff contents');
-    const didMatchContains = false;
+    if (diffMustContainRule) {
+        core.info(`Checking diff contain to contain «${diffMustContainRule}»`);
+    }
+    if (diffShallNotContainRule) {
+        core.info(`Checking diff content to NOT contain «${diffShallNotContainRule}»`);
+    }
     // Should test the regexp rules to the smallest possible payload, thus drill for the chunks.
     // This is the best way to avoid the regular expressions to run wild on too large diffs.
     for (const file of filesChanged) {
@@ -29335,13 +29344,13 @@ function checkPrDiff(filesChanged, diffContainsRule, diffDoesNotContainRule) {
                 if (!('add' in change)) {
                     continue;
                 }
-                if (diffContainsRule && (0, regexp_1.checkContains)(change.content, diffContainsRule)) {
+                if (diffMustContainRule && (0, regexp_1.checkContains)(change.content, diffMustContainRule)) {
                     // early exit (succeed fast), we already find what we looked for, no need to check any more diffs
                     return;
                 }
-                if (diffDoesNotContainRule && (0, regexp_1.checkContains)(change.content, diffDoesNotContainRule)) {
+                if (diffShallNotContainRule && (0, regexp_1.checkContains)(change.content, diffShallNotContainRule)) {
                     // early exit, we found what should not be present, fail fast
-                    core.setFailed(`The added code does contain «${diffDoesNotContainRule}» - this is not allowed»`);
+                    core.setFailed(`The added code does contain «${diffShallNotContainRule}» - this is not allowed»`);
                     core.exportVariable('diff', change.content);
                     core.setOutput('diff', change.content);
                     return;
@@ -29349,9 +29358,10 @@ function checkPrDiff(filesChanged, diffContainsRule, diffDoesNotContainRule) {
             }
         }
     }
-    if (diffContainsRule && !didMatchContains) {
-        // we parsed through all changes but did not find what is required, fail
-        core.setFailed(`The added code does not contain «${diffContainsRule}» - this is required`);
+    if (diffMustContainRule) {
+        // if a rule was provided but our file scan did not find and early exit, the required string has not been found
+        // in any changes. Thus we need to fail
+        core.setFailed(`The added code does not contain «${diffMustContainRule}» - this is required`);
     }
 }
 exports.checkPrDiff = checkPrDiff;
@@ -29391,7 +29401,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.checkMaxChangedFiles = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 function checkMaxChangedFiles(changedFiles, maxFilesAllowedToChange) {
-    if (maxFilesAllowedToChange && changedFiles.length !== maxFilesAllowedToChange) {
+    if (!maxFilesAllowedToChange) {
+        return;
+    }
+    core.info(`Checking pr to not exceed changes to more then ${maxFilesAllowedToChange} files`);
+    if (changedFiles.length !== maxFilesAllowedToChange) {
         core.setFailed(`You should change exactly ${maxFilesAllowedToChange} file(s)`);
     }
 }
@@ -29435,8 +29449,7 @@ function checkLinesAdded(filesChanged, linesAllowedToChange) {
     if (!linesAllowedToChange) {
         return;
     }
-    // Check if the body contains required string
-    core.info('Checking lines/files changed');
+    core.info(`Checking pr to not exceed more lines to change than ${linesAllowedToChange}`);
     const linesAdded = filesChanged.reduce((acc, current) => {
         return acc + current.additions;
     }, 0);

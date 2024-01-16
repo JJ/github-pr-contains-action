@@ -17,7 +17,7 @@ export function checkPrDiff(
   if (diffShallNotContainRule) {
     core.info(`Checking diff content to NOT contain «${diffShallNotContainRule}»`)
   }
-    // Should test the regexp rules to the smallest possible payload, thus drill for the chunks.
+  // Should test the regexp rules to the smallest possible payload, thus drill for the chunks.
   // This is the best way to avoid the regular expressions to run wild on too large diffs.
   for (const file of filesChanged) {
     for (const chunk of file.chunks) {
