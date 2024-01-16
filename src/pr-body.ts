@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 
-export function checkPrBody(pullRequestBody: string, bodyContains: string, bodyDoesNotContain: string): void {
-  if (!(bodyContains && bodyDoesNotContain)) {
+export function checkPrBody(pullRequestBody: string, bodyMustContain: string, bodyShallNotContain: string): void {
+  if (!(bodyMustContain && bodyShallNotContain)) {
     // We have not been asked for body checks
     return
   }
@@ -11,11 +11,17 @@ export function checkPrBody(pullRequestBody: string, bodyContains: string, bodyD
     return
   }
 
-  core.info('Checking body contents')
-  if (bodyContains && !new RegExp(bodyContains).test(pullRequestBody)) {
-    core.setFailed(`The body of the PR does not contain ${bodyContains}`)
+  if (bodyMustContain) {
+    core.info(`Checking pr body to contain «${bodyMustContain}»`)
   }
-  if (bodyDoesNotContain && new RegExp(bodyContains).test(pullRequestBody)) {
-    core.setFailed(`The body of the PR should not contain ${bodyDoesNotContain}`)
+  if (bodyShallNotContain) {
+    core.info(`Checking pr body to NOT contain «${bodyShallNotContain}»`)
+  }
+
+  if (bodyMustContain && !new RegExp(bodyMustContain).test(pullRequestBody)) {
+    core.setFailed(`The body of the PR does not contain ${bodyMustContain}`)
+  }
+  if (bodyShallNotContain && new RegExp(bodyMustContain).test(pullRequestBody)) {
+    core.setFailed(`The body of the PR should not contain ${bodyShallNotContain}`)
   }
 }

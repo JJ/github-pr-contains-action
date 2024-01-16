@@ -6,8 +6,7 @@ export function checkLinesAdded(filesChanged: parseDiff.File[], linesAllowedToCh
     return
   }
 
-  // Check if the body contains required string
-  core.info('Checking lines/files changed')
+  core.info(`Checking pr to not exceed more lines to change than ${linesAllowedToChange}`)
 
   const linesAdded = filesChanged.reduce((acc, current) => {
     return acc + current.additions
