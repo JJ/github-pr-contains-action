@@ -29283,10 +29283,11 @@ function checkPrBody(pullRequestBody, bodyMustContain, bodyShallNotContain) {
         core.info(`Checking pr body to NOT contain «${bodyShallNotContain}»`);
     }
     if (bodyMustContain && !new RegExp(bodyMustContain).test(pullRequestBody)) {
-        core.setFailed(`The body of the PR does not contain ${bodyMustContain}`);
+        core.setFailed(`The PR body did not contain «${bodyMustContain}» while it is required`);
     }
     if (bodyShallNotContain && new RegExp(bodyMustContain).test(pullRequestBody)) {
         core.setFailed(`The body of the PR should not contain ${bodyShallNotContain}`);
+        core.warning(`Offending body part ${pullRequestBody}`);
     }
 }
 exports.checkPrBody = checkPrBody;
@@ -29351,7 +29352,7 @@ function checkPrDiff(filesChanged, diffMustContainRule, diffShallNotContainRule)
                 if (diffShallNotContainRule && (0, regexp_1.checkContains)(change.content, diffShallNotContainRule)) {
                     // early exit, we found what should not be present, fail fast
                     core.setFailed(`The added code does contain «${diffShallNotContainRule}» - this is not allowed»`);
-                    core.setFailed(`Offending iff «${change.content}»`);
+                    core.warning(`Offending diff: «${change.content}»`);
                     core.exportVariable('diff', change.content);
                     core.setOutput('diff', change.content);
                     return;
