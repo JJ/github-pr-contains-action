@@ -34,7 +34,7 @@ export function checkPrDiff(
         if (diffShallNotContainRule && checkContains(change.content, diffShallNotContainRule)) {
           // early exit, we found what should not be present, fail fast
           core.setFailed(`The added code does contain «${diffShallNotContainRule}» - this is not allowed»`)
-          core.warning(`Offending diff: «${change.content}»`)
+          core.warning(`Offending diff in file «${file.from}» : «${change.content}»`)
           core.exportVariable('diff', change.content)
           core.setOutput('diff', change.content)
           return
