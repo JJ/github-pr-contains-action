@@ -29191,7 +29191,8 @@ async function run() {
         if (hasDiffBasedRules()) {
             const filesChanged = await (0, diff_1.fetchDiff)(repository, pullRequest);
             (0, pr_max_files_1.checkMaxChangedFiles)(filesChanged, Number(core.getInput('filesChanged')));
-            (0, pr_diff_1.checkPrDiff)(filesChanged, core.getInput('diffContains'), core.getInput('diffDoesNotContain'));
+            const excludedFiles = core.getMultilineInput('diffFilesToExclude') ?? [];
+            (0, pr_diff_1.checkPrDiff)(filesChanged, core.getInput('diffContains'), core.getInput('diffDoesNotContain'), excludedFiles);
             (0, pr_max_lines_1.checkLinesAdded)(filesChanged, Number(core.getInput('linesChanged')));
         }
     }
@@ -29327,7 +29328,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.checkPrDiff = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const regexp_1 = __nccwpck_require__(8700);
-function checkPrDiff(filesChanged, diffMustContainRule, diffShallNotContainRule) {
+function checkPrDiff(filesChanged, diffMustContainRule, diffShallNotContainRule, filesToExclude) {
     if (!(diffMustContainRule || diffShallNotContainRule)) {
         return;
     }
@@ -29340,6 +29341,10 @@ function checkPrDiff(filesChanged, diffMustContainRule, diffShallNotContainRule)
     // Should test the regexp rules to the smallest possible payload, thus drill for the chunks.
     // This is the best way to avoid the regular expressions to run wild on too large diffs.
     for (const file of filesChanged) {
+        if (file.from && filesToExclude.includes(file.from)) {
+            core.info(`Skipping file in diff check: ${file.from}`);
+            continue;
+        }
         for (const chunk of file.chunks) {
             for (const change of chunk.changes) {
                 if (!('add' in change)) {
@@ -29498,7 +29503,7 @@ const core = __importStar(__nccwpck_require__(2186));
 function isWaivedUser(senderName) {
     // First check for waived users
     if (senderName) {
-        const waivedUsers = core.getInput('waivedUsers') || ['dependabot[bot]'];
+        const waivedUsers = core.getMultilineInput('waivedUsers') || ['dependabot[bot]'];
         if (waivedUsers.includes(senderName)) {
             core.warning(`⚠️ Not running this workflow for waived user «${senderName}»`);
             return true;

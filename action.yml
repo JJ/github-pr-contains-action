@@ -1,7 +1,5 @@
 name: 'Check pull request body, diff and files'
-description:
-  'Checks that the body or the added code contains or avoid a word, number of
-  files or lines changed'
+description: 'Checks that the body or the added code contains or avoid a word, number of files or lines changed'
 author: 'EugenMayer'
 
 branding:
@@ -12,24 +10,22 @@ inputs:
     description: 'Github token, added magically'
   bodyContains:
     description:
-      'String or |-separated array of strings, one of which must be contained in
-      the PR body, can be left blank or omitted'
+      'String or |-separated array of strings, one of which must be contained in the PR body, can be left blank or
+      omitted'
   bodyDoesNotContain:
-    description:
-      'String or |-separated array of strings, none of which should be in the PR
-      body, can be left blank'
+    description: 'String or |-separated array of strings, none of which should be in the PR body, can be left blank'
   diffContains:
     description: 'Word that must be contained in the added code'
   diffDoesNotContain:
     description: 'Word that should not be contained in the added code'
+  diffFilesToExclude:
+    description: 'Files to exclude from being checked'
   linesChanged:
     description: 'Max number of lines changed per PR'
   filesChanged:
     description: 'Max number of files changed in the PR'
   waivedUsers:
-    description:
-      'Users that will not need to follow these guidelines. Defaults to
-      dependabot.'
+    description: 'Users that will not need to follow these guidelines. Defaults to dependabot.'
 outputs:
   diff:
     description: 'Lines added to the PR'

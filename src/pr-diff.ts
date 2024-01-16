@@ -5,7 +5,8 @@ import { checkContains } from './utils/regexp'
 export function checkPrDiff(
   filesChanged: parseDiff.File[],
   diffMustContainRule: string,
-  diffShallNotContainRule: string
+  diffShallNotContainRule: string,
+  filesToExclude: string[]
 ): void {
   if (!(diffMustContainRule || diffShallNotContainRule)) {
     return
@@ -20,6 +21,10 @@ export function checkPrDiff(
   // Should test the regexp rules to the smallest possible payload, thus drill for the chunks.
   // This is the best way to avoid the regular expressions to run wild on too large diffs.
   for (const file of filesChanged) {
+    if (file.from && filesToExclude.includes(file.from)) {
+      core.info(`Skipping file in diff check: ${file.from}`)
+      continue
+    }
     for (const chunk of file.chunks) {
       for (const change of chunk.changes) {
         if (!('add' in change)) {
