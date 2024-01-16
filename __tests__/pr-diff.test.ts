@@ -39,11 +39,15 @@ const filesContaining: parseDiff.File[] = [
 
 const filesNotContaining: parseDiff.File[] = [
   {
+    from: 'file.txt',
+    to: 'file.txt',
     chunks: [getChunk('anything else')],
     additions: 5,
     deletions: 0
   },
   {
+    from: 'other.txt',
+    to: 'other.txt',
     chunks: [getChunk('something  else'), getChunk('else')],
     additions: 5,
     deletions: 0
