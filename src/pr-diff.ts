@@ -4,15 +4,14 @@ import { checkContains } from './utils/regexp'
 
 export function checkPrDiff(
   filesChanged: parseDiff.File[],
-  diffContainsRule: string,
-  diffDoesNotContainRule: string
+  diffMustContainRule: string,
+  diffShallNotContainRule: string
 ): void {
-  if (!(diffContainsRule || diffDoesNotContainRule)) {
+  if (!(diffMustContainRule || diffShallNotContainRule)) {
     return
   }
   core.info('Checking diff contents')
 
-  const didMatchContains = false
   // Should test the regexp rules to the smallest possible payload, thus drill for the chunks.
   // This is the best way to avoid the regular expressions to run wild on too large diffs.
   for (const file of filesChanged) {
@@ -22,14 +21,14 @@ export function checkPrDiff(
           continue
         }
 
-        if (diffContainsRule && checkContains(change.content, diffContainsRule)) {
+        if (diffMustContainRule && checkContains(change.content, diffMustContainRule)) {
           // early exit (succeed fast), we already find what we looked for, no need to check any more diffs
           return
         }
 
-        if (diffDoesNotContainRule && checkContains(change.content, diffDoesNotContainRule)) {
+        if (diffShallNotContainRule && checkContains(change.content, diffShallNotContainRule)) {
           // early exit, we found what should not be present, fail fast
-          core.setFailed(`The added code does contain «${diffDoesNotContainRule}» - this is not allowed»`)
+          core.setFailed(`The added code does contain «${diffShallNotContainRule}» - this is not allowed»`)
           core.exportVariable('diff', change.content)
           core.setOutput('diff', change.content)
           return
@@ -38,8 +37,9 @@ export function checkPrDiff(
     }
   }
 
-  if (diffContainsRule && !didMatchContains) {
-    // we parsed through all changes but did not find what is required, fail
-    core.setFailed(`The added code does not contain «${diffContainsRule}» - this is required`)
+  if (diffMustContainRule) {
+    // if a rule was provided but our file scan did not find and early exit, the required string has not been found
+    // in any changes. Thus we need to fail
+    core.setFailed(`The added code does not contain «${diffMustContainRule}» - this is required`)
   }
 }

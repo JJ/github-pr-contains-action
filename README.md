@@ -1,13 +1,13 @@
-# Checking PR bodies and diffs for words, and number of files and lines in files changed [![Basic installation and build checks](https://github.com/JJ/github-pr-contains-action/actions/workflows/checkin.yml/badge.svg)](https://github.com/JJ/github-pr-contains-action/actions/workflows/checkin.yml)
+# WAT
 
-Originally based on the
-[actions TS template](https://github.com/actions/typescript-template), it checks
-for the presence/absence of a string or group of strings in the body or diff in
-a PR, as well as certain conditions on the PR: number of files changed, and
-number of lines changed.
+Check your PR to either 
+- contain (or not) a string in the PR diff using a regular expression
+- contain (or not) a string in the PR body using a regular expression
+- to not change more than X files
+- to not change more than X lines
+- exclude users being allowed to break any rules
 
-It uses the GitHub API, so you'll need to provide a token. Don't worry, that's
-built-in.
+This action is designed to *only* run on PRs.
 
 ## Using this action
 
@@ -25,32 +25,21 @@ jobs:
         uses: EugenMayer/github-pr-contains-action@releases/v1
         with:
           github-token: ${{github.token}}
-          bodyDoesNotContain: 'Delete|this'
-          bodyContains: 'Test'
-          diffContains: ';'
-          diffDoesNotContain: 'TODO|to do'
-          filesChanged: 1
-          linesChanged: 1
+          # PR body (description) needs to include Test
+          bodyContains: '.*Test.*'
+          # PR body (description) is not allowed to include FIXME
+          bodyDoesNotContain: '.*FIXME.*'
+          # PR needs to include LICENSE
+          diffContains: '.*LICENSE.*'
+          # PR diff is not allowed to include TODO:
+          diffDoesNotContain: '.*TODO:.*'
+          # PR is not allowed change more than 5 files
+          filesChanged: 5
+          # PR is not allowed to change more than 20 lines
+          linesChanged: 20
+          # allowed to break all rules
           waivedUsers: ['dependabot[bot]']
 ```
-
-The `bodyContains` variable will include the string that we want the body of the
-PR to include, such as checked items in a checklist; obviously
-`bodyDoesNotContain` will hold the opposite, what we don't want to see in the PR
-body. Any of them can have a `|` separated list of words or expressions. The PR
-will check it contains _any_ of the words in `bodyContains` and _none_ of the
-words in `bodyDoesnotContain`.
-
-Same pattern for `diff(Contains|DoesNotContain)`. Can be a word or list of words
-you want in the diff (for instance, you want it to _always_ change code so it
-contains a statement terminator) or don't want in the diff (for instance, you
-don't want it to include TODOs because people never ever _do_ them).
-
-Finally, `waivedUsers` is a YAML array that contains the users that will be
-spared from running these checks; if the PR is triggered by one of those users,
-it will exit with a warning and with a green status. By default, it has the
-value `["dependabot[bot]"]`. If you want to edit more and want to keep
-dependabot PRs from failing, add it to your list.
 
 You might want to qualify possible events that trigger this action, for intance,
 this way:
@@ -66,43 +55,14 @@ _this action will only work in pull requests_, since it checks the pull request
 object payload. It will simply skip any check (with a warning) if it is not
 triggered by a `pull_request` or `pull_request_target` event.
 
-For instance, you might want to use a GitHub action such as
-[this one](.github/workflows/contributors.yaml) for the `CONTRIBUTORS.md` file:
-
-```yaml
-name: 'Check contributors file additions'
-on:
-  pull_request:
-    types: [opened, edited]
-    paths:
-      - CONTRIBUTORS.md
-
-jobs:
-  check_pr:
-    name: 'Checks contributors'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check PR
-        uses: EugenMayer/github-pr-contains-action@releases/v1
-        with:
-          github-token: ${{github.token}}
-          linesChanged: 1
-          filesChanged: 1
-          diffContains: github.com/
-          waivedUsers: ['dependabot[bot]', 'CompanyBigWig']
-```
-
-It would check that there's only a single file modified (because why would you
-need to change another, if all you want is to add your name to the contributors'
-file), a single line is changed (because you're only one, right?) and that it
-includes a link to your GitHub profile by forcing the diff to contain that
-string.
-
 ## History
 
 - `v1`: Initial fork with full regular expression support and project alignment
+- `v2`: Rewrite entirely for maintainability and readability. Add tests
 
-## Initial Setup
+## Development
+
+### Initial Setup
 
 After you've cloned the repository to your local machine or codespace, you'll
 need to perform some initial setup steps before you can develop your action.
