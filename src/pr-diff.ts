@@ -34,6 +34,7 @@ export function checkPrDiff(
         if (diffShallNotContainRule && checkContains(change.content, diffShallNotContainRule)) {
           // early exit, we found what should not be present, fail fast
           core.setFailed(`The added code does contain «${diffShallNotContainRule}» - this is not allowed»`)
+          core.setFailed(`Offending iff «${change.content}»`)
           core.exportVariable('diff', change.content)
           core.setOutput('diff', change.content)
           return
@@ -44,7 +45,7 @@ export function checkPrDiff(
 
   if (diffMustContainRule) {
     // if a rule was provided but our file scan did not find and early exit, the required string has not been found
-    // in any changes. Thus we need to fail
+    // in any changes. Thus, we need to fail
     core.setFailed(`The added code does not contain «${diffMustContainRule}» - this is required`)
   }
 }
