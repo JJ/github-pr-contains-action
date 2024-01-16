@@ -35,7 +35,11 @@ jobs:
           diffContains: '.*LICENSE.*'
           # PR diff is not allowed to include TODO:
           diffDoesNotContain: '.*TODO:.*'
-          diffFilesToExclude: ['.github/workflows/check.yml']
+          # Files to exclude from being checked. Use a multiline string,
+          # each line should be one filepath relative to the repository root
+          diffFilesToExclude: |
+            .github/workflows/check.yml
+            README.md
           # PR is not allowed change more than 5 files
           filesChanged: 5
           # PR is not allowed to change more than 20 lines
@@ -56,7 +60,8 @@ This will skip diff checks every single push, for instance. Please remember that
 requests_, since it checks the pull request object payload. It will simply skip any check (with a warning) if it is not
 triggered by a `pull_request` or `pull_request_target` event.
 
-## History
+
+## Changelog
 
 - `v1`: Initial fork with full regular expression support and project alignment
 - `v2`: Rewrite entirely for maintainability and readability. Add tests. Add ability to exclude files

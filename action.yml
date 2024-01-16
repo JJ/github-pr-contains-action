@@ -19,7 +19,7 @@ inputs:
   diffDoesNotContain:
     description: 'Word that should not be contained in the added code'
   diffFilesToExclude:
-    description: 'Files to exclude from being checked'
+    description: 'Files to exclude from being checked. Use a multiline string, each line should be one filepath relative to the repository root'
   linesChanged:
     description: 'Max number of lines changed per PR'
   filesChanged:
