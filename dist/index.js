@@ -29155,112 +29155,44 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const github_1 = __nccwpck_require__(5438);
-const parse_diff_1 = __importDefault(__nccwpck_require__(4833));
+const pr_max_lines_1 = __nccwpck_require__(7296);
+const pr_diff_1 = __nccwpck_require__(7184);
+const pr_waived_user_1 = __nccwpck_require__(4350);
+const pr_body_1 = __nccwpck_require__(2767);
+const diff_1 = __nccwpck_require__(8087);
+const pr_max_files_1 = __nccwpck_require__(9152);
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
  */
 async function run() {
     try {
-        // get information on everything
-        const token = core.getInput('github-token', { required: true });
-        const octokit = (0, github_1.getOctokit)(token);
         const payload = github_1.context.payload;
         const senderInfo = payload?.sender;
         const senderName = senderInfo?.login;
         const senderType = senderInfo?.type;
-        core.info(`PR created by ${senderName} (${senderType})`);
-        // First check for waived users
-        if (senderName) {
-            const waivedUsers = core.getInput('waivedUsers') || ['dependabot[bot]'];
-            if (waivedUsers.includes(senderName)) {
-                core.warning(`⚠️ Not running this workflow for waived user «${senderName}»`);
-                return;
-            }
-        }
-        else {
-            core.warning('⚠️ Sender info missing. Passing waived user check.');
-        }
-        // Check if the body contains required string
-        const bodyContains = core.getInput('bodyContains');
-        const bodyDoesNotContain = core.getInput('bodyDoesNotContain');
-        if (github_1.context.eventName !== 'pull_request' &&
-            github_1.context.eventName !== 'pull_request_target') {
-            // TODO(ApoorvGuptaAi) Should just return here and skip the rest of the check.
+        if (!isPullRequest(github_1.context)) {
             core.warning('⚠️ Not a pull request, skipping PR body checks');
+            return;
         }
-        else {
-            const pull_request = payload.pull_request;
-            const repository = payload.repository;
-            if (!pull_request) {
-                core.setFailed('Expecting pull_request metadata.');
-                return;
-            }
-            if (!repository) {
-                core.setFailed('Expecting repository metadata.');
-                return;
-            }
-            if (bodyContains || bodyDoesNotContain) {
-                const PRBody = pull_request?.body;
-                core.info('Checking body contents');
-                // NOTE(apoorv) Its valid to have PRs with no body, so maybe that should not fail validation?
-                if (!PRBody) {
-                    core.setFailed("The body is empty, can't check");
-                }
-                else {
-                    if (bodyContains && !new RegExp(bodyContains).test(PRBody)) {
-                        core.setFailed(`The body of the PR does not contain ${bodyContains}`);
-                    }
-                    if (bodyDoesNotContain && new RegExp(bodyContains).test(PRBody)) {
-                        core.setFailed(`The body of the PR should not contain ${bodyDoesNotContain}`);
-                    }
-                }
-            }
-            core.info('Checking diff contents');
-            const diffContains = core.getInput('diffContains');
-            const diffDoesNotContain = core.getInput('diffDoesNotContain');
-            const files = await getDiff(octokit, repository, pull_request);
-            core.exportVariable('files', files);
-            core.setOutput('files', files);
-            const filesChanged = +core.getInput('filesChanged');
-            if (filesChanged && files.length !== filesChanged) {
-                core.setFailed(`You should change exactly ${filesChanged} file(s)`);
-            }
-            let changes = '';
-            let additions = 0;
-            for (const file of files) {
-                additions += file.additions;
-                for (const chunk of file.chunks) {
-                    for (const change of chunk.changes) {
-                        if ('add' in change) {
-                            changes += change.content;
-                        }
-                    }
-                }
-            }
-            if (diffContains && !new RegExp(diffContains).test(changes)) {
-                core.setFailed(`The added code does not contain «${diffContains}»`);
-            }
-            else {
-                core.exportVariable('diff', changes);
-                core.setOutput('diff', changes);
-            }
-            if (diffDoesNotContain && new RegExp(diffDoesNotContain).test(changes)) {
-                core.setFailed(`The added code should not contain ${diffDoesNotContain}`);
-            }
-            core.info('Checking lines/files changed');
-            const linesChanged = +core.getInput('linesChanged');
-            if (linesChanged && additions !== linesChanged) {
-                const this_msg = `You should change exactly ${linesChanged} lines(s) and you have changed ${additions}`;
-                core.setFailed(this_msg);
-            }
+        const { repository, pullRequest } = extractMetaData(payload.repository, payload.pull_request);
+        core.info(`PR created by ${senderName} (${senderType})`);
+        if ((0, pr_waived_user_1.isWaivedUser)(senderName)) {
+            // the user is allowed to do anything, skip all checks
+            return;
+        }
+        if (pullRequest.body) {
+            (0, pr_body_1.checkPrBody)(pullRequest.body, core.getInput('bodyContains'), core.getInput('bodyDoesNotContain'));
+        }
+        if (hasDiffBasedRules()) {
+            const filesChanged = await (0, diff_1.fetchDiff)(repository, pullRequest);
+            (0, pr_max_files_1.checkMaxChangedFiles)(filesChanged, Number(core.getInput('filesChanged')));
+            (0, pr_diff_1.checkPrDiff)(filesChanged, core.getInput('diffContains'), core.getInput('diffDoesNotContain'));
+            (0, pr_max_lines_1.checkLinesAdded)(filesChanged, Number(core.getInput('linesChanged')));
         }
     }
     catch (error) {
@@ -29274,25 +29206,367 @@ async function run() {
     }
 }
 exports.run = run;
-async function getDiff(
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-octokit, repository, pull_request) {
-    const owner = repository?.owner?.login;
-    const repo = repository?.name;
-    const pull_number = pull_request?.number;
-    core.info(`Getting diff for: ${owner}, ${repo}, ${pull_number}`);
-    if (!owner || !repo || typeof pull_number !== 'number') {
+function hasDiffBasedRules() {
+    const diffContains = core.getInput('diffContains');
+    const diffDoesNotContain = core.getInput('diffDoesNotContain');
+    const maxFilesAllowedToChange = Number(core.getInput('filesChanged'));
+    const linesAllowedToChange = Number(core.getInput('linesChanged'));
+    return diffContains !== '' || diffDoesNotContain !== '' || maxFilesAllowedToChange > 0 || linesAllowedToChange > 0;
+}
+function isPullRequest(ctx) {
+    return ctx.eventName === 'pull_request' || ctx.eventName === 'pull_request_target';
+}
+function extractMetaData(repository, pullRequest) {
+    if (!pullRequest) {
+        const msg = 'Expecting pull_request metadata.';
+        core.setFailed(msg);
+        throw new Error(msg);
+    }
+    if (!repository) {
+        const msg = 'Expecting repository metadata.';
+        core.setFailed(msg);
+        throw new Error(msg);
+    }
+    return {
+        repository,
+        pullRequest
+    };
+}
+
+
+/***/ }),
+
+/***/ 2767:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.checkPrBody = void 0;
+const core = __importStar(__nccwpck_require__(2186));
+function checkPrBody(pullRequestBody, bodyContains, bodyDoesNotContain) {
+    if (!(bodyContains && bodyDoesNotContain)) {
+        // We have not been asked for body checks
+        return;
+    }
+    if (!pullRequestBody) {
+        core.info('PR body is empty - skipping body check');
+        return;
+    }
+    core.info('Checking body contents');
+    if (bodyContains && !new RegExp(bodyContains).test(pullRequestBody)) {
+        core.setFailed(`The body of the PR does not contain ${bodyContains}`);
+    }
+    if (bodyDoesNotContain && new RegExp(bodyContains).test(pullRequestBody)) {
+        core.setFailed(`The body of the PR should not contain ${bodyDoesNotContain}`);
+    }
+}
+exports.checkPrBody = checkPrBody;
+
+
+/***/ }),
+
+/***/ 7184:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.checkPrDiff = void 0;
+const core = __importStar(__nccwpck_require__(2186));
+const regexp_1 = __nccwpck_require__(8700);
+function checkPrDiff(filesChanged, diffContainsRule, diffDoesNotContainRule) {
+    if (!(diffContainsRule || diffDoesNotContainRule)) {
+        return;
+    }
+    core.info('Checking diff contents');
+    const didMatchContains = false;
+    // Should test the regexp rules to the smallest possible payload, thus drill for the chunks.
+    // This is the best way to avoid the regular expressions to run wild on too large diffs.
+    for (const file of filesChanged) {
+        for (const chunk of file.chunks) {
+            for (const change of chunk.changes) {
+                if (!('add' in change)) {
+                    continue;
+                }
+                if (diffContainsRule && (0, regexp_1.checkContains)(change.content, diffContainsRule)) {
+                    // early exit (succeed fast), we already find what we looked for, no need to check any more diffs
+                    return;
+                }
+                if (diffDoesNotContainRule && (0, regexp_1.checkContains)(change.content, diffDoesNotContainRule)) {
+                    // early exit, we found what should not be present, fail fast
+                    core.setFailed(`The added code does contain «${diffDoesNotContainRule}» - this is not allowed»`);
+                    core.exportVariable('diff', change.content);
+                    core.setOutput('diff', change.content);
+                    return;
+                }
+            }
+        }
+    }
+    if (diffContainsRule && !didMatchContains) {
+        // we parsed through all changes but did not find what is required, fail
+        core.setFailed(`The added code does not contain «${diffContainsRule}» - this is required`);
+    }
+}
+exports.checkPrDiff = checkPrDiff;
+
+
+/***/ }),
+
+/***/ 9152:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.checkMaxChangedFiles = void 0;
+const core = __importStar(__nccwpck_require__(2186));
+function checkMaxChangedFiles(changedFiles, maxFilesAllowedToChange) {
+    if (maxFilesAllowedToChange && changedFiles.length !== maxFilesAllowedToChange) {
+        core.setFailed(`You should change exactly ${maxFilesAllowedToChange} file(s)`);
+    }
+}
+exports.checkMaxChangedFiles = checkMaxChangedFiles;
+
+
+/***/ }),
+
+/***/ 7296:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.checkLinesAdded = void 0;
+const core = __importStar(__nccwpck_require__(2186));
+function checkLinesAdded(filesChanged, linesAllowedToChange) {
+    if (!linesAllowedToChange) {
+        return;
+    }
+    // Check if the body contains required string
+    core.info('Checking lines/files changed');
+    const linesAdded = filesChanged.reduce((acc, current) => {
+        return acc + current.additions;
+    }, 0);
+    if (linesAdded !== linesAllowedToChange) {
+        core.setFailed(`You should change exactly ${linesAllowedToChange} lines(s) and you have changed ${linesAdded}`);
+    }
+}
+exports.checkLinesAdded = checkLinesAdded;
+
+
+/***/ }),
+
+/***/ 4350:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isWaivedUser = void 0;
+const core = __importStar(__nccwpck_require__(2186));
+function isWaivedUser(senderName) {
+    // First check for waived users
+    if (senderName) {
+        const waivedUsers = core.getInput('waivedUsers') || ['dependabot[bot]'];
+        if (waivedUsers.includes(senderName)) {
+            core.warning(`⚠️ Not running this workflow for waived user «${senderName}»`);
+            return true;
+        }
+    }
+    core.warning('⚠️ Sender info missing. Passing waived user check.');
+    return false;
+}
+exports.isWaivedUser = isWaivedUser;
+
+
+/***/ }),
+
+/***/ 8087:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.fetchDiff = void 0;
+const github_1 = __nccwpck_require__(5438);
+const core = __importStar(__nccwpck_require__(2186));
+const parse_diff_1 = __importDefault(__nccwpck_require__(4833));
+async function fetchDiff(repository, pullRequest) {
+    const token = core.getInput('github-token', { required: true });
+    const octokit = (0, github_1.getOctokit)(token);
+    const owner = repository.owner?.login;
+    const repo = repository.name;
+    const pullNumber = pullRequest.number;
+    core.info(`Getting diff for: ${owner}, ${repo}, ${pullNumber}`);
+    if (!owner || !repo || typeof pullNumber !== 'number') {
         throw Error('Missing metadata required for fetching diff.');
     }
     const response = await octokit.rest.pulls.get({
         owner,
         repo,
-        pull_number,
+        pull_number: pullNumber,
         headers: { accept: 'application/vnd.github.v3.diff' }
     });
-    const diff = response.data;
-    return (0, parse_diff_1.default)(diff);
+    return (0, parse_diff_1.default)(response.data);
 }
+exports.fetchDiff = fetchDiff;
+
+
+/***/ }),
+
+/***/ 8700:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.checkContains = void 0;
+function checkContains(content, regularExpressionRule) {
+    return new RegExp(regularExpressionRule).test(content);
+}
+exports.checkContains = checkContains;
 
 
 /***/ }),
