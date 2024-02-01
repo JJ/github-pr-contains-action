@@ -84,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check that any new contributor links to their github page
-        uses: JJ/github-pr-contains-action@releases/v12
+        uses: JJ/github-pr-contains-action@releases/v13
         with:
           github-token: ${{github.token}}
           linesChanged: 1
@@ -119,6 +119,8 @@ There are several forks of this action, with additional features:
 - [Pablo Statsig's `pr-content-checker`](https://github.com/pablo-statsig/gh-pr-content-checker/)
 
 ## History
+
+> Tags for every release are preceded by `releases/`
 
 - `v0`: proof of concept, published to marketplace
 - `v1`: Adds several more checks
