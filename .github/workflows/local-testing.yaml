@@ -6,11 +6,11 @@ on:
     types: [opened, edited, ready_for_review, synchronize]
 
 jobs:
-  check_pr:
+  dev_check_pr:
     name: "Checks dev version"
     runs-on: ubuntu-latest
     steps:
-      - name: Check PR
+      - name: Dev check PR
         uses: JJ/github-pr-contains-action@master
         with:
           github-token: ${{github.token}}
