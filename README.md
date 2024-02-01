@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check PR
-      uses: JJ/github-pr-contains-action@releases/v11
+      uses: JJ/github-pr-contains-action@releases/v13
       with:
         github-token: ${{github.token}}
         bodyDoesNotContain: "Delete|this"
@@ -31,11 +31,21 @@ jobs:
 
 The `bodyContains` variable will include the string that we want the body of the PR to include, such as checked items in a checklist; obviously `bodyDoesNotContain` will hold the opposite, what we don't want to see in the PR body. Any of them can have a `|` separated list of words or expressions. The PR will check it contains _any_ of the words in `bodyContains` and _none_ of the words in `bodyDoesNotContain`.
 
-Same pattern for `diff(Contains|DoesNotContain)`. Can be a word or list of words you want in the diff (for instance, you want it to _always_ change code so it contains a statement terminator) or don't want in the diff (for instance, you don't want it to include TODOs because people never ever _do_ them).
+Same pattern for `diff(Contains|DoesNotContain)`. Can be a word or list of words
+you want in the diff (for instance, you want it to _always_ change code so it
+contains a statement terminator) or don't want in the diff (for instance, you
+don't want it to include TODOs because people never ever _do_ them). If you want
+to allow check marks, remember to use a regex such as `x|X`, since both are
+admissible as such in a body.
 
-> These strings are unwittingly converted into regular expressions, so any regular expression will also work; `[]()+?*` are escaped so that things such as `[.]` work with the literal meaning. They can be left empty if you don't need that specific check.
+> These strings are unwittingly converted into regular expressions, so any
+> regular expression will also work; `[]()+?*` are escaped so that things such
+> as `[.]` work with the literal meaning. They can be left empty if you don't
+> need that specific check. This also implies that all these regex marks will
+> not be used as such, so avoid using things such as `[xX]` to indicate
+> alternatives.
 
-Finally, `waivedUsers` is a YAML array that contains the users that will be spared from running these checks; if the PR is triggered by one of those users, it will exit with a warning and with a green status. By default, it has the value `["dependabot[bot]"]`. If you want to edit more and want to keep dependabot PRs from failing, add it to your list.
+Finally, `waivedUsers` is a `|`-separated string of the users that will be spared from running these checks; if the PR is triggered by one of those users, it will exit with a warning and with a green status. By default, it has the value `["dependabot[bot]"]`. If you want to edit more and want to keep dependabot PRs from failing, add it to your list.
 
 An example is used as [.github/workflows/check-PRs-here.yaml](.github/workflows/check-PRs-here.yaml) in this repository as well as [this one, which is the one I use for testing](.github/workflows/pr.yaml).
 
