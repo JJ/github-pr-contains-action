@@ -12,9 +12,9 @@ inputs:
   bodyDoesNotContain:
     description: "String or |-separated array of strings, none of which should be in the PR body, can be left blank"
   diffContains:
-    description: "Word that must be contained in the added code"
+    description: "Word that must be included in the added code"
   diffDoesNotContain:
-    description: "Word that should not be contained in the added code"
+    description: "Word that should not be in the added code"
   linesChanged:
     description: "Exact number of lines changed per PR"
   filesChanged:
