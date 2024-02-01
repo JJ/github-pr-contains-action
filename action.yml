@@ -16,9 +16,9 @@ inputs:
   diffDoesNotContain:
     description: "Word that should not be contained in the added code"
   linesChanged:
-    description: "Max number of lines changed per PR"
+    description: "Exact number of lines changed per PR"
   filesChanged:
-    description: "Max number of files changed in the PR"
+    description: "Exact number of files changed in the PR"
   waivedUsers:
     description: "Users that will not need to follow these guidelines, separated by |. Defaults to dependabot."
 outputs:
