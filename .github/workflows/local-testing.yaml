@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Dev check PR
-        uses: JJ/github-pr-contains-action@v13
+        uses: JJ/github-pr-contains-action@dev
         with:
           github-token: ${{github.token}}
           bodyContains: "[x]"

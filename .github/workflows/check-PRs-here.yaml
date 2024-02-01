@@ -16,3 +16,4 @@ jobs:
           bodyContains: "[x]"
           bodyDoesNotContain: "Delete this|your own"
           diffContains: ""
+          waivedUsers: "dependabot[bot]|JJ"
