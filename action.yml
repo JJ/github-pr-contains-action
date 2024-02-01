@@ -20,7 +20,7 @@ inputs:
   filesChanged:
     description: "Max number of files changed in the PR"
   waivedUsers:
-    description: "Users that will not need to follow these guidelines. Defaults to dependabot."
+    description: "Users that will not need to follow these guidelines, separated by |. Defaults to dependabot."
 outputs:
   diff:
     description: "Lines added to the PR"
