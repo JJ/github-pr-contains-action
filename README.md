@@ -82,6 +82,15 @@ Any suggestion, bug report, etc, is appreciated. Please check out or create an
 [issue](https://github.com/JJ/github-pr-contains-action/issues) before
 contributing a PR, if possible.
 
+## Developing and testing
+
+GitHub actions are notoriously hard to test in any other way than actually
+running them, so this repository is set up for local tests in a `dev` branch;
+create that branch and work with it until you're satisfied and merge it to
+`main`.
+
+> I write this as much for myself as for any other purpose...
+
 ## See also
 
 There are several forks of this action, with additional features:
