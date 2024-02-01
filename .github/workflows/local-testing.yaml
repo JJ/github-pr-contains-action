@@ -6,16 +6,16 @@ on:
     types: [opened, edited, ready_for_review, synchronize]
 
 jobs:
-  check_pr:
+  dev_check_pr:
     name: "Checks dev version"
     runs-on: ubuntu-latest
     steps:
-      - name: Check PR
-        uses: JJ/github-pr-contains-action@master
+      - name: Dev check PR
+        uses: JJ/github-pr-contains-action@dev
         with:
           github-token: ${{github.token}}
           bodyContains: "[x]"
           bodyDoesNotContain: "your|own"
           diffDoesNotContain: "TODO"
           linesChanged: 1
-          waivedUsers: ["oneUser"]
+          waivedUsers: "dependabot[bot]|JJ"
