@@ -1,6 +1,10 @@
 # Checking PR bodies and diffs for words, and number of files and lines in files changed [![Basic installation and build checks](https://github.com/JJ/github-pr-contains-action/actions/workflows/checkin.yml/badge.svg)](https://github.com/JJ/github-pr-contains-action/actions/workflows/checkin.yml)
 
-Originally based on the [actions TS template](https://github.com/actions/typescript-template), it checks for the presence/absence of a string or group of strings in the body or diff in a PR, as well as certain conditions on the PR: number of files changed, and number of lines changed.
+Originally based on the [actions TS
+template](https://github.com/actions/typescript-template), it checks for the
+presence/absence of a string or group of strings in the body or diff in a PR, as
+well as certain conditions on the PR: number of files changed, and number of
+lines changed.
 
 It uses the GitHub API, so you'll need to provide a token. Don't worry, that's built-in.
 
@@ -26,16 +30,21 @@ jobs:
         diffDoesNotContain: "TODO|to do"
         filesChanged: 1
         linesChanged: 1
-        waivedUsers: ["dependabot[bot]"]
+        waivedUsers: "SomeOne|dependabot[bot]"
 ```
 
-The `bodyContains` variable will include the string that we want the body of the PR to include, such as checked items in a checklist; obviously `bodyDoesNotContain` will hold the opposite, what we don't want to see in the PR body. Any of them can have a `|` separated list of words or expressions. The PR will check it contains _any_ of the words in `bodyContains` and _none_ of the words in `bodyDoesNotContain`.
+The `bodyContains` variable will include the string that we want the body of the
+PR to include, such as checked items in a checklist; obviously
+`bodyDoesNotContain` will hold the opposite, what we don't want to see in the PR
+body. Any of them can have a `|` separated list of words or expressions. The PR
+will check it contains _any_ of the words in `bodyContains` and _none_ of the
+words in `bodyDoesNotContain`.
 
 Same pattern for `diff(Contains|DoesNotContain)`. Can be a word or list of words
 you want in the diff (for instance, you want it to _always_ change code so it
 contains a statement terminator) or don't want in the diff (for instance, you
 don't want it to include TODOs because people never ever _do_ them). If you want
-to allow check marks, remember to use a regex such as `x|X`, since both are
+to allow check marks, remember to use an expression such as `[x]|[X]`, since both are
 admissible as such in a body.
 
 > These strings are unwittingly converted into regular expressions, so any
@@ -124,6 +133,7 @@ There are several forks of this action, with additional features:
 - `v10`: Skips checks if not in a pull request; adds information to prevent this use too.
 - `v11`: Adds a configuration variable that skips users, with dependabot skipped by default (or passed through).
 - `v12`: Make compatible with private repos. Upgrade to latest github API.
+- `v13`: Fixes the use of `waivedUsers` which didn't actually work.
 
 ## License
 

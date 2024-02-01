@@ -13,7 +13,7 @@ jobs:
         uses: JJ/github-pr-contains-action@releases/v12
         with:
           github-token: ${{github.token}}
-          bodyContains: "[x]"
+          bodyContains: "[x]|[X]"
           bodyDoesNotContain: "Delete this|your own"
           diffContains: ""
           waivedUsers: "dependabot[bot]|JJ"
