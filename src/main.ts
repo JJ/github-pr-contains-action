@@ -36,8 +36,9 @@ async function run() {
     core.info(`PR created by ${senderName} (${senderType})`)
 
     // First check for waived users
+    const waivedUsers = core.getInput("waivedUsers").split("|") || ["dependabot[bot]"];
     if (senderName) {
-      const waivedUsers = core.getInput("waivedUsers") || ["dependabot[bot]"];
+
       if (waivedUsers.includes(senderName)) {
         core.warning(`⚠️ Not running this workflow for waived user «${senderName}»`);
         return;
