@@ -45,7 +45,7 @@ admissible as such in a body.
 > not be used as such, so avoid using things such as `[xX]` to indicate
 > alternatives.
 
-Finally, `waivedUsers` is a `|`-separated string of the users that will be spared from running these checks; if the PR is triggered by one of those users, it will exit with a warning and with a green status. By default, it has the value `["dependabot[bot]"]`. If you want to edit more and want to keep dependabot PRs from failing, add it to your list.
+Finally, `waivedUsers` is a `|`-separated string of the users that will be spared from running these checks; if the PR is triggered by one of those users, it will exit with a warning and with a green status. By default, it has the value `"dependabot[bot]"`. If you want to edit more and want to keep dependabot PRs from failing, add it to your list.
 
 An example is used as [.github/workflows/check-PRs-here.yaml](.github/workflows/check-PRs-here.yaml) in this repository as well as [this one, which is the one I use for testing](.github/workflows/pr.yaml).
 
