@@ -21,7 +21,7 @@ jobs:
           linesChanged: 1
           waivedUsers: "dependabot[bot]|JJ"
       - name: Info PR
-        with:
+        env:
           FILES : ${{ steps.dev_check_pr.outputs.files }}
           DIFF : ${{ steps.dev_check_pr.outputs.diff }}
         run: |
