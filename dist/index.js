@@ -127,7 +127,6 @@ function run() {
                 const diffContains = core.getInput("diffContains");
                 const diffDoesNotContain = core.getInput("diffDoesNotContain");
                 const files = yield getDiff(octokit, repository, pull_request);
-                core.exportVariable("files", files);
                 core.setOutput("files", files);
                 const filesChanged = +core.getInput("filesChanged");
                 if (filesChanged && files.length != filesChanged) {
@@ -149,7 +148,6 @@ function run() {
                     core.setFailed("The added code does not contain «" + diffContains + "»");
                 }
                 else {
-                    core.exportVariable("diff", changes);
                     core.setOutput("diff", changes);
                 }
                 if (diffDoesNotContain && (0, utils_1.rexify)(diffDoesNotContain).test(changes)) {

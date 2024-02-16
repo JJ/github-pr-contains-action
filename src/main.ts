@@ -118,7 +118,6 @@ async function run() {
           "The added code does not contain «" + diffContains + "»"
         );
       } else {
-        core.exportVariable("diff", changes);
         core.setOutput("diff", changes);
       }
       if (diffDoesNotContain && rexify(diffDoesNotContain).test(changes)) {
