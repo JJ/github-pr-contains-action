@@ -53,7 +53,7 @@ You might want to qualify possible events that trigger this action, for intance,
 ```yaml
   pull_request:
     types:
-      [opened, edited, assigned, closed, , synchronize, review_requested, ready_for_review]
+      [opened, edited, assigned, closed, synchronize, review_requested, ready_for_review]
 ```
 
 This will skip diff checks every single push, for instance. Please remember that _this action will only work in pull
