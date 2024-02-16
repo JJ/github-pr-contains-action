@@ -12,6 +12,7 @@ jobs:
     steps:
       - name: Dev check PR
         uses: JJ/github-pr-contains-action@dev
+        id: dev_check_pr
         with:
           github-token: ${{github.token}}
           bodyContains: "[x]"
@@ -19,3 +20,10 @@ jobs:
           diffDoesNotContain: "TODO"
           linesChanged: 1
           waivedUsers: "dependabot[bot]|JJ"
+      - name: Info PR
+        with:
+          FILES : ${{ steps.dev_check_pr.outputs.files }}
+          DIFF : ${{ steps.dev_check_pr.outputs.diff }}
+        run: |
+          echo "We got files: $( echo -n $FILES | wc -l )"
+          echo "We got diff: $( echo -n $DIFF | wc -l ) lines in diff"

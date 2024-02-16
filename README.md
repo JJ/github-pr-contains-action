@@ -111,6 +111,26 @@ includes a link to your GitHub profile by forcing the diff to contain that
 string. It would also allow the company's big wig to add however many they want,
 with or without links to their profiles.
 
+### Working with action outputs
+
+This action produces two outputs: `diff`, containing effectively the diff
+included in the PR, and `files`, with the list of files that have been included
+in the PR. You can use that, for instance, this way:
+
+```yaml
+      - name: Info PR
+        with:
+          FILES : ${{ steps.dev_check_pr.outputs.files }}
+          DIFF : ${{ steps.dev_check_pr.outputs.diff }}
+        run: |
+          echo "We got files: $( echo -n $FILES | wc -l )"
+          echo "We got diff: $( echo -n $DIFF | wc -l ) lines in diff"
+```
+
+to count the actual number of files and diff lines in the PR
+
+
+
 ## Contributing to development
 
 Any suggestion, bug report, etc, is appreciated. Please check out or create an
