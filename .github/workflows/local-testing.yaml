@@ -10,10 +10,8 @@ jobs:
     name: "Checks dev version"
     runs-on: ubuntu-latest
     steps:
-      - name: Check HEAD
-        run: cat .git/HEAD
       - name: Dev check PR
-        uses: JJ/github-pr-contains-action@HEAD
+        uses: JJ/github-pr-contains-action@${{github.head_ref || github.ref_name }}
         id: dev_check_pr
         with:
           github-token: ${{github.token}}
