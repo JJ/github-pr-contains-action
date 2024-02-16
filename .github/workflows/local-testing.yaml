@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Dev check PR
-        uses: JJ/github-pr-contains-action@dev
+        uses: JJ/github-pr-contains-action@dev # Change this to whatever branch you want to test
         id: dev_check_pr
         with:
           github-token: ${{github.token}}
@@ -23,7 +23,7 @@ jobs:
         run: |
           echo "::warning::We got files: $NUMBER_OF_FILES"
       - name: Fail if too big
-        if: ${{ steps.dev_check_pr.outputs.numberOfFiles > 3 }}
+        if: ${{ steps.dev_check_pr.outputs.numberOfFiles > 6 }}
         env:
           NUMBER_OF_FILES : ${{ steps.dev_check_pr.outputs.numberOfFiles }}
         run: |

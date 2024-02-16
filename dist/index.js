@@ -111,7 +111,7 @@ function run() {
                     const PRBody = pull_request === null || pull_request === void 0 ? void 0 : pull_request.body;
                     core.info("Checking body contents");
                     if (!PRBody) {
-                        core.setFailed("❌ The body is empty, can't check");
+                        core.warning("⚠️ The PR body is empty, skipping checks");
                     }
                     else {
                         if (bodyContains && !(0, utils_1.rexify)(bodyContains).test(PRBody)) {
