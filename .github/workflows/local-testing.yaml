@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Dev check PR
-        uses: JJ/github-pr-contains-action@feat/v14
+        uses: JJ/github-pr-contains-action@dev
         id: dev_check_pr
         with:
           github-token: ${{github.token}}
