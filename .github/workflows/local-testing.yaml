@@ -25,7 +25,7 @@ jobs:
           FILES : ${{ steps.dev_check_pr.outputs.files }}
           DIFF : ${{ steps.dev_check_pr.outputs.diff }}
         run: |
-        export NUMBER_OF_FILES = $FILES | wc -l
+          export NUMBER_OF_FILES = $FILES | wc -l
           echo "We got files: $NUMBER_OF_FILES"
           echo "We got diff: $( echo -n $DIFF | wc -l ) lines in diff"
       - name: Fail if too big
