@@ -21,7 +21,7 @@ export function checkPrBody(pullRequestBody: string, bodyMustContain: string, bo
   if (bodyMustContain && !new RegExp(bodyMustContain).test(pullRequestBody)) {
     core.setFailed(`The PR body did not contain «${bodyMustContain}» while it is required`)
   }
-  if (bodyShallNotContain && new RegExp(bodyMustContain).test(pullRequestBody)) {
+  if (bodyShallNotContain && new RegExp(bodyShallNotContain).test(pullRequestBody)) {
     core.setFailed(`The body of the PR should not contain ${bodyShallNotContain}`)
     core.warning(`Offending body part ${pullRequestBody}`)
   }
