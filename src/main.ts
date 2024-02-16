@@ -93,7 +93,6 @@ async function run() {
       const diffDoesNotContain = core.getInput("diffDoesNotContain");
 
       const files = await getDiff(octokit, repository, pull_request);
-      core.exportVariable("files", files);
       core.setOutput("files", files);
       const filesChanged = +core.getInput("filesChanged");
       if (filesChanged && files.length != filesChanged) {
