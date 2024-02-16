@@ -25,5 +25,11 @@ jobs:
           FILES : ${{ steps.dev_check_pr.outputs.files }}
           DIFF : ${{ steps.dev_check_pr.outputs.diff }}
         run: |
-          echo "We got files: $( echo -n $FILES | wc -l )"
+        export NUMBER_OF_FILES = $FILES | wc -l
+          echo "We got files: $NUMBER_OF_FILES"
           echo "We got diff: $( echo -n $DIFF | wc -l ) lines in diff"
+      - name: Fail if too big
+        if: ${{ env.NUMBER_OF_FILES > 10 }}
+        run: |
+          echo "::error::Too many files, there are $NUMBER_OF_FILES"
+          exit 1
