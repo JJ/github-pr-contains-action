@@ -20,7 +20,6 @@ jobs:
       - name: Info PR
         env:
           NUMBER_OF_FILES : ${{ steps.dev_check_pr.outputs.numberOfFiles }}
-          DIFF : ${{ steps.dev_check_pr.outputs.diff }}
         run: |
           echo "::warning::We got files: $NUMBER_OF_FILES"
       - name: Fail if too big
