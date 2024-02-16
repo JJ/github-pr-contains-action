@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Dev check PR
-        uses: JJ/github-pr-contains-action@feat/114
+        uses: JJ/github-pr-contains-action@dev # Change this to whatever branch you want to test
         id: dev_check_pr
         with:
           github-token: ${{github.token}}
