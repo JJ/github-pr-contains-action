@@ -20,7 +20,8 @@ jobs:
       - name: Info PR
         env:
           NUMBER_OF_FILES : ${{ steps.dev_check_pr.outputs.numberOfFiles }}
-        run: echo "::warning::We got files: $NUMBER_OF_FILES"
+        run: |
+          echo "::warning::We got files: $NUMBER_OF_FILES"
       - name: Fail if too big
         if: ${{ steps.dev_check_pr.outputs.numberOfFiles > 3 }}
         env:
