@@ -126,15 +126,15 @@ function run() {
                 core.info("Checking diff contents");
                 const diffContains = core.getInput("diffContains");
                 const diffDoesNotContain = core.getInput("diffDoesNotContain");
-                const files = yield getDiff(octokit, repository, pull_request);
-                core.setOutput("files", files);
+                const parsedDiff = yield getDiff(octokit, repository, pull_request);
+                core.setOutput("numberOfFiles", parsedDiff.length);
                 const filesChanged = +core.getInput("filesChanged");
-                if (filesChanged && files.length != filesChanged) {
+                if (filesChanged && parsedDiff.length != filesChanged) {
                     core.setFailed("You should change exactly " + filesChanged + " file(s)");
                 }
                 let changes = "";
                 let additions = 0;
-                files.forEach(function (file) {
+                parsedDiff.forEach(function (file) {
                     additions += file.additions;
                     file.chunks.forEach(function (chunk) {
                         chunk.changes.forEach(function (change) {
