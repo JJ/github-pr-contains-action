@@ -23,7 +23,9 @@ jobs:
         run: |
           echo "::warning::We got files: $NUMBER_OF_FILES"
       - name: Fail if too big
-        if: ${{ steps.dev_check_pr.outputs.filesChanged > 3 }}
+        if: ${{ steps.dev_check_pr.outputs.numberOfFiles > 3 }}
+        env:
+          NUMBER_OF_FILES : ${{ steps.dev_check_pr.outputs.numberOfFiles }}
         run: |
           echo "::error::Too many files, there are $NUMBER_OF_FILES"
           exit 1
