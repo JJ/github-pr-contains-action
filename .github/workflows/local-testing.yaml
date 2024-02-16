@@ -11,19 +11,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Dev check PR
-        uses: JJ/github-pr-contains-action@dev
+        uses: JJ/github-pr-contains-action@feat/v14
         id: dev_check_pr
         with:
           github-token: ${{github.token}}
           bodyContains: "[x]"
           bodyDoesNotContain: "your|own"
-          diffDoesNotContain: "TODO"
-          linesChanged: 1
-          waivedUsers: "dependabot[bot]|JJ"
       - name: Info PR
-        with:
-          FILES : ${{ steps.dev_check_pr.outputs.files }}
-          DIFF : ${{ steps.dev_check_pr.outputs.diff }}
+        env:
+          NUMBER_OF_FILES : ${{ steps.dev_check_pr.outputs.numberOfFiles }}
         run: |
-          echo "We got files: $( echo -n $FILES | wc -l )"
-          echo "We got diff: $( echo -n $DIFF | wc -l ) lines in diff"
+          echo "::warning::We got files: $NUMBER_OF_FILES"
+      - name: Fail if too big
+        if: ${{ steps.dev_check_pr.outputs.numberOfFiles > 3 }}
+        env:
+          NUMBER_OF_FILES : ${{ steps.dev_check_pr.outputs.numberOfFiles }}
+        run: |
+          echo "::error::Too many files, there are $NUMBER_OF_FILES"
+          exit 1
