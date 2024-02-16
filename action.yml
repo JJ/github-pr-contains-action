@@ -24,6 +24,8 @@ inputs:
 outputs:
   diff:
     description: "Lines added to the PR"
+  files:
+    description: "Files changed in the PR"
 
 runs:
   using: "node20"

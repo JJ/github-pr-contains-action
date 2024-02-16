@@ -1,4 +1,4 @@
-# Checking PR bodies and diffs for words, and number of files and lines in files changed [![Basic installation and build checks](https://github.com/JJ/github-pr-contains-action/actions/workflows/checkin.yml/badge.svg)](https://github.com/JJ/github-pr-contains-action/actions/workflows/checkin.yml)
+# Checking pull request bodies and diffs for words, and number of files and lines in files changed [![Basic installation and build checks](https://github.com/JJ/github-pr-contains-action/actions/workflows/checkin.yml/badge.svg)](https://github.com/JJ/github-pr-contains-action/actions/workflows/checkin.yml)
 
 Originally based on the [actions TS
 template](https://github.com/actions/typescript-template), it checks for the
@@ -54,9 +54,16 @@ admissible as such in a body.
 > not be used as such, so avoid using things such as `[xX]` to indicate
 > alternatives.
 
-Finally, `waivedUsers` is a `|`-separated string of the users that will be spared from running these checks; if the PR is triggered by one of those users, it will exit with a warning and with a green status. By default, it has the value `"dependabot[bot]"`. If you want to edit more and want to keep dependabot PRs from failing, add it to your list.
+Finally, `waivedUsers` is a `|`-separated string of the users that will be
+spared from running these checks; if the PR is triggered by one of those users,
+it will exit with a warning and with a green status. By default, it has the
+value `"dependabot[bot]"`. If you want to edit more and want to keep dependabot
+PRs from failing, add it to your list.
 
-An example is used as [.github/workflows/check-PRs-here.yaml](.github/workflows/check-PRs-here.yaml) in this repository as well as [this one, which is the one I use for testing](.github/workflows/pr.yaml).
+An example is used as
+[.github/workflows/check-PRs-here.yaml](.github/workflows/check-PRs-here.yaml)
+in this repository as well as [this one, which is the one I use for
+testing](.github/workflows/pr.yaml).
 
 You might want to qualify possible events that trigger this action, for intance, this way:
 
@@ -66,9 +73,13 @@ You might want to qualify possible events that trigger this action, for intance,
       [opened, edited, assigned, closed, synchronize, review_requested, ready_for_review]
 ```
 
-This will skip diff checks every single push, for instance. Please remember that _this action will only work in pull requests_, since it checks the pull request object payload. It will simply skip any check (with a warning) if it is not triggered by a `pull_request` or `pull_request_target` event.
+This will skip diff checks every single push, for instance. Please remember that
+_this action will only work in pull requests_, since it checks the pull request
+object payload. It will simply skip any check (with a warning) if it is not
+triggered by a `pull_request` or `pull_request_target` event.
 
-For instance, you might want to use a GitHub action such as [this one](.github/workflows/contributors.yaml) for the `CONTRIBUTORS.md` file:
+For instance, you might want to use a GitHub action such as [this
+one](.github/workflows/contributors.yaml) for the `CONTRIBUTORS.md` file:
 
 ``` yaml
 name: "Check contributors file additions"
@@ -93,7 +104,12 @@ jobs:
           waivedUsers: "dependabot[bot]|CompanyBigWig"
 ```
 
-It would check that there's only a single file modified (because why would you need to change another, if all you want is to add your name to the contributors' file), a single line is changed (because you're only one, right?) and that it includes a link to your GitHub profile by forcing the diff to contain that string. It would also allow the company's big wig to add however many they want, with or without links to their profiles.
+It would check that there's only a single file modified (because why would you
+need to change another, if all you want is to add your name to the contributors'
+file), a single line is changed (because you're only one, right?) and that it
+includes a link to your GitHub profile by forcing the diff to contain that
+string. It would also allow the company's big wig to add however many they want,
+with or without links to their profiles.
 
 ## Contributing to development
 
