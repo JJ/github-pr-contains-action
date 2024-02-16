@@ -110,7 +110,6 @@ function run() {
                 if (bodyContains || bodyDoesNotContain) {
                     const PRBody = pull_request === null || pull_request === void 0 ? void 0 : pull_request.body;
                     core.info("Checking body contents");
-                    // NOTE(apoorv) Its valid to have PRs with no body, so maybe that should not fail validation?
                     if (!PRBody) {
                         core.setFailed("❌ The body is empty, can't check");
                     }
