@@ -19,7 +19,6 @@ jobs:
           bodyDoesNotContain: "your|own"
           diffDoesNotContain: "TODO"
           linesChanged: 1
-          waivedUsers: "dependabot[bot]|JJ"
       - name: Info PR
         env:
           FILES : ${{ steps.dev_check_pr.outputs.files }}
