@@ -22,9 +22,8 @@ jobs:
           NUMBER_OF_FILES : ${{ steps.dev_check_pr.outputs.filesChanged }}
           DIFF : ${{ steps.dev_check_pr.outputs.diff }}
         run: |
-          echo "::warning::We got diff: $DIFF"
           echo "::warning::We got files: $NUMBER_OF_FILES"
-          echo "We got diff: $( echo -n $DIFF | wc -l ) lines in diff"
+          echo "::warning::We got diff: $( echo -n $DIFF | wc -l ) lines in diff"
       - name: Fail if too big
         if: ${{ steps.dev_check_pr.outputs.filesChanged > 3 }}
         run: |
