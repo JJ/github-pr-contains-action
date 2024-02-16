@@ -18,7 +18,6 @@ jobs:
           bodyContains: "[x]"
           bodyDoesNotContain: "your|own"
           diffDoesNotContain: "TODO"
-          linesChanged: 1
       - name: Info PR
         env:
           FILES : ${{ steps.dev_check_pr.outputs.files }}
