@@ -114,20 +114,30 @@ with or without links to their profiles.
 ### Working with action outputs
 
 This action produces two outputs: `diff`, containing effectively the diff
-included in the PR, and `files`, with the list of files that have been included
-in the PR. You can use that, for instance, this way:
+included in the PR, and `numberOfFiles`, with the list of files that have been
+included in the PR. You can use that, for instance, this way:
 
 ```yaml
       - name: Info PR
-        with:
-          FILES : ${{ steps.dev_check_pr.outputs.files }}
-          DIFF : ${{ steps.dev_check_pr.outputs.diff }}
+        env:
+          NUMBER_OF_FILES : ${{ steps.dev_check_pr.outputs.numberOfFiles }}
         run: |
-          echo "We got files: $( echo -n $FILES | wc -l )"
-          echo "We got diff: $( echo -n $DIFF | wc -l ) lines in diff"
+          echo "::warning::We got files: $NUMBER_OF_FILES"
+      - name: Fail if too big
+        if: ${{ steps.dev_check_pr.outputs.numberOfFiles > 3 }}
+        env:
+          NUMBER_OF_FILES : ${{ steps.dev_check_pr.outputs.numberOfFiles }}
+        run: |
+          echo "::error::Too many files, there are $NUMBER_OF_FILES, should be at most 3"
+          exit 1
 ```
 
-to count the actual number of files and diff lines in the PR
+to show the number of files present in the PR, as well as to fail if there are
+too many files (to enforce keeping PRs small, for instance).
+
+The `diff` output might contain a huge amount of information, which might make
+it a bit hard to deal with via environment variables. Dealing with it otherwise,
+via `github-script`, is probably fine.
 
 
 
