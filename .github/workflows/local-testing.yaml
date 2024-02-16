@@ -25,7 +25,10 @@ jobs:
           FILES : ${{ steps.dev_check_pr.outputs.files }}
           DIFF : ${{ steps.dev_check_pr.outputs.diff }}
         run: |
-          export NUMBER_OF_FILES= $FILES | wc -l
+          echo "::warning::We got files: $FILES"
+          echo "::warning::We got diff: $DIFF"
+          NUMBER_OF_FILES=$($FILES | wc -l)
+          echo "::set-env name=NUMBER_OF_FILES::$NUMBER_OF_FILES"
           echo "We got files: $NUMBER_OF_FILES"
           echo "We got diff: $( echo -n $DIFF | wc -l ) lines in diff"
       - name: Fail if too big
