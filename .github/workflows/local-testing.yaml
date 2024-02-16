@@ -29,7 +29,7 @@ jobs:
           echo "We got files: $NUMBER_OF_FILES"
           echo "We got diff: $( echo -n $DIFF | wc -l ) lines in diff"
       - name: Fail if too big
-        if: ${{ env.NUMBER_OF_FILES > 10 }}
+        if: ${{ env.NUMBER_OF_FILES > 3 }}
         run: |
           echo "::error::Too many files, there are $NUMBER_OF_FILES"
           exit 1
