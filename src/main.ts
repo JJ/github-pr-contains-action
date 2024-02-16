@@ -72,7 +72,7 @@ async function run() {
         const PRBody = pull_request?.body;
         core.info("Checking body contents");
         if (!PRBody) {
-          core.setFailed("❌ The body is empty, can't check");
+          core.warning("⚠️ The body is empty, skipping body checks");
         } else {
           if (bodyContains && !rexify(bodyContains).test(PRBody)) {
             core.setFailed(
