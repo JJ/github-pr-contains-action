@@ -1,4 +1,4 @@
-name: "Workflow for local testing"
+name: "Workflow for local testing (dev)"
 on:
   pull_request:
     branches:
