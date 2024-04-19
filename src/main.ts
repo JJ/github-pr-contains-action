@@ -89,12 +89,13 @@ async function run() {
 
       const diffContains = core.getInput("diffContains");
       const diffDoesNotContain = core.getInput("diffDoesNotContain");
+      const linesChanged = +core.getInput("linesChanged");
+      const filesChanged = +core.getInput("filesChanged");
 
-      if (diffContains || diffDoesNotContain) {
+      if (diffContains || diffDoesNotContain || filesChanged || linesChanged) {
         core.info("Checking diff contents");
         const parsedDiff = await getDiff(octokit, repository, pull_request);
         core.setOutput("numberOfFiles", parsedDiff.length);
-        const filesChanged = +core.getInput("filesChanged");
         if (filesChanged && parsedDiff.length != filesChanged) {
           core.setFailed(
             "You should change exactly " + filesChanged + " file(s)"
@@ -127,7 +128,6 @@ async function run() {
         }
 
         core.info("Checking lines/files changed");
-        const linesChanged = +core.getInput("linesChanged");
         if (linesChanged && additions != linesChanged) {
           const this_msg =
             "You should change exactly " +

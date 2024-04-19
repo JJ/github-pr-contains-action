@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check PR
-      uses: JJ/github-pr-contains-action@releases/v14
+      uses: JJ/github-pr-contains-action@releases/v14.1
       with:
         github-token: ${{github.token}}
         bodyDoesNotContain: "Delete|this"
@@ -93,7 +93,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check that any new contributor links to their github page
-        uses: JJ/github-pr-contains-action@releases/v14
+        uses: JJ/github-pr-contains-action@releases/v14.1
         with:
           github-token: ${{github.token}}
           linesChanged: 1
@@ -180,7 +180,10 @@ There are several forks of this action, with additional features:
 - `v11`: Adds a configuration variable that skips users, with dependabot skipped by default (or passed through).
 - `v12`: Make compatible with private repos. Upgrade to latest github API.
 - `v13`: Fixes the use of `waivedUsers` which didn't actually work.
-- `v14`: Eliminates setting of environment variables, documents using action output.
+- `v14`: Eliminates setting of environment variables, documents using action
+  output.
+- `v14.1`: Refrains from doing diff stuff if no variable related to diff has
+  been set
 
 ## License
 

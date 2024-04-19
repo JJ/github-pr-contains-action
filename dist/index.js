@@ -124,11 +124,12 @@ function run() {
                 }
                 const diffContains = core.getInput("diffContains");
                 const diffDoesNotContain = core.getInput("diffDoesNotContain");
-                if (diffContains || diffDoesNotContain) {
+                const linesChanged = +core.getInput("linesChanged");
+                const filesChanged = +core.getInput("filesChanged");
+                if (diffContains || diffDoesNotContain || filesChanged || linesChanged) {
                     core.info("Checking diff contents");
                     const parsedDiff = yield getDiff(octokit, repository, pull_request);
                     core.setOutput("numberOfFiles", parsedDiff.length);
-                    const filesChanged = +core.getInput("filesChanged");
                     if (filesChanged && parsedDiff.length != filesChanged) {
                         core.setFailed("You should change exactly " + filesChanged + " file(s)");
                     }
@@ -154,7 +155,6 @@ function run() {
                         core.setFailed("The added code should not contain " + diffDoesNotContain);
                     }
                     core.info("Checking lines/files changed");
-                    const linesChanged = +core.getInput("linesChanged");
                     if (linesChanged && additions != linesChanged) {
                         const this_msg = "You should change exactly " +
                             linesChanged +
