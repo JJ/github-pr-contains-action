@@ -125,41 +125,43 @@ function run() {
                 core.info("Checking diff contents");
                 const diffContains = core.getInput("diffContains");
                 const diffDoesNotContain = core.getInput("diffDoesNotContain");
-                const parsedDiff = yield getDiff(octokit, repository, pull_request);
-                core.setOutput("numberOfFiles", parsedDiff.length);
-                const filesChanged = +core.getInput("filesChanged");
-                if (filesChanged && parsedDiff.length != filesChanged) {
-                    core.setFailed("You should change exactly " + filesChanged + " file(s)");
-                }
-                let changes = "";
-                let additions = 0;
-                parsedDiff.forEach(function (file) {
-                    additions += file.additions;
-                    file.chunks.forEach(function (chunk) {
-                        chunk.changes.forEach(function (change) {
-                            if (change.add) {
-                                changes += change.content;
-                            }
+                if (diffContains || diffDoesNotContain) {
+                    const parsedDiff = yield getDiff(octokit, repository, pull_request);
+                    core.setOutput("numberOfFiles", parsedDiff.length);
+                    const filesChanged = +core.getInput("filesChanged");
+                    if (filesChanged && parsedDiff.length != filesChanged) {
+                        core.setFailed("You should change exactly " + filesChanged + " file(s)");
+                    }
+                    let changes = "";
+                    let additions = 0;
+                    parsedDiff.forEach(function (file) {
+                        additions += file.additions;
+                        file.chunks.forEach(function (chunk) {
+                            chunk.changes.forEach(function (change) {
+                                if (change.add) {
+                                    changes += change.content;
+                                }
+                            });
                         });
                     });
-                });
-                if (diffContains && !(0, utils_1.rexify)(diffContains).test(changes)) {
-                    core.setFailed("The added code does not contain «" + diffContains + "»");
-                }
-                else {
-                    core.setOutput("diff", changes);
-                }
-                if (diffDoesNotContain && (0, utils_1.rexify)(diffDoesNotContain).test(changes)) {
-                    core.setFailed("The added code should not contain " + diffDoesNotContain);
-                }
-                core.info("Checking lines/files changed");
-                const linesChanged = +core.getInput("linesChanged");
-                if (linesChanged && additions != linesChanged) {
-                    const this_msg = "You should change exactly " +
-                        linesChanged +
-                        " lines(s) and you have changed " +
-                        additions;
-                    core.setFailed(this_msg);
+                    if (diffContains && !(0, utils_1.rexify)(diffContains).test(changes)) {
+                        core.setFailed("The added code does not contain «" + diffContains + "»");
+                    }
+                    else {
+                        core.setOutput("diff", changes);
+                    }
+                    if (diffDoesNotContain && (0, utils_1.rexify)(diffDoesNotContain).test(changes)) {
+                        core.setFailed("The added code should not contain " + diffDoesNotContain);
+                    }
+                    core.info("Checking lines/files changed");
+                    const linesChanged = +core.getInput("linesChanged");
+                    if (linesChanged && additions != linesChanged) {
+                        const this_msg = "You should change exactly " +
+                            linesChanged +
+                            " lines(s) and you have changed " +
+                            additions;
+                        core.setFailed(this_msg);
+                    }
                 }
             }
         }
