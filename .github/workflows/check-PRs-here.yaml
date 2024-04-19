@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check PR
-        uses: JJ/github-pr-contains-action@releases/v12
+        uses: JJ/github-pr-contains-action@releases/v12.1
         with:
           github-token: ${{github.token}}
           bodyContains: "[x]|[X]"
