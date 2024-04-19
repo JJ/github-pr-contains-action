@@ -87,11 +87,11 @@ async function run() {
         }
       }
 
-      core.info("Checking diff contents");
       const diffContains = core.getInput("diffContains");
       const diffDoesNotContain = core.getInput("diffDoesNotContain");
 
       if (diffContains || diffDoesNotContain) {
+        core.info("Checking diff contents");
         const parsedDiff = await getDiff(octokit, repository, pull_request);
         core.setOutput("numberOfFiles", parsedDiff.length);
         const filesChanged = +core.getInput("filesChanged");
