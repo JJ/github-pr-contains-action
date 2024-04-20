@@ -178,7 +178,7 @@ There are several forks of this action, with additional features:
 - `v9`: adds some informative messages, disables API calls for private repositories.
 - `v10`: Skips checks if not in a pull request; adds information to prevent this use too.
 - `v11`: Adds a configuration variable that skips users, with dependabot skipped by default (or passed through).
-- `v12`: Make compatible with private repos. Upgrade to latest github API.
+- `v12`: Make it compatible with private repos. Upgrade to latest github API.
 - `v13`: Fixes the use of `waivedUsers` which didn't actually work.
 - `v14`: Eliminates setting of environment variables, documents using action
   output.
@@ -187,5 +187,5 @@ There are several forks of this action, with additional features:
 
 ## License
 
-This is a modification of the original template, and is released under
-the MIT license.
+(c) JJ Merelo, 2021-2014. Released under the MIT license. Read
+[LICENSE](LICENSE) for more details.
