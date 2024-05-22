@@ -8,7 +8,7 @@ It uses the GitHub API, so you'll need to provide a token. Don't worry, that's b
 
 ## Using this action
 
-You would need to put this in a YAML file in the `.github/workflows` directory
+You would need to put this in a YAML file (`check-pr.yml`, for instance) in the `.github/workflows` directory
 
 ```yaml
 name: "Check PR content"
