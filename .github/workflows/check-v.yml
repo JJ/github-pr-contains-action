@@ -1,4 +1,4 @@
-name: Check correct version
+name: Check correct version in README
 on:
   push:
 
