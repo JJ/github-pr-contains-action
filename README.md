@@ -46,8 +46,8 @@ Same pattern for `diff(Contains|DoesNotContain)`. Can be a word or list of words
 you want in the diff (for instance, you want it to _always_ change code so it
 contains a statement terminator) or don't want in the diff (for instance, you
 don't want it to include TODOs because people never ever _do_ them). If you want
-to allow check marks, remember to use an expression such as `[x]|[X]`, since both are
-admissible as such in a body.
+to allow check marks, remember to use an expression such as `[x]|[X]`, since
+both are admissible as such in a body.
 
 > These strings are unwittingly converted into regular expressions, so any
 > regular expression will also work; `[]()+?*` are escaped so that things such
