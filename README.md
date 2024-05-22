@@ -62,7 +62,7 @@ it will exit with a warning and with a green status. By default, it has the
 value `"dependabot[bot]"`. If you want to edit more and want to keep dependabot
 PRs from failing, add it to your list.
 
-An example is used as
+If you want to see an example, it is used as
 [.github/workflows/check-PRs-here.yaml](.github/workflows/check-PRs-here.yaml)
 in this repository as well as [this one, which is the one I use for
 testing](.github/workflows/pr.yaml).
