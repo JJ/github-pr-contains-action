@@ -1,0 +1,11 @@
+name: Check correct version
+on:
+  push:
+
+jobs:
+  check_v_in_example:
+    runs-on: ubuntu-latest
+    name: Test version
+    steps:
+    - name: Check version
+      uses: JJ/github-action-check-version-in-readme-is-latest@v1
