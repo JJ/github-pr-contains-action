@@ -7,5 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Test version
     steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
     - name: Check version
-      uses: JJ/github-action-check-version-in-readme-is-latest@v1
+      uses: JJ/github-action-check-version-in-readme-is-latest@master
