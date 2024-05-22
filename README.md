@@ -106,12 +106,12 @@ jobs:
           waivedUsers: "dependabot[bot]|CompanyBigWig"
 ```
 
-It would check that there's only a single file modified (because why would you
-need to change another, if all you want is to add your name to the contributors'
-file), a single line is changed (because you're only one, right?) and that it
-includes a link to your GitHub profile by forcing the diff to contain that
-string. It would also allow the company's big wig to add however many they want,
-with or without links to their profiles.
+This action would check that there's only a single file modified (because why
+would you need to change another, if all you want is to add your name to the
+contributors' file), a single line is changed (because you're only one, right?)
+and that it includes a link to your GitHub profile by forcing the diff to
+contain that string. It would also allow the company's big wig to add however
+many they want, with or without links to their profiles.
 
 ### Working with action outputs
 
