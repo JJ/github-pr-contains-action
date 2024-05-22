@@ -9,7 +9,8 @@ built-in.
 
 ## Using this action
 
-You would need to put this in a YAML file (`check-pr.yml`, for instance) in the `.github/workflows` directory
+You would need to put this in a YAML file (`check-pr.yml`, for instance) in the
+`.github/workflows` directory:
 
 ```yaml
 name: "Check PR content"
