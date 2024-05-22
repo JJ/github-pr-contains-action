@@ -1,4 +1,4 @@
-# A GitHub action that checks pull requests description and contents [![Basic installation and build checks](https://github.com/JJ/github-pr-contains-action/actions/workflows/install-build-checks.yml/badge.svg)](https://github.com/JJ/github-pr-contains-action/actions/workflows/install-build-checks.yml)
+# A GitHub action that checks pull requests description and contents [![Basic installation and build checks](https://github.com/JJ/github-pr-contains-action/actions/workflows/install-build-checks.yml/badge.svg)](https://github.com/JJ/github-pr-contains-action/actions/workflows/install-build-checks.yml)[![Check correct version in README](https://github.com/JJ/github-pr-contains-action/actions/workflows/check-v.yml/badge.svg)](https://github.com/JJ/github-pr-contains-action/actions/workflows/check-v.yml)
 
 This GitHub action checks for the presence/absence of a string or group of
 strings in the body or diff, as well as certain conditions in the PR: number of
