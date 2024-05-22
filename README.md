@@ -67,7 +67,7 @@ If you want to see an example, it is used as
 in this repository as well as [this one, which is the one I use for
 testing](.github/workflows/pr.yaml).
 
-You might want to qualify possible events that trigger this action, for intance, this way:
+You might want to qualify possible events that trigger this action; for intance, this way:
 
 ```yaml
   pull_request:
