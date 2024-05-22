@@ -33,6 +33,8 @@ jobs:
         waivedUsers: "SomeOne|dependabot[bot]"
 ```
 
+The `pull_request` event is needed, because it will use its payload.
+
 The `bodyContains` variable will include the string that we want the body of the
 PR to include, such as checked items in a checklist; obviously
 `bodyDoesNotContain` will hold the opposite, what we don't want to see in the PR
