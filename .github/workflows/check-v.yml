@@ -12,4 +12,4 @@ jobs:
       with:
         fetch-depth: 0
     - name: Check version
-      uses: JJ/github-action-check-version-in-readme-is-latest@master
+      uses: JJ/github-action-check-version-in-readme-is-latest@main
