@@ -5,7 +5,7 @@ on:
 jobs:
   check_v_in_example:
     runs-on: ubuntu-latest
-    name: Test version
+    name: Test version in example
     steps:
     - name: Checkout
       uses: actions/checkout@v4
