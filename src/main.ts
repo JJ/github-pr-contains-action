@@ -69,18 +69,19 @@ async function run() {
       if (!repository) {
         core.setFailed("❌ Expecting repository metadata.")
         return;
-      } 
+      }
       if (bodyContains || bodyDoesNotContain) {
         const PRBody = pull_request?.body;
         core.info("Checking body contents");
-        if (!PRBody && allowEmpty) {
+        if (!PRBody) {
+          if(allowEmpty) {
             core.warning("⚠️ The PR body is empty, skipping checks");
-          
-        } else if(!PRBody && !allowEmpty){
-          core.setFailed(
-            "❌ The PR body is empty. Please add info."
-          );
-        }else {
+          } else {
+            core.setFailed(
+              "❌ The PR body is empty. Please add info."
+            );
+          }
+        } else {
           if (bodyContains && !rexify(bodyContains).test(PRBody)) {
             core.setFailed(
               "The body of the PR does not contain " + bodyContains
