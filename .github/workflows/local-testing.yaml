@@ -19,7 +19,6 @@ jobs:
           github-token: ${{github.token}}
           bodyContains: "[x]"
           bodyDoesNotContain: "your|own"
-          allowEmpty: false
       - name: Info PR
         env:
           NUMBER_OF_FILES : ${{ steps.dev_check_pr.outputs.numberOfFiles }}
