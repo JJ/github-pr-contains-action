@@ -92,7 +92,7 @@ function run() {
             const bodyContains = core.getInput("bodyContains");
             const bodyDoesNotContain = core.getInput("bodyDoesNotContain");
             //Check if a description is required
-            const allowEmpty = core.getInput("allowEmpty");
+            const allowEmpty = core.getInput("allowEmpty") === "true" ? true : false;
             if (github_1.context.eventName !== "pull_request" &&
                 github_1.context.eventName !== "pull_request_target") {
                 // TODO(ApoorvGuptaAi) Should just return here and skip the rest of the check.
@@ -113,6 +113,7 @@ function run() {
                     const PRBody = pull_request === null || pull_request === void 0 ? void 0 : pull_request.body;
                     core.info("Checking body contents");
                     if (!PRBody) {
+                        console.log(allowEmpty);
                         if (allowEmpty) {
                             core.warning("⚠️ The PR body is empty, skipping checks");
                         }
