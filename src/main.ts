@@ -78,7 +78,7 @@ async function run() {
           
         } else if(!PRBody && !allowEmpty){
           core.setFailed(
-            "The PR body is empty. Please add info."
+            "❌ The PR body is empty. Please add info."
           );
         }else {
           if (bodyContains && !rexify(bodyContains).test(PRBody)) {
