@@ -118,7 +118,7 @@ function run() {
                             core.warning("⚠️ The PR body is empty, skipping checks");
                         }
                         else {
-                            core.setFailed("❌ The PR body is empty. Please add info.");
+                            core.setFailed("❌ The PR body is empty and allowEmpty is false. Please add a body to your PR.");
                         }
                     }
                     else {
