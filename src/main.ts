@@ -50,6 +50,8 @@ async function run() {
     // Check if the body contains required string
     const bodyContains = core.getInput("bodyContains");
     const bodyDoesNotContain = core.getInput("bodyDoesNotContain");
+    //Check if a description is required
+    const allowEmpty = core.getInput("allowEmpty");
 
     if (
       context.eventName !== "pull_request" &&
@@ -72,7 +74,13 @@ async function run() {
         const PRBody = pull_request?.body;
         core.info("Checking body contents");
         if (!PRBody) {
-          core.warning("⚠️ The PR body is empty, skipping checks");
+          if(allowEmpty) {
+            core.warning("⚠️ The PR body is empty, skipping checks");
+          } else {
+            core.setFailed(
+              "❌ The PR body is empty. Please add info."
+            );
+          }
         } else {
           if (bodyContains && !rexify(bodyContains).test(PRBody)) {
             core.setFailed(

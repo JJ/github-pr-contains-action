@@ -7,6 +7,9 @@ branding:
 inputs:
   github-token:
     description: "Github token, added magically"
+  allowEmpty:
+    description: "Boolean - true will only throw a warning if the body is empty, false will fail the run"
+    default: true
   bodyContains:
     description: "String or |-separated array of strings, one of which must be contained in the PR body, can be left blank or omitted"
   bodyDoesNotContain:
