@@ -69,7 +69,8 @@ async function run() {
       if (!repository) {
         core.setFailed("❌ Expecting repository metadata.")
         return;
-      } else if (bodyContains || bodyDoesNotContain) {
+      } 
+      if (bodyContains || bodyDoesNotContain) {
         const PRBody = pull_request?.body;
         core.info("Checking body contents");
         if (!PRBody && allowEmpty) {
