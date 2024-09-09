@@ -6,7 +6,7 @@ branding:
   color: "gray-dark"
 inputs:
   github-token:
-    description: "Github token, added magically"
+    description: "Github token, added magically."
   allowEmpty:
     description: "Boolean - true will only throw a warning if the body is empty, false will fail the run. Defaults to true."
     default: true
@@ -15,7 +15,7 @@ inputs:
   bodyDoesNotContain:
     description: "String or |-separated array of strings, none of which should be in the PR body, can be left blank"
   diffContains:
-    description: "Word that must be included in the added code"
+    description: "String that must be included in the added code"
   diffDoesNotContain:
     description: "Word that should not be in the added code"
   linesChanged:
