@@ -6,7 +6,7 @@ branding:
   color: "gray-dark"
 inputs:
   github-token:
-    description: "Github token, added magically"
+    description: "Github token, added magically."
   allowEmpty:
     description: "Boolean - true will only throw a warning if the body is empty, false will fail the run"
     default: true
