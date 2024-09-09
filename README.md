@@ -191,5 +191,5 @@ There are several forks of this action, with additional features:
 
 ## License
 
-(c) JJ Merelo, 2021-2014. Released under the MIT license. Read
+(c) JJ Merelo, 2021-2024. Released under the MIT license. Read
 [LICENSE](LICENSE) for more details.
