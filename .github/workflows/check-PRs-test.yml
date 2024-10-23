@@ -1,0 +1,27 @@
+name: Check for "INSERT OVERWRITE" in PR Diff
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check_diff:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Get pull request diff
+        run: |
+          git fetch origin main
+          git diff origin/main..HEAD > diff.txt
+
+      - name: Check for "INSERT OVERWRITE"
+        run: |
+          if grep -q "INSERT OVERWRITE" diff.txt; then
+            echo "Found 'INSERT OVERWRITE' in the pull request diff."
+            exit 1
+          else
+            echo "No 'INSERT OVERWRITE' found in the pull request diff."
+          fi
+
