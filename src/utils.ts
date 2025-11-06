@@ -6,27 +6,24 @@ export function rexify(expression: string): RegExp {
 }
 
 /**
- * Check if the number of files changed in a PR matches the expected count
+ * Get the number of files changed in a PR
  * @param octokit - GitHub API client
  * @param owner - Repository owner
  * @param repo - Repository name
  * @param pull_number - Pull request number
- * @param expectedCount - Expected number of files changed
- * @returns Promise<boolean> - True if the count matches, false otherwise
+ * @returns Promise<number> - Number of files changed in the PR
  */
 export async function checkFilesChanged(
   octokit: any,
   owner: string,
   repo: string,
-  pull_number: number,
-  expectedCount: number
-): Promise<boolean> {
+  pull_number: number
+): Promise<number> {
   const response = await octokit.rest.pulls.get({
     owner,
     repo,
     pull_number,
   });
   
-  const actualCount = response.data.changed_files;
-  return actualCount === expectedCount;
+  return response.data.changed_files;
 }

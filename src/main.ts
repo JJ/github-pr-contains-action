@@ -108,15 +108,14 @@ async function run() {
         const repo = repository?.name;
         const pull_number = pull_request?.number;
         
-        const filesMatch = await checkFilesChanged(
+        const filesChangedInPR = await checkFilesChanged(
           octokit,
           owner,
           repo,
-          pull_number,
-          filesChanged
+          pull_number
         );
         
-        if (!filesMatch) {
+        if (filesChangedInPR != filesChanged) {
           core.setFailed(
             "You should change exactly " + filesChanged + " file(s)"
           );

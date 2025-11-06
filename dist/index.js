@@ -141,8 +141,8 @@ function run() {
                     const owner = (_a = repository === null || repository === void 0 ? void 0 : repository.owner) === null || _a === void 0 ? void 0 : _a.login;
                     const repo = repository === null || repository === void 0 ? void 0 : repository.name;
                     const pull_number = pull_request === null || pull_request === void 0 ? void 0 : pull_request.number;
-                    const filesMatch = yield (0, utils_1.checkFilesChanged)(octokit, owner, repo, pull_number, filesChanged);
-                    if (!filesMatch) {
+                    const filesChangedInPR = yield (0, utils_1.checkFilesChanged)(octokit, owner, repo, pull_number);
+                    if (filesChangedInPR != filesChanged) {
                         core.setFailed("You should change exactly " + filesChanged + " file(s)");
                         return;
                     }
@@ -224,23 +224,21 @@ function rexify(expression) {
 }
 exports.rexify = rexify;
 /**
- * Check if the number of files changed in a PR matches the expected count
+ * Get the number of files changed in a PR
  * @param octokit - GitHub API client
  * @param owner - Repository owner
  * @param repo - Repository name
  * @param pull_number - Pull request number
- * @param expectedCount - Expected number of files changed
- * @returns Promise<boolean> - True if the count matches, false otherwise
+ * @returns Promise<number> - Number of files changed in the PR
  */
-function checkFilesChanged(octokit, owner, repo, pull_number, expectedCount) {
+function checkFilesChanged(octokit, owner, repo, pull_number) {
     return __awaiter(this, void 0, void 0, function* () {
         const response = yield octokit.rest.pulls.get({
             owner,
             repo,
             pull_number,
         });
-        const actualCount = response.data.changed_files;
-        return actualCount === expectedCount;
+        return response.data.changed_files;
     });
 }
 exports.checkFilesChanged = checkFilesChanged;

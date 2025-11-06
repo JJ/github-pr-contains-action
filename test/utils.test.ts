@@ -25,7 +25,7 @@ describe("Regex creator", () => {
 });
 
 describe("Check files changed", () => {
-  it("Should return true when file count matches", async () => {
+  it("Should return the correct number of files changed", async () => {
     const mockOctokit = {
       rest: {
         pulls: {
@@ -38,8 +38,8 @@ describe("Check files changed", () => {
       }
     };
     
-    const result = await checkFilesChanged(mockOctokit, "owner", "repo", 123, 3);
-    expect(result).toBe(true);
+    const result = await checkFilesChanged(mockOctokit, "owner", "repo", 123);
+    expect(result).toBe(3);
     expect(mockOctokit.rest.pulls.get).toHaveBeenCalledWith({
       owner: "owner",
       repo: "repo",
@@ -47,7 +47,7 @@ describe("Check files changed", () => {
     });
   });
 
-  it("Should return false when file count does not match", async () => {
+  it("Should return different file count", async () => {
     const mockOctokit = {
       rest: {
         pulls: {
@@ -60,11 +60,11 @@ describe("Check files changed", () => {
       }
     };
     
-    const result = await checkFilesChanged(mockOctokit, "owner", "repo", 456, 3);
-    expect(result).toBe(false);
+    const result = await checkFilesChanged(mockOctokit, "owner", "repo", 456);
+    expect(result).toBe(5);
   });
 
-  it("Should return true when no files changed and expected is 0", async () => {
+  it("Should return 0 when no files changed", async () => {
     const mockOctokit = {
       rest: {
         pulls: {
@@ -77,11 +77,11 @@ describe("Check files changed", () => {
       }
     };
     
-    const result = await checkFilesChanged(mockOctokit, "owner", "repo", 789, 0);
-    expect(result).toBe(true);
+    const result = await checkFilesChanged(mockOctokit, "owner", "repo", 789);
+    expect(result).toBe(0);
   });
 
-  it("Should return false when file count is greater than expected", async () => {
+  it("Should return large file count", async () => {
     const mockOctokit = {
       rest: {
         pulls: {
@@ -94,7 +94,7 @@ describe("Check files changed", () => {
       }
     };
     
-    const result = await checkFilesChanged(mockOctokit, "owner", "repo", 999, 2);
-    expect(result).toBe(false);
+    const result = await checkFilesChanged(mockOctokit, "owner", "repo", 999);
+    expect(result).toBe(10);
   });
 });
