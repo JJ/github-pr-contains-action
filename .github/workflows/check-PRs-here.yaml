@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [opened, edited, ready_for_review, synchronize]
     branches:
-      - !dev
+      - "!dev"
 
 jobs:
   check_pr:
