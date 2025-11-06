@@ -1,4 +1,4 @@
-import { rexify } from "../src/utils";
+import { rexify, checkFilesChanged } from "../src/utils";
 
 describe("Regex creator", () => {
   it("Should create single-string regexes", () => {
@@ -21,5 +21,80 @@ describe("Regex creator", () => {
     const re1: RegExp = rexify("question?");
     expect("Is this a question?").toMatch(re1);
     expect("question").not.toMatch(re1);
+  });
+});
+
+describe("Check files changed", () => {
+  it("Should return true when file count matches", async () => {
+    const mockOctokit = {
+      rest: {
+        pulls: {
+          get: jest.fn().mockResolvedValue({
+            data: {
+              changed_files: 3
+            }
+          })
+        }
+      }
+    };
+    
+    const result = await checkFilesChanged(mockOctokit, "owner", "repo", 123, 3);
+    expect(result).toBe(true);
+    expect(mockOctokit.rest.pulls.get).toHaveBeenCalledWith({
+      owner: "owner",
+      repo: "repo",
+      pull_number: 123
+    });
+  });
+
+  it("Should return false when file count does not match", async () => {
+    const mockOctokit = {
+      rest: {
+        pulls: {
+          get: jest.fn().mockResolvedValue({
+            data: {
+              changed_files: 5
+            }
+          })
+        }
+      }
+    };
+    
+    const result = await checkFilesChanged(mockOctokit, "owner", "repo", 456, 3);
+    expect(result).toBe(false);
+  });
+
+  it("Should return true when no files changed and expected is 0", async () => {
+    const mockOctokit = {
+      rest: {
+        pulls: {
+          get: jest.fn().mockResolvedValue({
+            data: {
+              changed_files: 0
+            }
+          })
+        }
+      }
+    };
+    
+    const result = await checkFilesChanged(mockOctokit, "owner", "repo", 789, 0);
+    expect(result).toBe(true);
+  });
+
+  it("Should return false when file count is greater than expected", async () => {
+    const mockOctokit = {
+      rest: {
+        pulls: {
+          get: jest.fn().mockResolvedValue({
+            data: {
+              changed_files: 10
+            }
+          })
+        }
+      }
+    };
+    
+    const result = await checkFilesChanged(mockOctokit, "owner", "repo", 999, 2);
+    expect(result).toBe(false);
   });
 });

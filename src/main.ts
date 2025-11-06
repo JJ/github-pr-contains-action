@@ -1,7 +1,7 @@
 import * as core from "@actions/core";
 import { getOctokit, context } from "@actions/github";
 import parse from "parse-diff";
-import { rexify } from "./utils";
+import { rexify, checkFilesChanged } from "./utils";
 
 async function getDiff(octokit, repository, pull_request) {
   const owner = repository?.owner?.login;
@@ -101,15 +101,33 @@ async function run() {
       const linesChanged = +core.getInput("linesChanged");
       const filesChanged = +core.getInput("filesChanged");
 
-      if (diffContains || diffDoesNotContain || filesChanged || linesChanged) {
-        core.info("Checking diff contents");
-        const parsedDiff = await getDiff(octokit, repository, pull_request);
-        core.setOutput("numberOfFiles", parsedDiff.length);
-        if (filesChanged && parsedDiff.length != filesChanged) {
+      // Check files changed first, before parsing diff
+      if (filesChanged) {
+        core.info("Checking number of files changed");
+        const owner = repository?.owner?.login;
+        const repo = repository?.name;
+        const pull_number = pull_request?.number;
+        
+        const filesMatch = await checkFilesChanged(
+          octokit,
+          owner,
+          repo,
+          pull_number,
+          filesChanged
+        );
+        
+        if (!filesMatch) {
           core.setFailed(
             "You should change exactly " + filesChanged + " file(s)"
           );
+          return;
         }
+      }
+
+      if (diffContains || diffDoesNotContain || linesChanged) {
+        core.info("Checking diff contents");
+        const parsedDiff = await getDiff(octokit, repository, pull_request);
+        core.setOutput("numberOfFiles", parsedDiff.length);
 
         let changes = "";
         let additions: number = 0;
@@ -136,7 +154,7 @@ async function run() {
           );
         }
 
-        core.info("Checking lines/files changed");
+        core.info("Checking lines changed");
         if (linesChanged && additions != linesChanged) {
           const this_msg =
             "You should change exactly " +

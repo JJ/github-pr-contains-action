@@ -67,6 +67,7 @@ function getDiff(octokit, repository, pull_request) {
     });
 }
 function run() {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             // get information on everything
@@ -134,13 +135,22 @@ function run() {
                 const diffDoesNotContain = core.getInput("diffDoesNotContain");
                 const linesChanged = +core.getInput("linesChanged");
                 const filesChanged = +core.getInput("filesChanged");
-                if (diffContains || diffDoesNotContain || filesChanged || linesChanged) {
+                // Check files changed first, before parsing diff
+                if (filesChanged) {
+                    core.info("Checking number of files changed");
+                    const owner = (_a = repository === null || repository === void 0 ? void 0 : repository.owner) === null || _a === void 0 ? void 0 : _a.login;
+                    const repo = repository === null || repository === void 0 ? void 0 : repository.name;
+                    const pull_number = pull_request === null || pull_request === void 0 ? void 0 : pull_request.number;
+                    const filesMatch = yield (0, utils_1.checkFilesChanged)(octokit, owner, repo, pull_number, filesChanged);
+                    if (!filesMatch) {
+                        core.setFailed("You should change exactly " + filesChanged + " file(s)");
+                        return;
+                    }
+                }
+                if (diffContains || diffDoesNotContain || linesChanged) {
                     core.info("Checking diff contents");
                     const parsedDiff = yield getDiff(octokit, repository, pull_request);
                     core.setOutput("numberOfFiles", parsedDiff.length);
-                    if (filesChanged && parsedDiff.length != filesChanged) {
-                        core.setFailed("You should change exactly " + filesChanged + " file(s)");
-                    }
                     let changes = "";
                     let additions = 0;
                     parsedDiff.forEach(function (file) {
@@ -162,7 +172,7 @@ function run() {
                     if (diffDoesNotContain && (0, utils_1.rexify)(diffDoesNotContain).test(changes)) {
                         core.setFailed("The added code should not contain " + diffDoesNotContain);
                     }
-                    core.info("Checking lines/files changed");
+                    core.info("Checking lines changed");
                     if (linesChanged && additions != linesChanged) {
                         const this_msg = "You should change exactly " +
                             linesChanged +
@@ -191,12 +201,21 @@ run();
 /***/ }),
 
 /***/ 9277:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.rexify = void 0;
+exports.checkFilesChanged = exports.rexify = void 0;
 function rexify(expression) {
     ["(", ")", "[", "]", "?", "+", "*"].forEach((s) => {
         expression = expression.replace(s, `\\${s}`);
@@ -204,6 +223,27 @@ function rexify(expression) {
     return new RegExp(expression);
 }
 exports.rexify = rexify;
+/**
+ * Check if the number of files changed in a PR matches the expected count
+ * @param octokit - GitHub API client
+ * @param owner - Repository owner
+ * @param repo - Repository name
+ * @param pull_number - Pull request number
+ * @param expectedCount - Expected number of files changed
+ * @returns Promise<boolean> - True if the count matches, false otherwise
+ */
+function checkFilesChanged(octokit, owner, repo, pull_number, expectedCount) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield octokit.rest.pulls.get({
+            owner,
+            repo,
+            pull_number,
+        });
+        const actualCount = response.data.changed_files;
+        return actualCount === expectedCount;
+    });
+}
+exports.checkFilesChanged = checkFilesChanged;
 
 
 /***/ }),
