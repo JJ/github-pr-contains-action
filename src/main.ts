@@ -101,7 +101,7 @@ async function run() {
       const linesChanged = +core.getInput("linesChanged");
       const filesChanged = +core.getInput("filesChanged");
 
-      let filesChangedInPR: any[];
+      let filesChangedInPR: any[] = [];
 
       // Check files changed first, before parsing diff
       if (filesChanged) {
@@ -109,16 +109,14 @@ async function run() {
         const owner = repository?.owner?.login;
         const repo = repository?.name;
         const pull_number = pull_request?.number;
-        
+
         filesChangedInPR = await getFilesChanged(
           octokit,
           owner,
           repo,
           pull_number
         );
-        
-        core.setOutput("numberOfFiles", filesChangedInPR.length);
-        
+
         if (filesChangedInPR.length != filesChanged) {
           core.setFailed(
             "You should change exactly " + filesChanged + " file(s)"
@@ -126,6 +124,8 @@ async function run() {
           return;
         }
       }
+
+      core.setOutput("numberOfFiles", filesChangedInPR?.length);
 
       if (diffContains || diffDoesNotContain || linesChanged) {
         core.info("Checking diff contents");
