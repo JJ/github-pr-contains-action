@@ -142,8 +142,8 @@ function run() {
                     const owner = (_a = repository === null || repository === void 0 ? void 0 : repository.owner) === null || _a === void 0 ? void 0 : _a.login;
                     const repo = repository === null || repository === void 0 ? void 0 : repository.name;
                     const pull_number = pull_request === null || pull_request === void 0 ? void 0 : pull_request.number;
-                    filesChangedInPR = yield (0, utils_1.checkFilesChanged)(octokit, owner, repo, pull_number);
-                    if (filesChangedInPR != filesChanged) {
+                    filesChangedInPR = yield (0, utils_1.getFilesChanged)(octokit, owner, repo, pull_number);
+                    if (filesChangedInPR.length != filesChanged) {
                         core.setFailed("You should change exactly " + filesChanged + " file(s)");
                         return;
                     }
@@ -216,7 +216,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.checkFilesChanged = exports.rexify = void 0;
+exports.getFilesChanged = exports.rexify = void 0;
 function rexify(expression) {
     ["(", ")", "[", "]", "?", "+", "*"].forEach((s) => {
         expression = expression.replace(s, `\\${s}`);
@@ -225,24 +225,24 @@ function rexify(expression) {
 }
 exports.rexify = rexify;
 /**
- * Get the number of files changed in a PR
+ * Get the files changed in a PR
  * @param octokit - GitHub API client
  * @param owner - Repository owner
  * @param repo - Repository name
  * @param pull_number - Pull request number
- * @returns Promise<number> - Number of files changed in the PR
+ * @returns Promise<any[]> - Array of files changed in the PR
  */
-function checkFilesChanged(octokit, owner, repo, pull_number) {
+function getFilesChanged(octokit, owner, repo, pull_number) {
     return __awaiter(this, void 0, void 0, function* () {
         const response = yield octokit.rest.pulls.listFiles({
             owner,
             repo,
             pull_number,
         });
-        return response.data.length;
+        return response.data;
     });
 }
-exports.checkFilesChanged = checkFilesChanged;
+exports.getFilesChanged = getFilesChanged;
 
 
 /***/ }),

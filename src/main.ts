@@ -1,7 +1,7 @@
 import * as core from "@actions/core";
 import { getOctokit, context } from "@actions/github";
 import parse from "parse-diff";
-import { rexify, checkFilesChanged } from "./utils";
+import { rexify, getFilesChanged } from "./utils";
 
 async function getDiff(octokit, repository, pull_request) {
   const owner = repository?.owner?.login;
@@ -101,7 +101,7 @@ async function run() {
       const linesChanged = +core.getInput("linesChanged");
       const filesChanged = +core.getInput("filesChanged");
 
-      let filesChangedInPR: number;
+      let filesChangedInPR: any[];
 
       // Check files changed first, before parsing diff
       if (filesChanged) {
@@ -110,14 +110,14 @@ async function run() {
         const repo = repository?.name;
         const pull_number = pull_request?.number;
         
-        filesChangedInPR = await checkFilesChanged(
+        filesChangedInPR = await getFilesChanged(
           octokit,
           owner,
           repo,
           pull_number
         );
         
-        if (filesChangedInPR != filesChanged) {
+        if (filesChangedInPR.length != filesChanged) {
           core.setFailed(
             "You should change exactly " + filesChanged + " file(s)"
           );

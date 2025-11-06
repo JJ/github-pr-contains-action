@@ -1,4 +1,4 @@
-import { rexify, checkFilesChanged } from "../src/utils";
+import { rexify, getFilesChanged } from "../src/utils";
 
 describe("Regex creator", () => {
   it("Should create single-string regexes", () => {
@@ -24,8 +24,8 @@ describe("Regex creator", () => {
   });
 });
 
-describe("Check files changed", () => {
-  it("Should return the correct number of files changed", async () => {
+describe("Get files changed", () => {
+  it("Should return array of files changed", async () => {
     const mockOctokit = {
       rest: {
         pulls: {
@@ -40,8 +40,9 @@ describe("Check files changed", () => {
       }
     };
     
-    const result = await checkFilesChanged(mockOctokit, "owner", "repo", 123);
-    expect(result).toBe(3);
+    const result = await getFilesChanged(mockOctokit, "owner", "repo", 123);
+    expect(result).toHaveLength(3);
+    expect(result[0].filename).toBe("file1.ts");
     expect(mockOctokit.rest.pulls.listFiles).toHaveBeenCalledWith({
       owner: "owner",
       repo: "repo",
@@ -49,7 +50,7 @@ describe("Check files changed", () => {
     });
   });
 
-  it("Should return different file count", async () => {
+  it("Should return different file arrays", async () => {
     const mockOctokit = {
       rest: {
         pulls: {
@@ -66,11 +67,12 @@ describe("Check files changed", () => {
       }
     };
     
-    const result = await checkFilesChanged(mockOctokit, "owner", "repo", 456);
-    expect(result).toBe(5);
+    const result = await getFilesChanged(mockOctokit, "owner", "repo", 456);
+    expect(result).toHaveLength(5);
+    expect(result[4].filename).toBe("file5.ts");
   });
 
-  it("Should return large file count", async () => {
+  it("Should return large file arrays", async () => {
     const mockOctokit = {
       rest: {
         pulls: {
@@ -81,7 +83,9 @@ describe("Check files changed", () => {
       }
     };
     
-    const result = await checkFilesChanged(mockOctokit, "owner", "repo", 999);
-    expect(result).toBe(10);
+    const result = await getFilesChanged(mockOctokit, "owner", "repo", 999);
+    expect(result).toHaveLength(10);
+    expect(result[0].filename).toBe("file1.ts");
+    expect(result[9].filename).toBe("file10.ts");
   });
 });
