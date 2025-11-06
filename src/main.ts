@@ -117,6 +117,8 @@ async function run() {
           pull_number
         );
         
+        core.setOutput("numberOfFiles", filesChangedInPR.length);
+        
         if (filesChangedInPR.length != filesChanged) {
           core.setFailed(
             "You should change exactly " + filesChanged + " file(s)"
@@ -128,7 +130,6 @@ async function run() {
       if (diffContains || diffDoesNotContain || linesChanged) {
         core.info("Checking diff contents");
         const parsedDiff = await getDiff(octokit, repository, pull_request);
-        core.setOutput("numberOfFiles", parsedDiff.length);
 
         let changes = "";
         let additions: number = 0;

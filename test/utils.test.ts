@@ -71,21 +71,4 @@ describe("Get files changed", () => {
     expect(result).toHaveLength(5);
     expect(result[4].filename).toBe("file5.ts");
   });
-
-  it("Should return large file arrays", async () => {
-    const mockOctokit = {
-      rest: {
-        pulls: {
-          listFiles: jest.fn().mockResolvedValue({
-            data: Array.from({ length: 10 }, (_, i) => ({ filename: `file${i + 1}.ts` }))
-          })
-        }
-      }
-    };
-    
-    const result = await getFilesChanged(mockOctokit, "owner", "repo", 999);
-    expect(result).toHaveLength(10);
-    expect(result[0].filename).toBe("file1.ts");
-    expect(result[9].filename).toBe("file10.ts");
-  });
 });

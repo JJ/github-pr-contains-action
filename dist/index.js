@@ -143,6 +143,7 @@ function run() {
                     const repo = repository === null || repository === void 0 ? void 0 : repository.name;
                     const pull_number = pull_request === null || pull_request === void 0 ? void 0 : pull_request.number;
                     filesChangedInPR = yield (0, utils_1.getFilesChanged)(octokit, owner, repo, pull_number);
+                    core.setOutput("numberOfFiles", filesChangedInPR.length);
                     if (filesChangedInPR.length != filesChanged) {
                         core.setFailed("You should change exactly " + filesChanged + " file(s)");
                         return;
@@ -151,7 +152,6 @@ function run() {
                 if (diffContains || diffDoesNotContain || linesChanged) {
                     core.info("Checking diff contents");
                     const parsedDiff = yield getDiff(octokit, repository, pull_request);
-                    core.setOutput("numberOfFiles", parsedDiff.length);
                     let changes = "";
                     let additions = 0;
                     parsedDiff.forEach(function (file) {
