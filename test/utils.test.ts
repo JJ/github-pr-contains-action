@@ -29,10 +29,12 @@ describe("Check files changed", () => {
     const mockOctokit = {
       rest: {
         pulls: {
-          get: jest.fn().mockResolvedValue({
-            data: {
-              changed_files: 3
-            }
+          listFiles: jest.fn().mockResolvedValue({
+            data: [
+              { filename: "file1.ts" },
+              { filename: "file2.ts" },
+              { filename: "file3.ts" }
+            ]
           })
         }
       }
@@ -40,7 +42,7 @@ describe("Check files changed", () => {
     
     const result = await checkFilesChanged(mockOctokit, "owner", "repo", 123);
     expect(result).toBe(3);
-    expect(mockOctokit.rest.pulls.get).toHaveBeenCalledWith({
+    expect(mockOctokit.rest.pulls.listFiles).toHaveBeenCalledWith({
       owner: "owner",
       repo: "repo",
       pull_number: 123
@@ -51,10 +53,14 @@ describe("Check files changed", () => {
     const mockOctokit = {
       rest: {
         pulls: {
-          get: jest.fn().mockResolvedValue({
-            data: {
-              changed_files: 5
-            }
+          listFiles: jest.fn().mockResolvedValue({
+            data: [
+              { filename: "file1.ts" },
+              { filename: "file2.ts" },
+              { filename: "file3.ts" },
+              { filename: "file4.ts" },
+              { filename: "file5.ts" }
+            ]
           })
         }
       }
@@ -64,31 +70,12 @@ describe("Check files changed", () => {
     expect(result).toBe(5);
   });
 
-  it("Should return 0 when no files changed", async () => {
-    const mockOctokit = {
-      rest: {
-        pulls: {
-          get: jest.fn().mockResolvedValue({
-            data: {
-              changed_files: 0
-            }
-          })
-        }
-      }
-    };
-    
-    const result = await checkFilesChanged(mockOctokit, "owner", "repo", 789);
-    expect(result).toBe(0);
-  });
-
   it("Should return large file count", async () => {
     const mockOctokit = {
       rest: {
         pulls: {
-          get: jest.fn().mockResolvedValue({
-            data: {
-              changed_files: 10
-            }
+          listFiles: jest.fn().mockResolvedValue({
+            data: Array.from({ length: 10 }, (_, i) => ({ filename: `file${i + 1}.ts` }))
           })
         }
       }

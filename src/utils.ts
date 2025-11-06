@@ -19,11 +19,11 @@ export async function checkFilesChanged(
   repo: string,
   pull_number: number
 ): Promise<number> {
-  const response = await octokit.rest.pulls.get({
+  const response = await octokit.rest.pulls.listFiles({
     owner,
     repo,
     pull_number,
   });
   
-  return response.data.changed_files;
+  return response.data.length;
 }

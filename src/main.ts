@@ -101,6 +101,8 @@ async function run() {
       const linesChanged = +core.getInput("linesChanged");
       const filesChanged = +core.getInput("filesChanged");
 
+      let filesChangedInPR: number;
+
       // Check files changed first, before parsing diff
       if (filesChanged) {
         core.info("Checking number of files changed");
@@ -108,7 +110,7 @@ async function run() {
         const repo = repository?.name;
         const pull_number = pull_request?.number;
         
-        const filesChangedInPR = await checkFilesChanged(
+        filesChangedInPR = await checkFilesChanged(
           octokit,
           owner,
           repo,

@@ -135,13 +135,14 @@ function run() {
                 const diffDoesNotContain = core.getInput("diffDoesNotContain");
                 const linesChanged = +core.getInput("linesChanged");
                 const filesChanged = +core.getInput("filesChanged");
+                let filesChangedInPR;
                 // Check files changed first, before parsing diff
                 if (filesChanged) {
                     core.info("Checking number of files changed");
                     const owner = (_a = repository === null || repository === void 0 ? void 0 : repository.owner) === null || _a === void 0 ? void 0 : _a.login;
                     const repo = repository === null || repository === void 0 ? void 0 : repository.name;
                     const pull_number = pull_request === null || pull_request === void 0 ? void 0 : pull_request.number;
-                    const filesChangedInPR = yield (0, utils_1.checkFilesChanged)(octokit, owner, repo, pull_number);
+                    filesChangedInPR = yield (0, utils_1.checkFilesChanged)(octokit, owner, repo, pull_number);
                     if (filesChangedInPR != filesChanged) {
                         core.setFailed("You should change exactly " + filesChanged + " file(s)");
                         return;
@@ -233,12 +234,12 @@ exports.rexify = rexify;
  */
 function checkFilesChanged(octokit, owner, repo, pull_number) {
     return __awaiter(this, void 0, void 0, function* () {
-        const response = yield octokit.rest.pulls.get({
+        const response = yield octokit.rest.pulls.listFiles({
             owner,
             repo,
             pull_number,
         });
-        return response.data.changed_files;
+        return response.data.length;
     });
 }
 exports.checkFilesChanged = checkFilesChanged;
