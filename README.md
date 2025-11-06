@@ -1,15 +1,15 @@
 # A GitHub action that checks pull requests description and contents [![Basic installation and build checks](https://github.com/JJ/github-pr-contains-action/actions/workflows/install-build-checks.yml/badge.svg)](https://github.com/JJ/github-pr-contains-action/actions/workflows/install-build-checks.yml)[![Check correct version in README](https://github.com/JJ/github-pr-contains-action/actions/workflows/check-v.yml/badge.svg)](https://github.com/JJ/github-pr-contains-action/actions/workflows/check-v.yml)
 
 This GitHub action checks for the presence/absence of a string or group of
-strings in the body of the pull request or diff, as well as certain conditions
-in the PR: number of files changed, and number of lines changed.
+strings in the body of the pull request or the file diffs, as well as certain
+conditions in the PR: number of files changed, and number of lines changed.
 
 It uses the GitHub API, so you'll need to provide a token. Don't worry, that's
 built-in.
 
 ## Using this action
 
-You would need to put this in a YAML file (`check-pr.yml`, for instance) in the
+You would need to put this in a YAML file (`.github/workflows/check-pr.yml`, for instance) in the
 `.github/workflows` directory:
 
 ```yaml
