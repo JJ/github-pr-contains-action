@@ -151,7 +151,8 @@ async function run() {
     if (error.name === "HttpError") {
       core.setFailed(
         "❌ There seems to be an error in an API request" +
-          "\nThis is usually due to using a GitHub token without the adequate scope"
+        "\nThis is usually due to using a GitHub token without the adequate scope"+
+        `\n${error}`
       );
     } else {
       core.setFailed("❌ " + error.stack);
