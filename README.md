@@ -188,7 +188,7 @@ There are several forks of this action, with additional features:
   output.
   - `v14.1`: Refrains from doing diff stuff if no variable related to diff has
     been set
-        - `v14.1.1`: Debug release
+    - `v14.1.1`: Debug release
 
 ## License
 
