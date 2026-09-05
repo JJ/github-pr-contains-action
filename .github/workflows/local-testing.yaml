@@ -21,15 +21,10 @@ jobs:
           github-token: ${{github.token}}
           bodyContains: "[x]"
           bodyDoesNotContain: "your|own"
-      - name: Info PR
-        env:
-          NUMBER_OF_FILES: ${{ steps.dev_check_pr.outputs.numberOfFiles }}
-        run: |
-          echo "::warning::We got files: $NUMBER_OF_FILES"
       - name: Fail if too big
         if: ${{ steps.dev_check_pr.outputs.numberOfFiles > 6 }}
         env:
-          NUMBER_OF_FILES : ${{ steps.dev_check_pr.outputs.numberOfFiles }}
+          NUMBER_OF_FILES: ${{ steps.dev_check_pr.outputs.numberOfFiles }}
         run: |
           echo "::error::Too many files, there are $NUMBER_OF_FILES"
           exit 1
