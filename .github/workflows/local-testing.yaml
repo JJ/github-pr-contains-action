@@ -8,10 +8,12 @@ on:
 jobs:
   dev_check_pr:
     name: "Checks dev version"
+    permissions:
+      pull-requests: read
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
       - name: Dev check PR
         uses: ./
         id: dev_check_pr

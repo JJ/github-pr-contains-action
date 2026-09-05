@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check PR
-      uses: JJ/github-pr-contains-action@releases/v14.1.1
+      uses: JJ/github-pr-contains-action@releases/v14.2.0
       with:
         github-token: ${{github.token}}
         bodyDoesNotContain: "Delete|this"
@@ -97,7 +97,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check that any new contributor links to their github page
-        uses: JJ/github-pr-contains-action@releases/v14.1.1
+        uses: JJ/github-pr-contains-action@releases/v14.1.2
         with:
           github-token: ${{github.token}}
           linesChanged: 1
@@ -140,7 +140,6 @@ too many files (to enforce keeping PRs small, for instance).
 The `diff` output might contain a huge amount of information, which might make
 it a bit hard to deal with via environment variables. Dealing with it otherwise,
 via `github-script`, is probably fine.
-
 
 
 ## Contributing to development
@@ -188,9 +187,11 @@ There are several forks of this action, with additional features:
   output.
   - `v14.1`: Refrains from doing diff stuff if no variable related to diff has
     been set
-        - `v14.1.1`: Debug release
+    - `v14.1.1`: Debug release
+	- `v14.1.2`: Internal refactoring release
+  - `v14.2`: Includes a new job summary
 
 ## License
 
-(c) JJ Merelo, 2021-2025. Released under the MIT license. Read
+(c) JJ Merelo, 2021-2026. Released under the MIT license. Read
 [LICENSE](LICENSE) for more details.

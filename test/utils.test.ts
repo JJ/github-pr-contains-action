@@ -1,4 +1,5 @@
 import { rexify, getFilesChanged } from "../src/utils";
+import { jest } from "@jest/globals";
 
 describe("Regex creator", () => {
   it("Should create single-string regexes", () => {
@@ -39,7 +40,7 @@ describe("Get files changed", () => {
         }
       }
     };
-    
+
     const result = await getFilesChanged(mockOctokit, "owner", "repo", 123);
     expect(result).toHaveLength(3);
     expect(result[0].filename).toBe("file1.ts");
@@ -66,7 +67,7 @@ describe("Get files changed", () => {
         }
       }
     };
-    
+
     const result = await getFilesChanged(mockOctokit, "owner", "repo", 456);
     expect(result).toHaveLength(5);
     expect(result[4].filename).toBe("file5.ts");
