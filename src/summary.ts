@@ -41,7 +41,8 @@ export class JobSummary {
 
     core.summary
       .addHeading("PR contains action - results", 2)
-      .addRaw(`Overall status: **${overallStatus.trim()}** `, true)
+      .addEOL()
+      .addRaw(`Overall status: **${overallStatus}** `, true)
       .addTable([
         [
           { data: "Check", header: true },
