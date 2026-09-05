@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check PR
-      uses: JJ/github-pr-contains-action@releases/v14.2.0
+      uses: JJ/github-pr-contains-action@releases/v14.3.0
       with:
         github-token: ${{github.token}}
         bodyDoesNotContain: "Delete|this"
@@ -97,7 +97,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check that any new contributor links to their github page
-        uses: JJ/github-pr-contains-action@releases/v14.1.2
+        uses: JJ/github-pr-contains-action@releases/v14.3.0
         with:
           github-token: ${{github.token}}
           linesChanged: 1
@@ -190,6 +190,7 @@ There are several forks of this action, with additional features:
     - `v14.1.1`: Debug release
 	- `v14.1.2`: Internal refactoring release
   - `v14.2`: Includes a new job summary
+  - `v14.3`: Changes to API calls so that it can work with a big number of files.
 
 ## License
 
