@@ -19947,6 +19947,9 @@ var require_parse_diff = __commonJS({
   }
 });
 
+// lib/main.js
+import { fileURLToPath } from "node:url";
+
 // node_modules/@actions/core/lib/command.js
 import * as os from "os";
 
@@ -20387,6 +20390,7 @@ var Summary = class {
   }
 };
 var _summary = new Summary();
+var summary = _summary;
 
 // node_modules/@actions/core/lib/platform.js
 import os3 from "os";
@@ -20431,6 +20435,9 @@ function setOutput(name, value) {
 function setFailed(message) {
   process.exitCode = ExitCode.Failure;
   error(message);
+}
+function debug(message) {
+  issueCommand("debug", {}, message);
 }
 function error(message, properties = {}) {
   issueCommand("error", toCommandProperties(properties), message instanceof Error ? message.toString() : message);
@@ -24437,6 +24444,48 @@ function rexify(expression) {
   return new RegExp(expression);
 }
 
+// lib/summary.js
+var STATUS_ICON = {
+  passed: "\u2705",
+  failed: "\u274C",
+  skipped: "\u23ED\uFE0F"
+};
+var JobSummary = class {
+  results = [];
+  recordCheck(name, status, details = "") {
+    this.results.push({ name, status, details });
+  }
+  /**
+   * Writes the accumulated checks to the job summary. A no-op when nothing
+   * has been recorded. Never throws: job summaries are not supported in
+   * every runtime (e.g. local runs), and that must never fail the action.
+   */
+  async write() {
+    if (this.results.length === 0) {
+      return;
+    }
+    const overallStatus = this.results.some((result) => result.status === "failed") ? "\u274C Failed" : "\u2705 Passed";
+    summary.addHeading("PR contains action - results", 2).addRaw(`Overall status: **${overallStatus}**`, true).addTable([
+      [
+        { data: "Check", header: true },
+        { data: "Status", header: true },
+        { data: "Details", header: true }
+      ],
+      ...this.results.map((result) => [
+        result.name,
+        `${STATUS_ICON[result.status]} ${result.status}`,
+        result.details || "-"
+      ])
+    ]);
+    try {
+      await summary.write();
+    } catch (error2) {
+      const message = error2 instanceof Error ? error2.message : String(error2);
+      debug(`Could not write job summary: ${message}`);
+    }
+  }
+};
+
 // lib/main.js
 async function getDiff(octokit, repository, pull_request) {
   const owner = repository?.owner?.login;
@@ -24456,6 +24505,7 @@ async function getDiff(octokit, repository, pull_request) {
   return (0, import_parse_diff.default)(diff);
 }
 async function run() {
+  const summary2 = new JobSummary();
   try {
     const token = getInput("github-token", { required: true });
     const octokit = getOctokit(token);
@@ -24468,6 +24518,7 @@ async function run() {
     if (senderName) {
       if (waivedUsers.includes(senderName)) {
         warning(`\u26A0\uFE0F Not running this workflow for waived user \xAB${senderName}\xBB`);
+        summary2.recordCheck("Waived user", "skipped", `\xAB${senderName}\xBB is a waived user, all checks were skipped`);
         return;
       }
     } else {
@@ -24478,15 +24529,18 @@ async function run() {
     const allowEmpty = getInput("allowEmpty") === "true" ? true : false;
     if (context2.eventName !== "pull_request" && context2.eventName !== "pull_request_target") {
       warning("\u26A0\uFE0F Not a pull request, skipping PR body checks");
+      summary2.recordCheck("Event type", "skipped", `Event \xAB${context2.eventName}\xBB is not a pull request`);
     } else {
       const pull_request = payload.pull_request;
       const repository = payload.repository;
       if (!pull_request) {
         setFailed("\u274C Expecting pull_request metadata.");
+        summary2.recordCheck("Metadata", "failed", "Expecting pull_request metadata.");
         return;
       }
       if (!repository) {
         setFailed("\u274C Expecting repository metadata.");
+        summary2.recordCheck("Metadata", "failed", "Expecting repository metadata.");
         return;
       }
       if (bodyContains || bodyDoesNotContain) {
@@ -24496,15 +24550,30 @@ async function run() {
           console.log(allowEmpty);
           if (allowEmpty) {
             warning("\u26A0\uFE0F The PR body is empty, skipping checks");
+            summary2.recordCheck("PR body", "skipped", "PR body is empty");
           } else {
-            setFailed("\u274C The PR body is empty and allowEmpty is false. Please add a body to your PR.");
+            const message = "\u274C The PR body is empty and allowEmpty is false. Please add a body to your PR.";
+            setFailed(message);
+            summary2.recordCheck("PR body", "failed", message);
           }
         } else {
-          if (bodyContains && !rexify(bodyContains).test(PRBody)) {
-            setFailed("The body of the PR does not contain " + bodyContains);
+          if (bodyContains) {
+            if (!rexify(bodyContains).test(PRBody)) {
+              const message = "The body of the PR does not contain " + bodyContains;
+              setFailed(message);
+              summary2.recordCheck("PR body contains", "failed", message);
+            } else {
+              summary2.recordCheck("PR body contains", "passed", `Found required pattern \xAB${bodyContains}\xBB`);
+            }
           }
-          if (bodyDoesNotContain && rexify(bodyDoesNotContain).test(PRBody)) {
-            setFailed("The body of the PR should not contain " + bodyDoesNotContain);
+          if (bodyDoesNotContain) {
+            if (rexify(bodyDoesNotContain).test(PRBody)) {
+              const message = "The body of the PR should not contain " + bodyDoesNotContain;
+              setFailed(message);
+              summary2.recordCheck("PR body does not contain", "failed", message);
+            } else {
+              summary2.recordCheck("PR body does not contain", "passed", `Did not find forbidden pattern \xAB${bodyDoesNotContain}\xBB`);
+            }
           }
         }
       }
@@ -24516,8 +24585,14 @@ async function run() {
         info("Checking diff contents");
         const parsedDiff = await getDiff(octokit, repository, pull_request);
         setOutput("numberOfFiles", parsedDiff.length);
-        if (filesChanged && parsedDiff.length != filesChanged) {
-          setFailed("You should change exactly " + filesChanged + " file(s)");
+        if (filesChanged) {
+          if (parsedDiff.length != filesChanged) {
+            const message = "You should change exactly " + filesChanged + " file(s)";
+            setFailed(message);
+            summary2.recordCheck("Files changed", "failed", message);
+          } else {
+            summary2.recordCheck("Files changed", "passed", `Changed exactly ${filesChanged} file(s)`);
+          }
         }
         let changes = "";
         let additions = 0;
@@ -24531,32 +24606,58 @@ async function run() {
             });
           });
         });
-        if (diffContains && !rexify(diffContains).test(changes)) {
-          setFailed("The added code does not contain \xAB" + diffContains + "\xBB");
-        } else {
-          setOutput("diff", changes);
+        if (diffContains) {
+          if (!rexify(diffContains).test(changes)) {
+            const message = "The added code does not contain \xAB" + diffContains + "\xBB";
+            setFailed(message);
+            summary2.recordCheck("Diff contains", "failed", message);
+          } else {
+            setOutput("diff", changes);
+            summary2.recordCheck("Diff contains", "passed", `Found required pattern \xAB${diffContains}\xBB`);
+          }
         }
-        if (diffDoesNotContain && rexify(diffDoesNotContain).test(changes)) {
-          setFailed("The added code should not contain " + diffDoesNotContain);
+        if (diffDoesNotContain) {
+          if (rexify(diffDoesNotContain).test(changes)) {
+            const message = "The added code should not contain " + diffDoesNotContain;
+            setFailed(message);
+            summary2.recordCheck("Diff does not contain", "failed", message);
+          } else {
+            summary2.recordCheck("Diff does not contain", "passed", `Did not find forbidden pattern \xAB${diffDoesNotContain}\xBB`);
+          }
         }
         info("Checking lines/files changed");
-        if (linesChanged && additions != linesChanged) {
-          const this_msg = "You should change exactly " + linesChanged + " lines(s) and you have changed " + additions;
-          setFailed(this_msg);
+        if (linesChanged) {
+          if (additions != linesChanged) {
+            const this_msg = "You should change exactly " + linesChanged + " lines(s) and you have changed " + additions;
+            setFailed(this_msg);
+            summary2.recordCheck("Lines changed", "failed", this_msg);
+          } else {
+            summary2.recordCheck("Lines changed", "passed", `Changed exactly ${linesChanged} line(s)`);
+          }
         }
       }
     }
   } catch (error2) {
     if (error2.name === "HttpError") {
-      setFailed(`\u274C There seems to be an error in an API request
+      const message = `\u274C There seems to be an error in an API request
 This is usually due to using a GitHub token without the adequate scope
-${error2}`);
+${error2}`;
+      setFailed(message);
+      summary2.recordCheck("API request", "failed", message);
     } else {
       setFailed("\u274C " + error2.stack);
+      summary2.recordCheck("Unexpected error", "failed", error2.message);
     }
+  } finally {
+    await summary2.write();
   }
 }
-run();
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  run();
+}
+export {
+  run
+};
 /*! Bundled license information:
 
 undici/lib/web/fetch/body.js:
