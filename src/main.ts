@@ -2,7 +2,7 @@ import { fileURLToPath } from "node:url";
 import * as core from "@actions/core";
 import { getOctokit, context } from "@actions/github";
 import parse from "parse-diff";
-import { rexify } from "./utils";
+import { rexify, getFilesChanged } from "./utils";
 import { JobSummary } from "./summary";
 
 async function getDiff(octokit, repository, pull_request) {
@@ -125,15 +125,39 @@ export async function run() {
         core.info("Checking diff contents");
         const parsedDiff = await getDiff(octokit, repository, pull_request);
         core.setOutput("numberOfFiles", parsedDiff.length);
+        let filesChangedInPR: any[] = [];
+
+        // Check files changed first, before parsing diff
         if (filesChanged) {
-          if (parsedDiff.length != filesChanged) {
-            const message = "You should change exactly " + filesChanged + " file(s)";
-            core.setFailed(message);
-            summary.recordCheck("Files changed", "failed", message);
-          } else {
-            summary.recordCheck("Files changed", "passed", `Changed exactly ${filesChanged} file(s)`);
-          }
+              core.info("Checking number of files changed");
+              const owner = repository?.owner?.login;
+              const repo = repository?.name;
+              const pull_number = pull_request?.number;
+
+              filesChangedInPR = await getFilesChanged(
+                  octokit,
+                  owner,
+                  repo,
+                  pull_number
+              );
+
+              if (filesChangedInPR.length != filesChanged) {
+                const message =
+                  "You should change exactly " + filesChangedInPR.length + " file(s)";
+                  core.setFailed( message );
+                  summary.recordCheck("Files changed", "failed", message);
+              } else {
+                  summary.recordCheck("Files changed", "passed", `Changed exactly ${filesChanged} file(s)`);
+              }
+              return;
         }
+        core.setOutput("numberOfFiles", filesChangedInPR?.length);
+      }
+
+
+      if (diffContains || diffDoesNotContain || linesChanged) {
+        core.info("Checking diff contents");
+        const parsedDiff = await getDiff(octokit, repository, pull_request);
 
         let changes = "";
         let additions: number = 0;

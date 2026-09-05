@@ -19739,211 +19739,90 @@ var require_dist = __commonJS({
 // node_modules/parse-diff/index.js
 var require_parse_diff = __commonJS({
   "node_modules/parse-diff/index.js"(exports, module) {
-    var defaultToWhiteSpace;
-    var escapeRegExp;
-    var ltrim;
-    var makeString;
-    var parseFile;
-    var parseFileFallback;
-    var trimLeft;
-    var slice = [].slice;
-    module.exports = function(input) {
-      var add, chunk, current, del, deleted_file, eof, file, files, from_file, index, j, len, line, lines, ln_add, ln_del, new_file, normal, parse4, restart, schema, start, to_file;
-      if (!input) {
-        return [];
-      }
-      if (input.match(/^\s+$/)) {
-        return [];
-      }
-      lines = input.split("\n");
-      if (lines.length === 0) {
-        return [];
-      }
-      files = [];
-      file = null;
-      ln_del = 0;
-      ln_add = 0;
-      current = null;
-      start = function(line2) {
-        var fileNames;
-        file = {
-          chunks: [],
-          deletions: 0,
-          additions: 0
-        };
-        files.push(file);
-        if (!file.to && !file.from) {
-          fileNames = parseFile(line2);
-          if (fileNames) {
-            file.from = fileNames[0];
-            return file.to = fileNames[1];
+    module.exports = (n) => {
+      if (!n) return [];
+      if (typeof n != "string" || n.match(/^\s+$/)) return [];
+      const s = n.split(`
+`);
+      if (s.length === 0) return [];
+      const a = [];
+      let o = null, d = null, u = 0, m = 0, l = null;
+      const g = (e) => {
+        d?.changes.push({ type: "normal", normal: true, ln1: u++, ln2: m++, content: e }), l.oldLines--, l.newLines--;
+      }, p = (e) => {
+        const [t, r] = parseFiles(e) ?? [];
+        o = { chunks: [], deletions: 0, additions: 0, from: t, to: r }, a.push(o);
+      }, i = () => {
+        (!o || o.chunks.length) && p();
+      }, $ = (e, t) => {
+        i(), o.new = true, o.newMode = t[1], o.from = "/dev/null";
+      }, N = (e, t) => {
+        i(), o.deleted = true, o.oldMode = t[1], o.to = "/dev/null";
+      }, x = (e, t) => {
+        i(), o.oldMode = t[1];
+      }, F = (e, t) => {
+        i(), o.newMode = t[1];
+      }, S = (e, t) => {
+        i(), o.index = e.split(" ").slice(1), t[1] && (o.oldMode = o.newMode = t[1].trim());
+      }, k = (e) => {
+        i(), o.from = parseOldOrNewFile(e);
+      }, y = (e) => {
+        i(), o.to = parseOldOrNewFile(e);
+      }, f = (e) => +(e || 1), M = (e, t) => {
+        o || p(e);
+        const [r, c, w, L] = t.slice(1);
+        u = +r, m = +w, d = { content: e, changes: [], oldStart: +r, oldLines: f(c), newStart: +w, newLines: f(L) }, l = { oldLines: f(c), newLines: f(L) }, o.chunks.push(d);
+      }, R = (e) => {
+        d && (d.changes.push({ type: "del", del: true, ln: u++, content: e }), o.deletions++, l.oldLines--);
+      }, b = (e) => {
+        d && (d.changes.push({ type: "add", add: true, ln: m++, content: e }), o.additions++, l.newLines--);
+      }, h = (e) => {
+        if (!d) return;
+        const [t] = d.changes.slice(-1);
+        d.changes.push({ type: t.type, [t.type]: true, ln1: t.ln1, ln2: t.ln2, ln: t.ln, content: e });
+      }, _ = [[/^diff\s/, p], [/^new file mode (\d+)$/, $], [/^deleted file mode (\d+)$/, N], [/^old mode (\d+)$/, x], [/^new mode (\d+)$/, F], [/^index\s[\da-zA-Z]+\.\.[\da-zA-Z]+(\s(\d+))?$/, S], [/^---\s/, k], [/^\+\+\+\s/, y], [/^@@\s+-(\d+),?(\d+)?\s+\+(\d+),?(\d+)?\s@@/, M], [/^\\ No newline at end of file$/, h]], v = [[/^\\ No newline at end of file$/, h], [/^-/, R], [/^\+/, b], [/^\s*/, g]], C = (e) => {
+        for (const [t, r] of v) {
+          const c = e.match(t);
+          if (c) {
+            r(e, c);
+            break;
           }
         }
-      };
-      restart = function() {
-        if (!file || file.chunks.length) {
-          return start();
-        }
-      };
-      new_file = function() {
-        restart();
-        file.new = true;
-        return file.from = "/dev/null";
-      };
-      deleted_file = function() {
-        restart();
-        file.deleted = true;
-        return file.to = "/dev/null";
-      };
-      index = function(line2) {
-        restart();
-        return file.index = line2.split(" ").slice(1);
-      };
-      from_file = function(line2) {
-        restart();
-        return file.from = parseFileFallback(line2);
-      };
-      to_file = function(line2) {
-        restart();
-        return file.to = parseFileFallback(line2);
-      };
-      chunk = function(line2, match) {
-        var newLines, newStart, oldLines, oldStart;
-        ln_del = oldStart = +match[1];
-        oldLines = +(match[2] || 1);
-        ln_add = newStart = +match[3];
-        newLines = +(match[4] || 1);
-        current = {
-          content: line2,
-          changes: [],
-          oldStart,
-          oldLines,
-          newStart,
-          newLines
-        };
-        return file.chunks.push(current);
-      };
-      del = function(line2) {
-        if (!current) {
-          return;
-        }
-        current.changes.push({
-          type: "del",
-          del: true,
-          ln: ln_del++,
-          content: line2
-        });
-        return file.deletions++;
-      };
-      add = function(line2) {
-        if (!current) {
-          return;
-        }
-        current.changes.push({
-          type: "add",
-          add: true,
-          ln: ln_add++,
-          content: line2
-        });
-        return file.additions++;
-      };
-      normal = function(line2) {
-        if (!current) {
-          return;
-        }
-        return current.changes.push({
-          type: "normal",
-          normal: true,
-          ln1: ln_del++,
-          ln2: ln_add++,
-          content: line2
-        });
-      };
-      eof = function(line2) {
-        var recentChange, ref;
-        ref = current.changes, [recentChange] = slice.call(ref, -1);
-        return current.changes.push({
-          type: recentChange.type,
-          [`${recentChange.type}`]: true,
-          ln1: recentChange.ln1,
-          ln2: recentChange.ln2,
-          ln: recentChange.ln,
-          content: line2
-        });
-      };
-      schema = [[/^\s+/, normal], [/^diff\s/, start], [/^new file mode \d+$/, new_file], [/^deleted file mode \d+$/, deleted_file], [/^index\s[\da-zA-Z]+\.\.[\da-zA-Z]+(\s(\d+))?$/, index], [/^---\s/, from_file], [/^\+\+\+\s/, to_file], [/^@@\s+\-(\d+),?(\d+)?\s+\+(\d+),?(\d+)?\s@@/, chunk], [/^-/, del], [/^\+/, add], [/^\\ No newline at end of file$/, eof]];
-      parse4 = function(line2) {
-        var j2, len2, m, p;
-        for (j2 = 0, len2 = schema.length; j2 < len2; j2++) {
-          p = schema[j2];
-          m = line2.match(p[0]);
-          if (m) {
-            p[1](line2, m);
-            return true;
+        l.oldLines === 0 && l.newLines === 0 && (l = null);
+      }, H = (e) => {
+        for (const [t, r] of _) {
+          const c = e.match(t);
+          if (c) {
+            r(e, c);
+            break;
           }
         }
-        return false;
+      }, O = (e) => {
+        l ? C(e) : H(e);
       };
-      for (j = 0, len = lines.length; j < len; j++) {
-        line = lines[j];
-        parse4(line);
-      }
-      return files;
+      for (const e of s) O(e);
+      return a;
     };
-    parseFile = function(s) {
-      var fileNames;
-      if (!s) {
-        return;
-      }
-      fileNames = s.match(/a\/.*(?= b)|b\/.*$/g);
-      fileNames.map(function(fileName, i) {
-        return fileNames[i] = fileName.replace(/^(a|b)\//, "");
-      });
-      return fileNames;
+    var fileNameDiffRegex = /(a|i|w|c|o|1|2)\/.*(?=["']? ["']?(b|i|w|c|o|1|2)\/)|(b|i|w|c|o|1|2)\/.*$/g;
+    var gitFileHeaderRegex = /^(a|b|i|w|c|o|1|2)\//;
+    var parseFiles = (n) => n?.match(fileNameDiffRegex)?.map((a) => a.replace(gitFileHeaderRegex, "").replace(/("|')$/, ""));
+    var qoutedFileNameRegex = /^\\?['"]|\\?['"]$/g;
+    var parseOldOrNewFile = (n) => {
+      let s = leftTrimChars(n, "-+").trim();
+      return s = removeTimeStamp(s), s.replace(qoutedFileNameRegex, "").replace(gitFileHeaderRegex, "");
     };
-    parseFileFallback = function(s) {
-      var t;
-      s = ltrim(s, "-");
-      s = ltrim(s, "+");
-      s = s.trim();
-      t = /\t.*|\d{4}-\d\d-\d\d\s\d\d:\d\d:\d\d(.\d+)?\s(\+|-)\d\d\d\d/.exec(s);
-      if (t) {
-        s = s.substring(0, t.index).trim();
-      }
-      if (s.match(/^(a|b)\//)) {
-        return s.substr(2);
-      } else {
-        return s;
-      }
+    var leftTrimChars = (n, s) => {
+      if (n = makeString(n), !s && String.prototype.trimLeft) return n.trimLeft();
+      const a = formTrimmingString(s);
+      return n.replace(new RegExp(`^${a}+`), "");
     };
-    ltrim = function(s, chars) {
-      s = makeString(s);
-      if (!chars && trimLeft) {
-        return trimLeft.call(s);
-      }
-      chars = defaultToWhiteSpace(chars);
-      return s.replace(new RegExp("^" + chars + "+"), "");
+    var timeStampRegex = /\t.*|\d{4}-\d\d-\d\d\s\d\d:\d\d:\d\d(.\d+)?\s(\+|-)\d\d\d\d/;
+    var removeTimeStamp = (n) => {
+      const s = timeStampRegex.exec(n);
+      return s && (n = n.substring(0, s.index).trim()), n;
     };
-    makeString = function(s) {
-      if (s === null) {
-        return "";
-      } else {
-        return s + "";
-      }
-    };
-    trimLeft = String.prototype.trimLeft;
-    defaultToWhiteSpace = function(chars) {
-      if (chars === null) {
-        return "\\s";
-      }
-      if (chars.source) {
-        return chars.source;
-      }
-      return "[" + escapeRegExp(chars) + "]";
-    };
-    escapeRegExp = function(s) {
-      return makeString(s).replace(/([.*+?^=!:${}()|[\]\/\\])/g, "\\$1");
-    };
+    var formTrimmingString = (n) => n == null ? "\\s" : n instanceof RegExp ? n.source : `[${makeString(n).replace(/([.*+?^=!:${}()|[\]/\\])/g, "\\$1")}]`;
+    var makeString = (n) => `${n ?? ""}`;
   }
 });
 
@@ -24443,6 +24322,14 @@ function rexify(expression) {
   });
   return new RegExp(expression);
 }
+async function getFilesChanged(octokit, owner, repo, pull_number) {
+  const response = await octokit.rest.pulls.listFiles({
+    owner,
+    repo,
+    pull_number
+  });
+  return response.data;
+}
 
 // lib/summary.js
 var STATUS_ICON = {
@@ -24465,7 +24352,7 @@ var JobSummary = class {
       return;
     }
     const overallStatus = this.results.some((result) => result.status === "failed") ? "\u274C Failed" : "\u2705 Passed";
-    summary.addHeading("PR contains action - results", 2).addRaw(`Overall status: **${overallStatus}**`, true).addTable([
+    summary.addHeading("PR contains action - results", 2).addEOL().addRaw(`Overall status: **${overallStatus}** `, true).addTable([
       [
         { data: "Check", header: true },
         { data: "Status", header: true },
@@ -24585,15 +24472,27 @@ async function run() {
         info("Checking diff contents");
         const parsedDiff = await getDiff(octokit, repository, pull_request);
         setOutput("numberOfFiles", parsedDiff.length);
+        let filesChangedInPR = [];
         if (filesChanged) {
-          if (parsedDiff.length != filesChanged) {
-            const message = "You should change exactly " + filesChanged + " file(s)";
+          info("Checking number of files changed");
+          const owner = repository?.owner?.login;
+          const repo = repository?.name;
+          const pull_number = pull_request?.number;
+          filesChangedInPR = await getFilesChanged(octokit, owner, repo, pull_number);
+          if (filesChangedInPR.length != filesChanged) {
+            const message = "You should change exactly " + filesChangedInPR.length + " file(s)";
             setFailed(message);
             summary2.recordCheck("Files changed", "failed", message);
           } else {
             summary2.recordCheck("Files changed", "passed", `Changed exactly ${filesChanged} file(s)`);
           }
+          return;
         }
+        setOutput("numberOfFiles", filesChangedInPR?.length);
+      }
+      if (diffContains || diffDoesNotContain || linesChanged) {
+        info("Checking diff contents");
+        const parsedDiff = await getDiff(octokit, repository, pull_request);
         let changes = "";
         let additions = 0;
         parsedDiff.forEach(function(file) {
