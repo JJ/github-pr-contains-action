@@ -24473,7 +24473,7 @@ var JobSummary = class {
       return;
     }
     const overallStatus = this.results.some((result) => result.status === "failed") ? "\u274C Failed" : "\u2705 Passed";
-    summary.addHeading("PR contains action - results", 2).addRaw(`Overall status: **${overallStatus.trim}** `, true).addTable([
+    summary.addHeading("PR contains action - results", 2).addRaw(`Overall status: **${overallStatus.trim()}** `, true).addTable([
       [
         { data: "Check", header: true },
         { data: "Status", header: true },
