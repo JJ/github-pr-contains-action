@@ -24443,6 +24443,14 @@ function rexify(expression) {
   });
   return new RegExp(expression);
 }
+async function getFilesChanged(octokit, owner, repo, pull_number) {
+  const response = await octokit.rest.pulls.listFiles({
+    owner,
+    repo,
+    pull_number
+  });
+  return response.data;
+}
 
 // lib/summary.js
 var STATUS_ICON = {
@@ -24585,15 +24593,27 @@ async function run() {
         info("Checking diff contents");
         const parsedDiff = await getDiff(octokit, repository, pull_request);
         setOutput("numberOfFiles", parsedDiff.length);
+        let filesChangedInPR = [];
         if (filesChanged) {
-          if (parsedDiff.length != filesChanged) {
-            const message = "You should change exactly " + filesChanged + " file(s)";
+          info("Checking number of files changed");
+          const owner = repository?.owner?.login;
+          const repo = repository?.name;
+          const pull_number = pull_request?.number;
+          filesChangedInPR = await getFilesChanged(octokit, owner, repo, pull_number);
+          if (filesChangedInPR.length != filesChanged) {
+            const message = "You should change exactly " + filesChangedInPR.length + " file(s)";
             setFailed(message);
             summary2.recordCheck("Files changed", "failed", message);
           } else {
             summary2.recordCheck("Files changed", "passed", `Changed exactly ${filesChanged} file(s)`);
           }
+          return;
         }
+        setOutput("numberOfFiles", filesChangedInPR?.length);
+      }
+      if (diffContains || diffDoesNotContain || linesChanged) {
+        info("Checking diff contents");
+        const parsedDiff = await getDiff(octokit, repository, pull_request);
         let changes = "";
         let additions = 0;
         parsedDiff.forEach(function(file) {

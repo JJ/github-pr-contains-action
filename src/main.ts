@@ -127,8 +127,8 @@ export async function run() {
         core.setOutput("numberOfFiles", parsedDiff.length);
         let filesChangedInPR: any[] = [];
 
-          // Check files changed first, before parsing diff
-          if (filesChanged) {
+        // Check files changed first, before parsing diff
+        if (filesChanged) {
               core.info("Checking number of files changed");
               const owner = repository?.owner?.login;
               const repo = repository?.name;
@@ -142,18 +142,18 @@ export async function run() {
               );
 
               if (filesChangedInPR.length != filesChanged) {
-                  core.setFailed(
-                      "You should change exactly " + filesChanged + " file(s)"
-                  );
+                const message =
+                  "You should change exactly " + filesChangedInPR.length + " file(s)";
+                  core.setFailed( message );
                   summary.recordCheck("Files changed", "failed", message);
               } else {
                   summary.recordCheck("Files changed", "passed", `Changed exactly ${filesChanged} file(s)`);
               }
               return;
         }
+        core.setOutput("numberOfFiles", filesChangedInPR?.length);
       }
 
-      core.setOutput("numberOfFiles", filesChangedInPR?.length);
 
       if (diffContains || diffDoesNotContain || linesChanged) {
         core.info("Checking diff contents");
