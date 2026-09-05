@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check PR
-      uses: JJ/github-pr-contains-action@releases/v14.1.2
+      uses: JJ/github-pr-contains-action@releases/v14.2.0
       with:
         github-token: ${{github.token}}
         bodyDoesNotContain: "Delete|this"
@@ -189,6 +189,7 @@ There are several forks of this action, with additional features:
     been set
     - `v14.1.1`: Debug release
 	- `v14.1.2`: Internal refactoring release
+  - `v14.2`: Includes a new job summary
 
 ## License
 
