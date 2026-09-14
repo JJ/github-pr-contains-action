@@ -183,8 +183,9 @@ There are several forks of this action, with additional features:
 - `v11`: Adds a configuration variable that skips users, with dependabot skipped by default (or passed through).
 - `v12`: Make it compatible with private repos. Upgrade to latest github API.
 - `v13`: Fixes the use of `waivedUsers` which didn't actually work.
-- `v14`: Initially: Eliminates setting of environment variables, documents using action
-  output. From version v14.3 it follows the last minor version.
+- `v14`: From version v14.3 it follows the last minor version.
+  - `v14.0`: Initially: Eliminates setting of environment variables, documents using action
+  output. This was the initial release called `v14`
   - `v14.1`: Refrains from doing diff stuff if no variable related to diff has
     been set
     - `v14.1.1`: Debug release
